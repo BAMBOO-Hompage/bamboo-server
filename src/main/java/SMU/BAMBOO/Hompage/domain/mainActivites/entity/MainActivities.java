@@ -34,9 +34,11 @@ public class MainActivities extends BaseEntity {
     @Column(nullable = false)
     private int year;
 
+    @Builder.Default
     @Column(nullable = false)
     private int views = 0;
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
     @Column(name = "image_url")

@@ -41,6 +41,7 @@ public class LibraryPost extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String link;
 
+    @Builder.Default
     @OneToMany(mappedBy = "libraryPost", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
 }

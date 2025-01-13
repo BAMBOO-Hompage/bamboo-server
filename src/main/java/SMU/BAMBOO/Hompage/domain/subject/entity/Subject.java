@@ -27,9 +27,11 @@ public class Subject extends BaseEntity {
     @Column(length = 15)
     private SubjectName name;
 
+    @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Study> studies = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<WeeklyContent> weeklyContents = new ArrayList<>();
 }

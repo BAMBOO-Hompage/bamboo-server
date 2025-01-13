@@ -16,7 +16,7 @@ public class KnowledgeComment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "knowledge_id")
+    @Column(name = "knowledge_comment_id")
     private Long knowledgeCommentId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -38,6 +38,7 @@ public class Notice extends BaseEntity {
     @Column(length = 15)
     private NoticeType type;
 
+    @Builder.Default
     @Column(nullable = false)
     private int views = 0;
 
@@ -46,6 +47,7 @@ public class Notice extends BaseEntity {
     @Column(name = "image_url")
     private List<String> image;
 
+    @Builder.Default
     @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NoticeComment> noticeComments = new ArrayList<>();
 }

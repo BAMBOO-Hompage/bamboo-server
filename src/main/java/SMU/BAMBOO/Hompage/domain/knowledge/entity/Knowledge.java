@@ -50,6 +50,7 @@ public class Knowledge extends BaseEntity {
     @Column(name = "file_url")
     private List<String> file;
 
+    @Builder.Default
     @OneToMany(mappedBy = "knowledge", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<KnowledgeComment> knowledgeComments = new ArrayList<>();
 }

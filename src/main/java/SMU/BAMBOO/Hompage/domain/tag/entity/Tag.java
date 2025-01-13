@@ -24,6 +24,7 @@ public class Tag extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Builder.Default
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
 }

@@ -48,9 +48,11 @@ public class Member extends BaseEntity {
     @Column(length = 15)
     private Role role;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
 

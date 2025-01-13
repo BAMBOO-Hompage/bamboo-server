@@ -36,15 +36,18 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private int headcount;
 
+    @Builder.Default
     @Column(name = "is_book", nullable = false)
     private Boolean isBook = false;
 
     @Column(nullable = false)
     private int year;
 
+    @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
 }

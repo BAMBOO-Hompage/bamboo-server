@@ -10,3 +10,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: ${JWT_SECRET}
+  token:
+    access-expiration-time: ${ACCESS_EXPIRATION_TIME}  # 1시간
+    refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}  # 30일

@@ -44,8 +44,6 @@ public class MemberServiceImpl implements MemberService {
 
     public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
         Member member = validateExistMember(request.studentId());
-        System.out.println("member.getName() = " + member.getName());
-        System.out.println("member.getRole() = " + member.getRole());
 
         if (!passwordEncoder.matches(request.password(), member.getPw())) {
             throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);

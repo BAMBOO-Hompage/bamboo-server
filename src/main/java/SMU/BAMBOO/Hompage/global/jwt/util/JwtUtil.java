@@ -2,8 +2,6 @@ package SMU.BAMBOO.Hompage.global.jwt.util;
 
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.jwt.Token;
-import SMU.BAMBOO.Hompage.global.jwt.repository.TokenRepository;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +9,7 @@ import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,19 +28,45 @@ public class JwtUtil {
     private final SecretKey secretKey;
     private final Long accessExpMs;
     private final Long refreshExpMs;
-    private final TokenRepository tokenRepository;
+    private final StringRedisTemplate redisTemplate;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.token.access-expiration-time}") Long access,
             @Value("${jwt.token.refresh-expiration-time}") Long refresh,
-            TokenRepository tokenRepo
+            StringRedisTemplate redisTemplate
     ) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
         this.accessExpMs = access;
         this.refreshExpMs = refresh;
-        this.tokenRepository = tokenRepo;
+        this.redisTemplate = redisTemplate;
+    }
+
+    // Redis 에 Refresh Token 저장
+    public void storeRefreshToken(String studentId, String refreshToken) {
+        String key = getRefreshTokenKey(studentId);
+        try {
+            redisTemplate.opsForValue().set(key, refreshToken, refreshExpMs, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.REDIS_STORE_FAILED);
+        }
+    }
+
+
+    // Redis 에서 Refresh Token 조회
+    public String getRefreshTokenFromRedis(String studentId) {
+        return redisTemplate.opsForValue().get(getRefreshTokenKey(studentId));
+    }
+
+    // Redis 에서 토큰 조회용 키 생성
+    private String getRefreshTokenKey(String studentId) {
+        return "refresh_token:" + studentId;
+    }
+
+    // Redis 에서 토큰 삭제 - 로그아웃할 때 사용
+    public void deleteRefreshToken(String studentId) {
+        redisTemplate.delete(getRefreshTokenKey(studentId));
     }
 
     // 사용자 StudentID 추출
@@ -122,12 +148,8 @@ public class JwtUtil {
         Instant expiration = Instant.now().plusMillis(refreshExpMs);
         String refreshToken = tokenProvider(customUserDetails, expiration);
 
-        // DB에 Refresh Token 저장
-        tokenRepository.save(Token.builder()
-                .studentId(customUserDetails.getUsername())
-                .token(refreshToken)
-                .build()
-        );
+        storeRefreshToken(customUserDetails.getUsername(), refreshToken);
+
         return refreshToken;
     }
 

@@ -44,6 +44,9 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED("TOKEN401", "Refresh Token 이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_INVALID("TOKEN401", "유효하지 않은 Refresh Token 입니다.", HttpStatus.UNAUTHORIZED),
 
+    // REDIS
+    REDIS_STORE_FAILED("REDIS500", "Redis 저장에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     // User (회원)
     USER_ALREADY_EXIST("USER400", "이미 회원가입된 유저입니다.", HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST("USER404", "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND),

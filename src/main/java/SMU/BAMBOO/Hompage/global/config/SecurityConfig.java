@@ -64,6 +64,10 @@ public class SecurityConfig {
                         .requestMatchers(allowedUrls).permitAll()
                         .anyRequest().authenticated());
 
+        // 예외 처리 설정
+        http.exceptionHandling(e -> e
+                .authenticationEntryPoint(customAuthenticationEntryPoint));
+
         // JWT 필터 추가
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

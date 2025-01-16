@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -58,7 +59,8 @@ public class MailService {
     }
 
     // 이메일 인증 코드 전송
-    public String sendVerificationCode(String email) {
+    @Async("taskExecutor")
+    public void sendVerificationCode(String email) {
         if (memberRepository.findByEmail(email).isPresent()) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
         }
@@ -76,7 +78,6 @@ public class MailService {
         );
 
         log.info("이메일 인증 코드 전송 성공: {}", email);
-        return authCode;
     }
 
     // 이메일 인증 코드 검증

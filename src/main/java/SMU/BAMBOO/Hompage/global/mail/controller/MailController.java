@@ -23,8 +23,8 @@ public class MailController {
     @Operation(summary = "인증코드 전송")
     public SuccessResponse<String> sendVerificationCode(String email) {
 
-        String authCode = mailService.sendVerificationCode(email);
-        return SuccessResponse.ok(authCode);
+        mailService.sendVerificationCode(email);
+        return SuccessResponse.ok(email + "에 인증코드를 전송하였습니다.");
     }
 
     @GetMapping("/verifications")

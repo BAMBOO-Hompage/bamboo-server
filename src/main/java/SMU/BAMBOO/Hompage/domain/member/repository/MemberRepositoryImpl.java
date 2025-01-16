@@ -32,6 +32,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberJpaRepository.findByEmail(email);
+    }
+
+    @Override
     public Member save(Member member) {
         return memberJpaRepository.save(member);
     }
@@ -40,4 +45,5 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findAll() {
         return memberJpaRepository.findAll();
     }
+
 }

@@ -12,9 +12,11 @@ import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -26,6 +28,13 @@ public class MemberServiceImpl implements MemberService {
     // 학번으로 중복 회원 검증
     private void validateDuplicateMember(String studentId) {
         if (memberRepository.findByStudentId(studentId).isPresent()) {
+            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
+        }
+    }
+
+    // 메일로 중복 회원 검증
+    private void validateDuplicateMemberByMail(String email) {
+        if (memberRepository.findByEmail(email).isPresent()) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
         }
     }

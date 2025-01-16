@@ -5,14 +5,18 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.mail.dto.response.EmailVerificationResponse;
 import SMU.BAMBOO.Hompage.global.redis.service.RedisService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -28,6 +32,7 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final RedisService redisService;
     private final MemberRepository memberRepository;
+    private final TemplateEngine templateEngine;
 
     @Value("${MAIL_AUTH_CODE_EXPIRATION}")
     private long authCodeExpirationMillis;
@@ -35,26 +40,32 @@ public class MailService {
     @Value("${MAIL_SENDER}")
     private String mailSenderAddress;
 
-    public void sendMail(String toEmail, String title, String text) {
+    public void sendMail(String toEmail, String title, String authCode) {
         try {
-            SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
+            MimeMessage emailForm = createEmailForm(toEmail, title, authCode);
             mailSender.send(emailForm);
             log.info("이메일 발송 성공: toEmail={}, title={}", toEmail, title);
-
-        } catch (MailException e) {
+        } catch (MessagingException | MailException e) {
             log.error("이메일 발송 실패: toEmail={}, title={}, error={}", toEmail, title, e.getMessage(), e);
             throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
         }
     }
 
-    private SimpleMailMessage createEmailForm(String toEmail, String title, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject(title);
-        message.setText(text);
-        message.setFrom(mailSenderAddress);
-        log.info("발신자 이메일 주소: {}", mailSenderAddress);
+    private MimeMessage createEmailForm(String toEmail, String title, String authCode) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+        // Thymeleaf 템플릿 처리
+        Context context = new Context();
+        context.setVariable("verificationCode", authCode);
+        String htmlContent = templateEngine.process("verification-email", context);
+
+        helper.setTo(toEmail);
+        helper.setSubject(title);
+        helper.setText(htmlContent, true);
+        helper.setFrom(mailSenderAddress);
+
+        log.info("발신자 이메일 주소: {}", mailSenderAddress);
         return message;
     }
 
@@ -68,7 +79,7 @@ public class MailService {
         String title = "BAMBOO 이메일 인증 번호";
         String authCode = generateAuthCode();
 
-        sendMail(email, title, "인증 코드: " + authCode);
+        sendMail(email, title, authCode);
 
         // Redis에 인증 코드 저장 (key: AuthCode + email, value: authCode)
         redisService.setValues(

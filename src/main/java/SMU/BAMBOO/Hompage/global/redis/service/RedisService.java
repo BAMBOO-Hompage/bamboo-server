@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.global.service;
+package SMU.BAMBOO.Hompage.global.redis.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

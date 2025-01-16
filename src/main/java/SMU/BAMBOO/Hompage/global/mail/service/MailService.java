@@ -4,7 +4,7 @@ import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.mail.dto.response.EmailVerificationResponse;
-import SMU.BAMBOO.Hompage.global.service.RedisService;
+import SMU.BAMBOO.Hompage.global.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

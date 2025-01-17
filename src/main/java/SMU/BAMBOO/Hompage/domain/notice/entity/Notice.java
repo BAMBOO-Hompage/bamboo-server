@@ -43,7 +43,7 @@ public class Notice extends BaseEntity {
     private int views = 0;
 
     @ElementCollection
-    @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
+    @CollectionTable(name = "notice_images", joinColumns = @JoinColumn(name = "notice_id"))
     @Column(name = "image_url")
     private List<String> image;
 

@@ -24,7 +24,13 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         LettuceConnectionFactory factory = new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
-        // factory.setPassword(redisProperties.getPassword());
+
+        // 비밀번호가 설정된 경우에만 실행
+        String password = redisProperties.getPassword();
+        if (password != null && !password.isEmpty()) {
+            factory.setPassword(password);
+        }
+
         return factory;
     }
 

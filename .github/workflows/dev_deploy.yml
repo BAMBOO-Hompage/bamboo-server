@@ -11,42 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # 저장소 코드 체크아웃
 
-      - name: Set up environment variables
-        env:
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_URL: ${{ secrets.DB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          MAIL_AUTH_CODE_EXPIRATION: ${{ secrets.MAIL_AUTH_CODE_EXPIRATION }}
-          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          ACCESS_EXPIRATION_TIME: ${{ secrets.ACCESS_EXPIRATION_TIME }}
-          REFRESH_EXPIRATION_TIME: ${{ secrets.REFRESH_EXPIRATION_TIME }}
-        run: |
-          echo "REDIS_HOST=${REDIS_HOST}" >> $GITHUB_ENV
-          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> $GITHUB_ENV
-          echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
-          echo "DB_URL=${DB_URL}" >> $GITHUB_ENV
-          echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
-          echo "MAIL_AUTH_CODE_EXPIRATION=${MAIL_AUTH_CODE_EXPIRATION}" >> $GITHUB_ENV
-          echo "MAIL_SENDER=${MAIL_SENDER}" >> $GITHUB_ENV
-          echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> $GITHUB_ENV
-          echo "ACCESS_EXPIRATION_TIME=${ACCESS_EXPIRATION_TIME}" >> $GITHUB_ENV
-          echo "REFRESH_EXPIRATION_TIME=${REFRESH_EXPIRATION_TIME}" >> $GITHUB_ENV
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make application.yml  # application.yml 파일 생성
-        run: |
-          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
-        shell: bash
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application.yml
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_AUTH_CODE_EXPIRATION: ${{ secrets.MAIL_AUTH_CODE_EXPIRATION }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ACCESS_EXPIRATION_TIME: ${{ secrets.ACCESS_EXPIRATION_TIME }}
+          REFRESH_EXPIRATION_TIME: ${{ secrets.REFRESH_EXPIRATION_TIME }}
 
       - name: Grant execute permission for gradlew  # gradlew 실행 권한 부여
         run: chmod +x gradlew

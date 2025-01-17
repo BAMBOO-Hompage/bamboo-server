@@ -19,18 +19,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
+    @Value("${REDIS_HOST}")
     private String redisHost;
 
-    @Value("${spring.data.redis.password}")
+    @Value("${REDIS_PASSWORD}")
     private String redisPassword;
-
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisHost, redisPort);
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisHost, 6379);
 
         // 비밀번호가 설정된 경우에만 실행
         if (redisPassword != null && !redisPassword.isEmpty()) {

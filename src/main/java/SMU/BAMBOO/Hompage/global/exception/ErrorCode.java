@@ -82,7 +82,10 @@ public enum ErrorCode {
 
     // TAG (태그)
     TAG_ALREADY_EXIST("TAG400", "이미 존재하는 태그입니다.", HttpStatus.BAD_REQUEST),
-    TAG_NOT_EXIST("TAG404", "존재하지 않는 태그입니다.", HttpStatus.NOT_FOUND);
+    TAG_NOT_EXIST("TAG404", "존재하지 않는 태그입니다.", HttpStatus.NOT_FOUND),
+
+    // UPLOAD (업로드)
+    UPLOAD_FAILED("UPLOAD001", "업로드 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
     private final String errorCode;

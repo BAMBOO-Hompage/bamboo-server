@@ -34,10 +34,10 @@ public class MailService {
     private final MemberRepository memberRepository;
     private final TemplateEngine templateEngine;
 
-    @Value("${MAIL_AUTH_CODE_EXPIRATION}")
+    @Value("${spring.mail.mail_auth_code_expiration}")
     private long authCodeExpirationMillis;
 
-    @Value("${MAIL_SENDER}")
+    @Value("${spring.mail.username}")
     private String mailSenderAddress;
 
     public void sendMail(String toEmail, String title, String authCode) {

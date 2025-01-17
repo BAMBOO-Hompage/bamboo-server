@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.global.redis.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -19,16 +19,22 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisConfig {
 
-    private final RedisProperties redisProperties;
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.password}")
+    private String redisPassword;
+
+    @Value("${redis.port}")
+    private int redisPort;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisHost, redisPort);
 
         // 비밀번호가 설정된 경우에만 실행
-        String password = redisProperties.getPassword();
-        if (password != null && !password.isEmpty()) {
-            factory.setPassword(password);
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            factory.setPassword(redisPassword);
         }
 
         return factory;
@@ -43,7 +49,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> edisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());

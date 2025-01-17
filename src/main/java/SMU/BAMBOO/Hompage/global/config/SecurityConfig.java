@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.global.config;
 
 import SMU.BAMBOO.Hompage.global.exception.CustomAuthenticationEntryPoint;
 import SMU.BAMBOO.Hompage.global.jwt.filter.JwtAuthenticationFilter;
-import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +30,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/api/members/login",
-            "/api/members/sign-up"
+            "/api/members/sign-up",
+            "/api/emails/**"
     };
 
     @Bean

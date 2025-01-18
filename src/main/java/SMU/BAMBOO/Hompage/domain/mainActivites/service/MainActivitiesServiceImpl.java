@@ -8,6 +8,7 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesReposito
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
 import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.List;
 public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     private final MainActivitiesRepository mainActivitiesRepository;
+    private final AwsS3Service awsS3Service;
 
     @Override
     public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images) {
@@ -51,7 +53,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     public Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(int year, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startDate"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<MainActivities> activitiesPage = mainActivitiesRepository.findByYear(year, pageable);
 
         return activitiesPage.map(MainActivitiesResponseDTO.ActivitiesByYearResponse::from);
@@ -62,6 +64,10 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     public void deleteMainActivity(Long id){
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));
+
+        List<String> imageUrls = activity.getImages();
+        imageUrls.forEach(awsS3Service::deleteFile);
+
         mainActivitiesRepository.deleteById(id);
     }
 }

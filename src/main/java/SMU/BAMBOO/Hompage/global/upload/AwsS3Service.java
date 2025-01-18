@@ -53,7 +53,11 @@ public class AwsS3Service {
 
     // 파일 삭제
     public void deleteFile(String fileName) {
-        s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        try {
+            s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        } catch (Exception e){
+            throw new CustomException(ErrorCode.DELETE_FAILED, "S3 이미지 삭제 중 오류가 발생했습니다.");
+        }
     }
 
 

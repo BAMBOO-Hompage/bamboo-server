@@ -76,4 +76,3 @@ jobs:
             nohup java -jar /home/$EC2_USERNAME/BambooServer.jar > app.log 2>&1 &  # 새 버전 애플리케이션 실행
           "
           rm -f private_key.pem  # 민감한 정보 삭제
-

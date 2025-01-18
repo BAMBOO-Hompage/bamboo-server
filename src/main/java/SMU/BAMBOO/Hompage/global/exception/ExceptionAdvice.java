@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.global.dto.response.ErrorResponse;
 import SMU.BAMBOO.Hompage.global.dto.response.result.ExceptionResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -70,7 +71,14 @@ public class ExceptionAdvice {
      * 커스텀 예외
      */
     @ExceptionHandler(CustomException.class)
-    public ErrorResponse<?> handleCustomException(CustomException e) {
-        return ErrorResponse.of(e.getErrorCode().getErrorCode(), e.getErrorCode().getMessage());
+    public ResponseEntity<ErrorResponse<?>> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        ErrorResponse<?> errorResponse = ErrorResponse.of(
+                errorCode.getErrorCode(),
+                errorCode.getMessage()
+        );
+
+        return new ResponseEntity<>(errorResponse, errorCode.getStatus());
     }
 }

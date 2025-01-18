@@ -32,7 +32,7 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
 
         if (header != null) {
             String token = header.split(" ")[1];
-            String studentId = jwtUtil.getStudendId(token);
+            String studentId = jwtUtil.getStudentId(token);
             return memberService.getMember(studentId);
         }
 

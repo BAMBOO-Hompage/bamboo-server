@@ -6,6 +6,8 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
 import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesRepository;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,5 +55,13 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
         Page<MainActivities> activitiesPage = mainActivitiesRepository.findByYear(year, pageable);
 
         return activitiesPage.map(MainActivitiesResponseDTO.ActivitiesByYearResponse::from);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMainActivity(Long id){
+        MainActivities activity = mainActivitiesRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));
+        mainActivitiesRepository.deleteById(id);
     }
 }

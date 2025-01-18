@@ -44,7 +44,6 @@ public class MainActivitiesRequestDTO {
         }
     }
 
-
     /** 주요활동 게시판 게시물 수정 Request DTO */
 
     /** 주요활동 게시판 게시물 삭제 Request DTO */

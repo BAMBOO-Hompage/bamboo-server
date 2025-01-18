@@ -10,4 +10,5 @@ import java.util.List;
 public interface MainActivitiesService {
     MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create dto, List<String> images);
     Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(int year, int page, int size);
+    void deleteMainActivity(Long id);
 }

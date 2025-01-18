@@ -69,8 +69,6 @@ public class MainActivitiesResponseDTO {
         }
     }
 
-    /** 주요활동 게시판 게시물 단일 조회 Response DTO */
-
 
 
 }

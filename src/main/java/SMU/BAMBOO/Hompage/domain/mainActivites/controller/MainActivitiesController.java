@@ -25,7 +25,6 @@ public class MainActivitiesController {
     private final MainActivitiesService mainActivitiesService;
     private final AwsS3Service awsS3Service;
 
-
     /** 주요활동 게시판 게시물 생성 API */
     @PostMapping(value = "/api/main-activities", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "주요활동 게시판 게시물 생성")
@@ -41,7 +40,7 @@ public class MainActivitiesController {
 
     /** 주요활동 게시판 게시물 연도별 조회 API */
     @GetMapping(value = "/api/main-activities/year")
-    @Operation(summary = "연도별 주요활동 게시판 조회", description = "연도별로 주요활동 목록 조회,")
+    @Operation(summary = "연도별 주요활동 게시판 조회")
     public SuccessResponse<Page<MainActivitiesResponseDTO.ActivitiesByYearResponse>> getMainActivitiesByYear(
             @RequestParam("year") int year,
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -50,10 +49,14 @@ public class MainActivitiesController {
         return SuccessResponse.ok(activities);
     }
 
-
-    /** 주요활동 게시판 게시물 단일 조회 (+ 조회수 증가) API */
-
     /** 주요활동 게시판 게시물 수정 API */
 
+
     /** 주요활동 게시판 게시물 삭제 API */
+    @DeleteMapping("/api/main-activities/{id}")
+    @Operation(summary = "주요활동 게시물 삭제")
+    public SuccessResponse<String> deleteMainActivity(@PathVariable Long id){
+        mainActivitiesService.deleteMainActivity(id);
+        return SuccessResponse.ok("주요 활동 게시판 게시물이 삭제되었습니다.");
+    }
 }

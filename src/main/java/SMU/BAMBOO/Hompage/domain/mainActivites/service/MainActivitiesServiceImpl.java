@@ -61,6 +61,19 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     @Transactional
+    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images){
+        MainActivities activity = mainActivitiesRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));
+
+        // 기존 이미지 삭제
+        List<String> oldImages = activity.getImages();
+        oldImages.forEach(awsS3Service::deleteFile);
+
+        activity.update(request, images);
+    }
+
+    @Override
+    @Transactional
     public void deleteMainActivity(Long id){
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));

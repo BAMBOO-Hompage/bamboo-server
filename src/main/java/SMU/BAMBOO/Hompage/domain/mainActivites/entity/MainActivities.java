@@ -63,5 +63,15 @@ public class MainActivities extends BaseEntity {
                 .build();
     }
 
+    public void update(MainActivitiesRequestDTO.Update request, List<String> newImages) {
+        this.title = request.getTitle();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.year = request.getYear();
+        this.images.clear(); // 기존 이미지 삭제
+        this.images.addAll(newImages); // 새 이미지 추가
+    }
+
+
 
 }

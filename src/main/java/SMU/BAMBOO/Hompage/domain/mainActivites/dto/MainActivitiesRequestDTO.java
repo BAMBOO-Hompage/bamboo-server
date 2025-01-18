@@ -34,18 +34,30 @@ public class MainActivitiesRequestDTO {
         @Schema(description = "이미지 파일 목록")
         private List<MultipartFile> images;
 
-        @Builder
-        public Create(String title, LocalDate startDate, LocalDate endDate, int year, List<MultipartFile> images) {
-            this.title = title;
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.year = year;
-            this.images = images;
-        }
     }
 
-    /** 주요활동 게시판 게시물 수정 Request DTO */
+    /**
+     * 주요활동 게시판 게시물 수정 Request DTO
+     */
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Schema(description = "주요활동 게시판 수정 요청 DTO")
+    public static class Update {
+        @Schema(description = "제목", example = "수정된 제목")
+        private String title;
 
-    /** 주요활동 게시판 게시물 삭제 Request DTO */
+        @Schema(description = "활동 시작 날짜", example = "2025-01-01")
+        private LocalDate startDate;
 
+        @Schema(description = "활동 종료 날짜", example = "2025-01-02")
+        private LocalDate endDate;
+
+        @Schema(description = "연도", example = "2025")
+        private int year;
+
+        @Schema(description = "이미지 파일 목록")
+        private List<MultipartFile> images;
+
+    }
 }

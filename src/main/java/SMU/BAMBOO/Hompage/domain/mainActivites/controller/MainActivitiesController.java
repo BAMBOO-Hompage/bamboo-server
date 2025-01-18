@@ -50,6 +50,18 @@ public class MainActivitiesController {
     }
 
     /** 주요활동 게시판 게시물 수정 API */
+    @PatchMapping("/api/main-activities/{id}")
+    @Operation(summary = "주요활동 게시물 수정")
+    public SuccessResponse<String> updateMainActivity(
+            @PathVariable Long id,
+            @Valid @ModelAttribute MainActivitiesRequestDTO.Update request){
+        if (request.getImages() == null) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST, "이미지가 null입니다.");
+        }
+        List<String> images = awsS3Service.uploadFile(request.getImages());
+        mainActivitiesService.updateMainActivity(id, request, images);
+        return SuccessResponse.ok("주요 활동 게시판 게시물이 수정되었습니다.");
+    }
 
 
     /** 주요활동 게시판 게시물 삭제 API */

@@ -8,7 +8,7 @@ public class CustomException extends RuntimeException {
     private Exception originException;
     private final ErrorCode errorCode;
 
-    public CustomException(ErrorCode errorCode, String requestIsNullOrInvalid) {
+    public CustomException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 

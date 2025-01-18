@@ -17,8 +17,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set Yaml
-        uses: microsoft/variable-substitution@v1
+      - name: Substitute environment variables in application.yml
+        run: |
+          envsubst < ./src/main/resources/application.yml > ./src/main/resources/application_temp.yml
+          mv ./src/main/resources/application_temp.yml ./src/main/resources/application.yml
         env:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -31,8 +33,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           ACCESS_EXPIRATION_TIME: ${{ secrets.ACCESS_EXPIRATION_TIME }}
           REFRESH_EXPIRATION_TIME: ${{ secrets.REFRESH_EXPIRATION_TIME }}
-        with:
-          files: ./src/main/resources/application.yml
+
 
       - name: Grant execute permission for gradlew  # gradlew 실행 권한 부여
         run: chmod +x gradlew

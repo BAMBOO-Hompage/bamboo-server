@@ -8,14 +8,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api")
 @Tag(name = "테스트")
 public class TestController {
 
-    @GetMapping
-    @Operation(summary = "테스트 API")
+    @GetMapping("/test")
+    @Operation(summary = "인증X 테스트 API")
     public SuccessResponse<String> DoTest() {
         String result = "Success Test";
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping("/test-fail")
+    @Operation(summary = "인증 필요한 테스트 API")
+    public SuccessResponse<String> DoFailTest() {
+        String result = "Test";
         return SuccessResponse.ok(result);
     }
 }

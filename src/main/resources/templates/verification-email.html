@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 인증</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; margin: 0; padding: 0;">
+<div style="max-width: 600px; margin: 50px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">
+    <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center;">
+        <h1 style="margin: 0;">이메일 인증</h1>
+    </div>
+    <div style="padding: 30px; color: #333333;">
+        <p>안녕하세요!</p>
+        <p>아래 코드를 입력하여 이메일 인증을 완료하세요:</p>
+        <div style="display: inline-block; font-size: 24px; font-weight: bold; color: #4CAF50; background: #f1f1f1; padding: 10px 20px; border-radius: 4px; margin-top: 20px;" th:text="${verificationCode}">
+            ${verificationCode}
+        </div>
+    </div>
+    <div style="text-align: center; font-size: 12px; color: #888888; padding: 20px; border-top: 1px solid #dddddd;">
+        <p>이 메일은 BAMBOO 시스템에 의해 자동 생성되었습니다.</p>
+        <p>문의사항이 있으시면 smubamboo2025@gmail.com으로 연락주세요.</p>
+    </div>
+</div>
+</body>
+</html>

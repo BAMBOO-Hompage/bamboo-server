@@ -41,7 +41,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
                 .studentId("202312345")
                 .major("Computer Science")
                 .phone("01012345678")
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
 
         MainActivities mainActivities = MainActivities.from(request, hardcodedMember, images);
@@ -63,7 +63,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     @Transactional
     public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images){
         MainActivities activity = mainActivitiesRepository.findById(id)
-                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
 
         // 기존 이미지 삭제
         List<String> oldImages = activity.getImages();
@@ -76,7 +76,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     @Transactional
     public void deleteMainActivity(Long id){
         MainActivities activity = mainActivitiesRepository.findById(id)
-                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST, "해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
 
         List<String> imageUrls = activity.getImages();
         imageUrls.forEach(awsS3Service::deleteFile);

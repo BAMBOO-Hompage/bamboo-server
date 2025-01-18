@@ -29,11 +29,11 @@ public class AwsS3Service {
     private final AmazonS3 s3Client;
 
     // 여러개의 파일 업로드
-    public List<String> uploadFile(List<MultipartFile> multipartFile) {
+    public List<String> uploadFile(String folderName, List<MultipartFile> multipartFile) {
         List<String> fileNameList = new ArrayList<>();
 
         multipartFile.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
+            String fileName = createFileName(folderName, file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
@@ -42,10 +42,11 @@ public class AwsS3Service {
                 s3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
             } catch(IOException e) {
-                throw new CustomException(ErrorCode.UPLOAD_FAILED, "파일 업로드 중 오류가 발생했습니다.");
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
             }
 
-            fileNameList.add(fileName);
+            String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
+            fileNameList.add(fileUrl);
         });
 
         return fileNameList;
@@ -56,20 +57,21 @@ public class AwsS3Service {
         try {
             s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
         } catch (Exception e){
-            throw new CustomException(ErrorCode.DELETE_FAILED, "S3 이미지 삭제 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.DELETE_FAILED);
         }
     }
 
 
     // 파일명 중복 방지 (UUID)
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+    private String createFileName(String folderName, String fileName) {
+        String uniqueFileName = UUID.randomUUID().toString() + getFileExtension(fileName);
+        return folderName + "/" + uniqueFileName;
     }
 
     // 파일 유효성 검사
     private String getFileExtension(String fileName) {
         if (fileName.length() == 0) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST, "파일 이름이 비어 있습니다.");
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
         ArrayList<String> fileValidate = new ArrayList<>();
         fileValidate.add(".jpg");
@@ -80,7 +82,7 @@ public class AwsS3Service {
         fileValidate.add(".PNG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST, "지원되지 않는 파일 형식입니다.");
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
         return fileName.substring(fileName.lastIndexOf("."));
     }

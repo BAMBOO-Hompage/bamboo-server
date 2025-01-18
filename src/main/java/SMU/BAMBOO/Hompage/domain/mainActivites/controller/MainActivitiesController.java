@@ -31,9 +31,9 @@ public class MainActivitiesController {
     public SuccessResponse<MainActivitiesResponseDTO.Create> createMainActivities(
             @Valid @ModelAttribute MainActivitiesRequestDTO.Create request) {
         if (request.getImages() == null) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST, "이미지가 null입니다.");
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
-        List<String> images = awsS3Service.uploadFile(request.getImages());
+        List<String> images = awsS3Service.uploadFile("main-activities", request.getImages());
         MainActivitiesResponseDTO.Create response = mainActivitiesService.create(request, images);
         return SuccessResponse.ok(response);
     }
@@ -56,9 +56,9 @@ public class MainActivitiesController {
             @PathVariable Long id,
             @Valid @ModelAttribute MainActivitiesRequestDTO.Update request){
         if (request.getImages() == null) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST, "이미지가 null입니다.");
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
-        List<String> images = awsS3Service.uploadFile(request.getImages());
+        List<String> images = awsS3Service.uploadFile("main-activities", request.getImages());
         mainActivitiesService.updateMainActivity(id, request, images);
         return SuccessResponse.ok("주요 활동 게시판 게시물이 수정되었습니다.");
     }

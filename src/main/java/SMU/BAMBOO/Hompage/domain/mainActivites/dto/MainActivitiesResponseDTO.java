@@ -42,9 +42,35 @@ public class MainActivitiesResponseDTO {
         }
     }
 
+    /** 주요활동 게시판 게시물 연도별 조회 API */
+    @Getter
+    @Builder
+    @Schema(description = "주요활동 게시판 연도별 조회 응답 DTO")
+    public static class ActivitiesByYearResponse {
+
+        private final Long mainActivitiesId;
+        private final String title;
+        private final LocalDate startDate;
+        private final LocalDate endDate;
+        private final int year;
+        private final int views;
+        private final List<String> images;
+
+        public static ActivitiesByYearResponse from(MainActivities mainActivities) {
+            return ActivitiesByYearResponse.builder()
+                    .mainActivitiesId(mainActivities.getMainActivitiesId())
+                    .title(mainActivities.getTitle())
+                    .startDate(mainActivities.getStartDate())
+                    .endDate(mainActivities.getEndDate())
+                    .year(mainActivities.getYear())
+                    .views(mainActivities.getViews())
+                    .images(mainActivities.getImages())
+                    .build();
+        }
+    }
 
     /** 주요활동 게시판 게시물 단일 조회 Response DTO */
 
-    /** 주요활동 게시판 게시물 전체 조회 Response DTO */
+
 
 }

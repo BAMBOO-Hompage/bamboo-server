@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +39,19 @@ public class MainActivitiesController {
         return SuccessResponse.ok(response);
     }
 
+    /** 주요활동 게시판 게시물 연도별 조회 API */
+    @GetMapping(value = "/api/main-activities/year")
+    @Operation(summary = "연도별 주요활동 게시판 조회", description = "연도별로 주요활동 목록 조회,")
+    public SuccessResponse<Page<MainActivitiesResponseDTO.ActivitiesByYearResponse>> getMainActivitiesByYear(
+            @RequestParam("year") int year,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
+        Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> activities = mainActivitiesService.getMainActivitiesByYear(year, page - 1, size);
+        return SuccessResponse.ok(activities);
+    }
+
 
     /** 주요활동 게시판 게시물 단일 조회 (+ 조회수 증가) API */
-
-    /** 주요활동 게시판 게시물 전체 조회 API */
 
     /** 주요활동 게시판 게시물 수정 API */
 

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,6 +32,10 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images) {
+
+        if (images == null) {
+            images = new ArrayList<>();
+        }
 
         // Hardcoded member
         Member hardcodedMember = Member.builder()
@@ -66,7 +71,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
 
         // 기존 이미지 삭제
-        List<String> oldImages = activity.getImages();
+        List<String> oldImages = activity.getImages() != null ? activity.getImages() : List.of();
         oldImages.forEach(awsS3Service::deleteFile);
 
         activity.update(request, images);

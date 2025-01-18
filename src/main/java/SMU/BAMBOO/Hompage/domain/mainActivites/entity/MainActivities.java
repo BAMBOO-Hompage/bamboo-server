@@ -59,7 +59,7 @@ public class MainActivities extends BaseEntity {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .year(request.getYear())
-                .images(images)
+                .images(images != null ? images : new ArrayList<>())
                 .build();
     }
 
@@ -69,7 +69,9 @@ public class MainActivities extends BaseEntity {
         this.endDate = request.getEndDate();
         this.year = request.getYear();
         this.images.clear(); // 기존 이미지 삭제
-        this.images.addAll(newImages); // 새 이미지 추가
+        if (newImages != null) {
+            this.images.addAll(newImages); // 새 이미지 추가
+        }
     }
 
 

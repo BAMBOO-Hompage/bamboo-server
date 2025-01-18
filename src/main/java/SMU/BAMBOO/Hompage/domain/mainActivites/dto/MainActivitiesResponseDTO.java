@@ -37,7 +37,7 @@ public class MainActivitiesResponseDTO {
                     .endDate(mainActivities.getEndDate())
                     .year(mainActivities.getYear())
                     .views(mainActivities.getViews())
-                    .images(mainActivities.getImages())
+                    .images(mainActivities.getImages() != null ? mainActivities.getImages() : List.of()) // null일 경우 빈 리스트 반환
                     .build();
         }
     }
@@ -64,7 +64,7 @@ public class MainActivitiesResponseDTO {
                     .endDate(mainActivities.getEndDate())
                     .year(mainActivities.getYear())
                     .views(mainActivities.getViews())
-                    .images(mainActivities.getImages())
+                    .images(mainActivities.getImages() != null ? mainActivities.getImages() : List.of()) // null일 경우 빈 리스트 반환
                     .build();
         }
     }

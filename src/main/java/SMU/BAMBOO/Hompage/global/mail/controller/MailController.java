@@ -27,7 +27,7 @@ public class MailController {
         return SuccessResponse.ok(email + "에 인증코드를 전송하였습니다.");
     }
 
-    @GetMapping("/verifications")
+    @PostMapping("/verifications")
     @Operation(summary = "인증 코드 검증")
     public SuccessResponse<EmailVerificationResponse> verifyEmail(VerifyEmailDto request) {
 

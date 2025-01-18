@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.global.jwt.util;
 
+import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
@@ -18,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -29,18 +32,21 @@ public class JwtUtil {
     private final Long accessExpMs;
     private final Long refreshExpMs;
     private final StringRedisTemplate redisTemplate;
+    private final MemberRepository memberRepository;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.token.access-expiration-time}") Long access,
             @Value("${jwt.token.refresh-expiration-time}") Long refresh,
-            StringRedisTemplate redisTemplate
+            StringRedisTemplate redisTemplate,
+            MemberRepository memberRepository
     ) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
         this.accessExpMs = access;
         this.refreshExpMs = refresh;
         this.redisTemplate = redisTemplate;
+        this.memberRepository = memberRepository;
     }
 
     // Redis 에 Refresh Token 저장
@@ -132,11 +138,15 @@ public class JwtUtil {
 
     // Access Token 생성 로직
     public String createAccessToken(String studentId) {
+        Member member = memberRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+
         return Jwts.builder()
                 .header()
                 .add("typ", "JWT")
                 .and()
                 .subject(studentId)
+                .claim("role", member.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessExpMs))
                 .signWith(secretKey)

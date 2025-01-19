@@ -1,5 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.enums;
 
 public enum SubjectName {
-    PYTHON, DATA, ML
+    PY, DA, ML, DL
 }

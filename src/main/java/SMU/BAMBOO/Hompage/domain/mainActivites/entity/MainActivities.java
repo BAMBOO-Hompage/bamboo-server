@@ -1,16 +1,21 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.entity;
 
+import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "main_activities")
-@Builder
+@Builder(toBuilder = true)
+// 위 항목은 하드코딩을 위한 항목이니 삭제!
+// @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -28,8 +33,11 @@ public class MainActivities extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = true)
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private int year;
@@ -41,8 +49,32 @@ public class MainActivities extends BaseEntity {
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = true)
     private List<String> images = new ArrayList<>();
+
+    public static MainActivities from(MainActivitiesRequestDTO.Create request, Member member, List<String> images) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        return MainActivities.builder()
+                .member(member)
+                .title(request.getTitle())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .year(request.getYear())
+                .images(images)
+                .build();
+    }
+
+    public void update(MainActivitiesRequestDTO.Update request, List<String> newImages) {
+        this.title = request.getTitle();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.year = request.getYear();
+        this.images.clear(); // 기존 이미지 삭제
+        this.images.addAll(newImages); // 새 이미지 추가
+    }
+
 
 
 }

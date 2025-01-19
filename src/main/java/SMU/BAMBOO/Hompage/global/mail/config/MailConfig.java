@@ -2,6 +2,7 @@ package SMU.BAMBOO.Hompage.global.mail.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -10,6 +11,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 public class MailConfig {
 
     @Bean
+    @Primary
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
         resolver.setPrefix("classpath:/templates/"); // 템플릿 경로

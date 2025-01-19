@@ -13,8 +13,11 @@ import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -24,6 +27,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RedisTemplate<String, String> redisTemplate;
 
     // 학번으로 중복 회원 검증
     private void validateDuplicateMember(String studentId) {
@@ -70,5 +74,28 @@ public class MemberServiceImpl implements MemberService {
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    }
+
+    public String logout(String accessToken) {
+
+        // Access Token 검증
+        if (accessToken == null || !jwtUtil.validateToken(accessToken)) {
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
+        }
+
+        // Access Token 에서 studentId 추출
+        String studendId = jwtUtil.getStudentId(accessToken);
+
+        // Redis 에서 Refresh Token 삭제
+        String key = "refresh_token:" + studendId;
+        if (redisTemplate.hasKey(key)) {
+            redisTemplate.delete(key);
+        }
+
+        // Access Token 블랙리스트 처리
+        long expiration = jwtUtil.getExpiration(accessToken);
+        redisTemplate.opsForValue().set("blacklist:" + accessToken, "true", expiration, TimeUnit.MILLISECONDS);
+
+        return "로그아웃 성공";
     }
 }

@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,14 +88,19 @@ public class JwtUtil {
         }
     }
 
-    // Redis에서 Refresh Token 조회
+    // Redis 에서 Refresh Token 조회
     public String getRefreshTokenFromRedis(String studentId) {
         return redisTemplate.opsForValue().get(getRefreshTokenKey(studentId));
     }
 
-    // Redis에서 Refresh Token 삭제
+    // Redis 에서 Refresh Token 삭제
     public void deleteRefreshToken(String studentId) {
         redisTemplate.delete(getRefreshTokenKey(studentId));
+    }
+
+    // Redis 조회용 키 생성
+    private String getRefreshTokenKey(String studentId) {
+        return "refresh_token:" + studentId;
     }
 
     // 사용자 Student ID 추출
@@ -125,11 +131,6 @@ public class JwtUtil {
         }
     }
 
-    // Redis 키 생성
-    private String getRefreshTokenKey(String studentId) {
-        return "refresh_token:" + studentId;
-    }
-
     // Request에서 Access Token 추출
     public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -140,14 +141,22 @@ public class JwtUtil {
     }
 
     // 토큰 유효성 검증
-    public void validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
-            Jwts.parser()
+            long seconds = 3 * 60;
+            boolean isExpired = Jwts
+                    .parser()
+                    .clockSkewSeconds(seconds)
                     .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(token);
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration()
+                    .before(new Date());
+
+            return !isExpired;
         } catch (JwtException e) {
-            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
+            return false;
         }
     }
 
@@ -156,5 +165,33 @@ public class JwtUtil {
         String studentId = getStudentId(refreshToken);
         String role = getRole(refreshToken);
         return createAccessToken(studentId, role);
+    }
+
+    // Access Token 생성 로직
+    public String createAccessToken(String studentId) {
+        return Jwts.builder()
+                .header()
+                .add("typ", "JWT")
+                .and()
+                .subject(studentId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + accessExpMs))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public long getExpiration(String token) {
+        try {
+            return Jwts
+                    .parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration()
+                    .getTime(); // 만료 시간을 밀리초로 반환
+        } catch (JwtException e) {
+            throw new CustomException(ErrorCode.TOKEN_INVALID);
+        }
     }
 }

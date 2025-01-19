@@ -12,6 +12,6 @@ public interface MemberService {
 
     MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder);
     LoginResponse login(MemberLoginDto request, HttpServletResponse response);
-
     Member getMember(String studentId);
+    String logout(String accessToken);
 }

@@ -49,17 +49,20 @@ public class MainActivities extends BaseEntity {
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = true)
     private List<String> images = new ArrayList<>();
 
     public static MainActivities from(MainActivitiesRequestDTO.Create request, Member member, List<String> images) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
         return MainActivities.builder()
                 .member(member)
                 .title(request.getTitle())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .year(request.getYear())
-                .images(images != null ? images : new ArrayList<>())
+                .images(images)
                 .build();
     }
 
@@ -69,9 +72,7 @@ public class MainActivities extends BaseEntity {
         this.endDate = request.getEndDate();
         this.year = request.getYear();
         this.images.clear(); // 기존 이미지 삭제
-        if (newImages != null) {
-            this.images.addAll(newImages); // 새 이미지 추가
-        }
+        this.images.addAll(newImages); // 새 이미지 추가
     }
 
 

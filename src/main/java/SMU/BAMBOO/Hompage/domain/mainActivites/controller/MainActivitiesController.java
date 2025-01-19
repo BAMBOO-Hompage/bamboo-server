@@ -31,11 +31,13 @@ public class MainActivitiesController {
     @Operation(summary = "주요활동 게시판 게시물 생성 (이미지 업로드는 Postman에서 테스트해주세요)")
     public SuccessResponse<MainActivitiesResponseDTO.Create> createMainActivities(
             @Valid @ModelAttribute MainActivitiesRequestDTO.Create request) {
+
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
             images = awsS3Service.uploadFile("main-activities", request.getImages());
         }
         MainActivitiesResponseDTO.Create response = mainActivitiesService.create(request, images);
+
         return SuccessResponse.ok(response);
     }
 
@@ -46,7 +48,9 @@ public class MainActivitiesController {
             @RequestParam("year") int year,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
+
         Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> activities = mainActivitiesService.getMainActivitiesByYear(year, page - 1, size);
+
         return SuccessResponse.ok(activities);
     }
 
@@ -56,11 +60,13 @@ public class MainActivitiesController {
     public SuccessResponse<String> updateMainActivity(
             @PathVariable Long id,
             @Valid @ModelAttribute MainActivitiesRequestDTO.Update request) {
+
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
             images = awsS3Service.uploadFile("main-activities", request.getImages());
         }
         mainActivitiesService.updateMainActivity(id, request, images);
+
         return SuccessResponse.ok("주요 활동 게시판 게시물이 수정되었습니다.");
     }
 
@@ -69,7 +75,9 @@ public class MainActivitiesController {
     @DeleteMapping("/api/main-activities/{id}")
     @Operation(summary = "주요활동 게시물 삭제")
     public SuccessResponse<String> deleteMainActivity(@PathVariable Long id){
+
         mainActivitiesService.deleteMainActivity(id);
+
         return SuccessResponse.ok("주요 활동 게시판 게시물이 삭제되었습니다.");
     }
 }

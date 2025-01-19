@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Role role = Role.valueOf(roleString);
 
         CustomUserDetails userDetails = new CustomUserDetails(
-                jwtUtil.getStudendId(accessToken),
+                jwtUtil.getStudentId(accessToken),
                 null,
                 role
         );

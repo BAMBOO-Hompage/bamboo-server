@@ -5,7 +5,6 @@ import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,144 +31,130 @@ public class JwtUtil {
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token.access-expiration-time}") Long access,
-            @Value("${jwt.token.refresh-expiration-time}") Long refresh,
+            @Value("${jwt.token.access-expiration-time}") Long accessExpMs,
+            @Value("${jwt.token.refresh-expiration-time}") Long refreshExpMs,
             StringRedisTemplate redisTemplate
     ) {
-        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.accessExpMs = access;
-        this.refreshExpMs = refresh;
+        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        this.accessExpMs = accessExpMs;
+        this.refreshExpMs = refreshExpMs;
         this.redisTemplate = redisTemplate;
     }
 
-    // Redis 에 Refresh Token 저장
-    public void storeRefreshToken(String studentId, String refreshToken) {
-        String key = getRefreshTokenKey(studentId);
-        try {
-            redisTemplate.opsForValue().set(key, refreshToken, refreshExpMs, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.REDIS_STORE_FAILED);
-        }
+    // Access Token 생성
+    public String createAccessToken(String studentId, String role) {
+        return createJwtToken(studentId, role, accessExpMs);
+    }
+
+    // Refresh Token 생성
+    public String createRefreshToken(CustomUserDetails customUserDetails) {
+        String authorities = customUserDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        String refreshToken = createJwtToken(customUserDetails.getUsername(), authorities, refreshExpMs);
+
+        storeRefreshToken(customUserDetails.getUsername(), refreshToken);
+        return refreshToken;
     }
 
 
-    // Redis 에서 Refresh Token 조회
-    public String getRefreshTokenFromRedis(String studentId) {
-        return redisTemplate.opsForValue().get(getRefreshTokenKey(studentId));
-    }
+    // JWT 토큰 생성 공통 로직
+    private String createJwtToken(String subject, String role, Long expirationMs) {
+        Instant issuedAt = Instant.now();
+        Instant expiration = issuedAt.plusMillis(expirationMs);
 
-    // Redis 에서 토큰 조회용 키 생성
-    private String getRefreshTokenKey(String studentId) {
-        return "refresh_token:" + studentId;
-    }
-
-    // Redis 에서 토큰 삭제 - 로그아웃할 때 사용
-    public void deleteRefreshToken(String studentId) {
-        redisTemplate.delete(getRefreshTokenKey(studentId));
-    }
-
-    // 사용자 StudentID 추출
-    public String getStudendId(String token) throws SignatureException {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
-    }
-
-    // JWT 토큰을 입력으로 받아 토큰의 claim 에서 사용자 권한 추출
-    public String getRole(String token) throws SignatureException{
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("role", String.class);
-    }
-
-    // Request에서 Access Token 추출
-    public String resolveAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
-    }
-
-    // 토큰 유효성 검증
-    public void validateToken(String token) {
-        try {
-            long seconds = 3 * 60;
-            boolean isExpired = Jwts
-                    .parser()
-                    .clockSkewSeconds(seconds)
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload()
-                    .getExpiration()
-                    .before(new Date());
-            if (isExpired) {
-                throw new CustomException(ErrorCode.ACCESS_TOKEN_EXPIRED);
-            }
-        } catch (JwtException e) {
-            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
-        }
-    }
-
-    // 새로운 Access Token 생성
-    public String reissueToken(String refreshToken) {
-        // Refresh Token에서 사용자 ID 추출
-        String studentId = getStudendId(refreshToken);
-
-        // 새로운 Access Token 생성
-        return createAccessToken(studentId);
-    }
-
-    // Access Token 생성 로직
-    public String createAccessToken(String studentId) {
         return Jwts.builder()
                 .header()
                 .add("typ", "JWT")
                 .and()
-                .subject(studentId)
+                .subject(subject)
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessExpMs))
                 .signWith(secretKey)
                 .compact();
     }
 
-    // Refresh Token 생성
-    public String createRefreshToken(CustomUserDetails customUserDetails) {
-        Instant expiration = Instant.now().plusMillis(refreshExpMs);
-        String refreshToken = tokenProvider(customUserDetails, expiration);
-
-        storeRefreshToken(customUserDetails.getUsername(), refreshToken);
-
-        return refreshToken;
+    // Redis에 Refresh Token 저장
+    public void storeRefreshToken(String studentId, String refreshToken) {
+        String key = getRefreshTokenKey(studentId);
+        try {
+            redisTemplate.opsForValue().set(key, refreshToken, refreshExpMs, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            log.error("Failed to store Refresh Token in Redis", e);
+            throw new CustomException(ErrorCode.REDIS_STORE_FAILED);
+        }
     }
 
-    // CustomUserDetails 기반 토큰 생성
-    private String tokenProvider(CustomUserDetails customUserDetails, Instant expiration) {
-        Instant issuedAt = Instant.now();
+    // Redis에서 Refresh Token 조회
+    public String getRefreshTokenFromRedis(String studentId) {
+        return redisTemplate.opsForValue().get(getRefreshTokenKey(studentId));
+    }
 
-        String authorities = customUserDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    // Redis에서 Refresh Token 삭제
+    public void deleteRefreshToken(String studentId) {
+        redisTemplate.delete(getRefreshTokenKey(studentId));
+    }
 
-        return Jwts.builder()
-                .header()
-                .add("typ", "JWT")
-                .and()
-                .subject(customUserDetails.getUsername())
-                .claim("role", authorities)
-                .issuedAt(Date.from(issuedAt))
-                .expiration(Date.from(expiration))
-                .signWith(secretKey)
-                .compact();
+    // 사용자 Student ID 추출
+    public String getStudentId(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
+        } catch (JwtException e) {
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
+        }
+    }
+
+    // JWT에서 Role 추출
+    public String getRole(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("role", String.class);
+        } catch (JwtException e) {
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
+        }
+    }
+
+    // Redis 키 생성
+    private String getRefreshTokenKey(String studentId) {
+        return "refresh_token:" + studentId;
+    }
+
+    // Request에서 Access Token 추출
+    public String resolveAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    // 토큰 유효성 검증
+    public void validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+        } catch (JwtException e) {
+            throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
+        }
+    }
+
+    // Refresh Token으로 새로운 Access Token 재발급
+    public String reissueToken(String refreshToken) {
+        String studentId = getStudentId(refreshToken);
+        String role = getRole(refreshToken);
+        return createAccessToken(studentId, role);
     }
 }

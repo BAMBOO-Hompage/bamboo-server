@@ -14,7 +14,7 @@ public class AuthService {
 
     public String reissueToken(String accessToken, String refreshToken) {
         // Access Token 에서 사용자 ID 추출 (예시로 Refresh Token 사용)
-        String studentId = jwtUtil.getStudendId(refreshToken);
+        String studentId = jwtUtil.getStudentId(refreshToken);
 
         // Redis 에서 Refresh Token 확인
         String storedRefreshToken = jwtUtil.getRefreshTokenFromRedis(studentId);

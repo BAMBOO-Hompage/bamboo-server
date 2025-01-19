@@ -58,12 +58,17 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);
         }
 
-        String accessToken = jwtUtil.createAccessToken(request.studentId());
+        String accessToken = jwtUtil.createAccessToken(request.studentId(), member.getRole().name());
         String refreshToken = jwtUtil.createRefreshToken(new CustomUserDetails(request.studentId(), null, member.getRole()));
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh-Token", refreshToken);
 
         return LoginResponse.from(member);
+    }
+
+    public Member getMember(String studentId) {
+        return memberRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 }

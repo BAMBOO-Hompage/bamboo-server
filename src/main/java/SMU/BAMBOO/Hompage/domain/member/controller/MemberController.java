@@ -8,8 +8,10 @@ import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.service.MemberService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
+import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +25,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final BCryptPasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/member")
     public SuccessResponse<?> getMember(@CurrentMember Member member) {
@@ -38,14 +41,22 @@ public class MemberController {
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
     public SuccessResponse<MemberResponse> signUp(@RequestBody MemberSignUpDto request) {
-        MemberResponse response = memberService.signUp(request, encoder);
-        return SuccessResponse.ok(response);
+        MemberResponse result = memberService.signUp(request, encoder);
+        return SuccessResponse.ok(result);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
     public SuccessResponse<LoginResponse> login(@RequestBody MemberLoginDto request, HttpServletResponse response) {
         LoginResponse result = memberService.login(request, response);
+        return SuccessResponse.ok(result);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
+    public SuccessResponse<String> logout(HttpServletRequest request) {
+        String accessToken = jwtUtil.resolveAccessToken(request);
+        String result = memberService.logout(accessToken);
         return SuccessResponse.ok(result);
     }
 }

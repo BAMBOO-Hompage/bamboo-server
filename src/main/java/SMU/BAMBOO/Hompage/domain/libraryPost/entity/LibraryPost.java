@@ -46,25 +46,18 @@ public class LibraryPost extends BaseEntity {
     @OneToMany(mappedBy = "libraryPost", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
 
-    public static LibraryPost from(LibraryPostRequestDTO.Create request, Member member) {
-        return LibraryPost.builder()
-                .member(member)
-                .speaker(request.speaker())
-                .paperName(request.paperName())
-                .year(request.year())
-                .topic(request.topic())
-                .link(request.link())
-                // .libraryPostTags(request.libraryPostTags())
-                .build();
-    }
-
     public void update(LibraryPostRequestDTO.Update request) {
         this.speaker = request.speaker();
         this.paperName = request.paperName();
         this.year = request.year();
         this.topic = request.topic();
         this.link = request.link();
-        // this.libraryPostTags = request.libraryPostTags();
+        this.libraryPostTags = request.libraryPostTags();
     }
 
+    /** 연관관계 편의 메서드 */
+    public void addLibraryPostTag(LibraryPostTag libraryPostTag) {
+        this.libraryPostTags.add(libraryPostTag);
+        libraryPostTag.associateLibraryPost(this);
+    }
 }

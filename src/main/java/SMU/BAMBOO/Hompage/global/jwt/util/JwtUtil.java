@@ -71,8 +71,8 @@ public class JwtUtil {
                 .and()
                 .subject(subject)
                 .claim("role", role)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + accessExpMs))
+                .issuedAt(Date.from(issuedAt))
+                .expiration(Date.from(expiration))
                 .signWith(secretKey)
                 .compact();
     }

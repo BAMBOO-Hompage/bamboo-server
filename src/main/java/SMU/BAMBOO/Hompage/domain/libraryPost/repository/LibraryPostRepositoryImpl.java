@@ -19,13 +19,18 @@ public class LibraryPostRepositoryImpl implements LibraryPostRepository {
     }
 
     @Override
-    public Optional<LibraryPost> findByName(String name) {
-        return libraryPostJpaRepository.findByName(name);
+    public Optional<LibraryPost> findByPaperName(String name) {
+        return libraryPostJpaRepository.findByPaperName(name);
     }
 
     @Override
     public LibraryPost save(LibraryPost libraryPost) {
         return libraryPostJpaRepository.save(libraryPost);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        libraryPostJpaRepository.deleteById(id);
     }
 
     @Override

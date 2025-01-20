@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface LibraryPostJpaRepository extends JpaRepository<LibraryPost, Long> {
 
-    Optional<LibraryPost> findByName(String name);
+    Optional<LibraryPost> findByPaperName(String paperName);
 }

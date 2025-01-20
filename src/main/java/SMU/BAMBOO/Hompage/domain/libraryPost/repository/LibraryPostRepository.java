@@ -9,9 +9,11 @@ public interface LibraryPostRepository {
 
     Optional<LibraryPost> findById(Long id);
 
-    Optional<LibraryPost> findByName(String name);
+    Optional<LibraryPost> findByPaperName(String paperName);
 
     LibraryPost save(LibraryPost libraryPost);
 
     List<LibraryPost> findAll();
+
+    void deleteById(Long id);
 }

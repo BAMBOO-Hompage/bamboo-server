@@ -27,17 +27,6 @@ public class MemberController {
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
-    @GetMapping("/member")
-    public SuccessResponse<?> getMember(@CurrentMember Member member) {
-        if (member == null) {
-            return SuccessResponse.ok("실패");
-        }
-
-        // Member 정보 반환
-        MemberResponse response = MemberResponse.from(member);
-        return SuccessResponse.ok(response);
-    }
-
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
     public SuccessResponse<MemberResponse> signUp(@RequestBody MemberSignUpDto request) {

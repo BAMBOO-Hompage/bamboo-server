@@ -34,10 +34,4 @@ public class Tag extends BaseEntity {
                 .name(request.name())
                 .build();
     }
-
-    /** 연관관계 편의 메서드 */
-    public void addLibraryPostTag(LibraryPostTag libraryPostTag) {
-        this.libraryPostTags.add(libraryPostTag);
-        libraryPostTag.associateTag(this);
-    }
 }

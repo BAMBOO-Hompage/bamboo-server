@@ -35,11 +35,4 @@ public class LibraryPostTag extends BaseEntity {
             libraryPost.getLibraryPostTags().add(this);
         }
     }
-
-    public void associateTag(Tag tag) {
-        this.tag = tag;
-        if (!tag.getLibraryPostTags().contains(this)) {
-            tag.getLibraryPostTags().add(this);
-        }
-    }
 }

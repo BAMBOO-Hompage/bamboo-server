@@ -71,6 +71,11 @@ public class MemberServiceImpl implements MemberService {
         return LoginResponse.from(member);
     }
 
+    public Member getMember(String studentId) {
+        return memberRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    }
+
     public String logout(String accessToken) {
 
         // Access Token 검증

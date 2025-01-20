@@ -64,3 +64,6 @@ logging:
   level:
     root: INFO
     SMU.BAMBOO: DEBUG
+
+springdoc:
+  use-fqn: true

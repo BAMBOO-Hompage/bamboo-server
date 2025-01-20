@@ -4,7 +4,10 @@ import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostRequestDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostResponseDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
+import SMU.BAMBOO.Hompage.domain.mapping.LibraryPostTag;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
+import SMU.BAMBOO.Hompage.domain.tag.entity.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LibraryPostServiceImpl implements LibraryPostService {
 
     private final LibraryPostRepository libraryPostRepository;
+    private final TagRepository tagRepository;
 
     private LibraryPost getLibraryPostById(Long id) {
         return libraryPostRepository.findById(id)
@@ -27,10 +31,32 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member) {
 
-        LibraryPost libraryPost = LibraryPost.from(dto, member);
-        LibraryPost saveLibraryPost = libraryPostRepository.save(libraryPost);
+        // 객체 생성
+        LibraryPost libraryPost = LibraryPost.builder()
+                .member(member)
+                .speaker(dto.speaker())
+                .paperName(dto.paperName())
+                .year(dto.year())
+                .topic(dto.topic())
+                .link(dto.link())
+                .build();
 
-        return LibraryPostResponseDTO.Create.from(saveLibraryPost);
+        // 태그 추가
+        dto.libraryPostTags().forEach(tagName -> {
+            Tag tag = tagRepository.findByName(tagName)
+                    .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST));
+
+            LibraryPostTag libraryPostTag = LibraryPostTag.builder()
+                    .tag(tag)
+                    .libraryPost(libraryPost)
+                    .build();
+
+            libraryPost.addLibraryPostTag(libraryPostTag);
+        });
+
+        // 저장
+        LibraryPost savedLibraryPost = libraryPostRepository.save(libraryPost);
+        return LibraryPostResponseDTO.Create.from(savedLibraryPost);
     }
 
     @Override

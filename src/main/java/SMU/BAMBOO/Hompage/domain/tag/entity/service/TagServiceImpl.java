@@ -34,6 +34,9 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public TagResponseDTO.Create create(TagRequestDTO.Create dto) {
+        if (tagRepository.findByName(dto.name()).isPresent()) {
+            throw new CustomException(ErrorCode.TAG_ALREADY_EXIST);
+        }
 
         Tag tag = Tag.from(dto);
         Tag saveTag = tagRepository.save(tag);

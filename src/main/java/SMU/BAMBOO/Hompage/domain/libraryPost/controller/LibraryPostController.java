@@ -9,9 +9,11 @@ import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@Builder
 @RestController
 @RequestMapping("/api/library-posts")
 @RequiredArgsConstructor

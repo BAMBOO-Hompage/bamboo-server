@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.member.controller;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +57,15 @@ public class MemberController {
     public SuccessResponse<MyPageResponse> myPage(@CurrentMember Member member) {
         Member my = memberService.getMember(member.getStudentId());
         return SuccessResponse.ok(MyPageResponse.from(my));
+    }
+
+    @PostMapping("/myPage/image")
+    @Operation(summary = "프로필 사진 변경")
+    public SuccessResponse<MyPageResponse> updateProfileImage(
+            @CurrentMember Member member,
+            @Valid @ModelAttribute ProfileImageRequest request
+    ) {
+        MyPageResponse result = memberService.updateProfileImage(member.getMemberId(), request);
+        return SuccessResponse.ok(result);
     }
 }

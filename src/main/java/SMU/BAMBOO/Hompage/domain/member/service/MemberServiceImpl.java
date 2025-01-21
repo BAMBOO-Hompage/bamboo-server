@@ -2,25 +2,31 @@ package SMU.BAMBOO.Hompage.domain.member.service;
 
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
+import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
@@ -28,6 +34,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
+    private final AwsS3Service awsS3Service;
 
     // 학번으로 중복 회원 검증
     private void validateDuplicateMember(String studentId) {
@@ -49,12 +56,16 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
+    // 회원가입
+    @Transactional
     public MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
         Member member = memberRepository.save(Member.from(request, encoder));
         return MemberResponse.from(member);
     }
 
+    // 로그인
+    @Transactional
     public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
         Member member = validateExistMember(request.studentId());
 
@@ -71,11 +82,14 @@ public class MemberServiceImpl implements MemberService {
         return LoginResponse.from(member);
     }
 
+    // 회원 정보
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
+    // 로그아웃
+    @Transactional
     public String logout(String accessToken) {
 
         // Access Token 검증
@@ -97,5 +111,30 @@ public class MemberServiceImpl implements MemberService {
         redisTemplate.opsForValue().set("blacklist:" + accessToken, "true", expiration, TimeUnit.MILLISECONDS);
 
         return "로그아웃 성공";
+    }
+
+    // 프로필 사진 수정
+    @Transactional
+    public MyPageResponse updateProfileImage(Long memberId, ProfileImageRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+
+        // 기존 프로필 이미지 삭제
+        String oldImageUrl = member.getProfileImageUrl();
+        if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+            String key = awsS3Service.extractS3Key(oldImageUrl);
+            awsS3Service.deleteFile(key);
+        }
+
+        // 새 프로필 이미지 업로드
+        String profileImageUrl = null;
+        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            MultipartFile file = request.getProfileImage();
+            profileImageUrl = awsS3Service.uploadFile("profile-images", file);
+        }
+
+        member.updateProfileImage(profileImageUrl);
+
+        return MyPageResponse.from(member);
     }
 }

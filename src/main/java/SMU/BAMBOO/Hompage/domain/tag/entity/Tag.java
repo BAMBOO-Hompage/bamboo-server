@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.tag.entity;
 
 import SMU.BAMBOO.Hompage.domain.mapping.LibraryPostTag;
+import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,4 +28,10 @@ public class Tag extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
+
+    public static Tag from(TagRequestDTO.Create request) {
+        return Tag.builder()
+                .name(request.name())
+                .build();
+    }
 }

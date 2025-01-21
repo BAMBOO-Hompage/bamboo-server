@@ -27,4 +27,12 @@ public class LibraryPostTag extends BaseEntity {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
+
+    /** 연관관계 편의 메서드 */
+    public void associateLibraryPost(LibraryPost libraryPost) {
+        this.libraryPost = libraryPost;
+        if (!libraryPost.getLibraryPostTags().contains(this)) {
+            libraryPost.getLibraryPostTags().add(this);
+        }
+    }
 }

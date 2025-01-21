@@ -45,7 +45,7 @@ jwt:
   secret: ${JWT_SECRET}
   token:
     access-expiration-time: ${ACCESS_EXPIRATION_TIME}  # 1시간
-    refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}  # 30일
+    refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}  # 1일
 
 cloud:
   aws:

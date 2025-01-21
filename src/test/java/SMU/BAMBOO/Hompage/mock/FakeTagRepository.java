@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.mock;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
-import SMU.BAMBOO.Hompage.domain.tag.entity.repository.TagRepository;
+import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;

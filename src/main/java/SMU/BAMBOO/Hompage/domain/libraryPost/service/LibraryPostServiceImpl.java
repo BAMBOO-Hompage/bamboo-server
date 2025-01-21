@@ -7,9 +7,10 @@ import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
 import SMU.BAMBOO.Hompage.domain.mapping.LibraryPostTag;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
-import SMU.BAMBOO.Hompage.domain.tag.entity.repository.TagRepository;
+import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Builder
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LibraryPostServiceImpl implements LibraryPostService {

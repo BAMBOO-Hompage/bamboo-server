@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.service.MemberService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
@@ -47,5 +48,12 @@ public class MemberController {
         String accessToken = jwtUtil.resolveAccessToken(request);
         String result = memberService.logout(accessToken);
         return SuccessResponse.ok(result);
+    }
+
+    @GetMapping("/myPage")
+    @Operation(summary = "마이페이지")
+    public SuccessResponse<MyPageResponse> myPage(@CurrentMember Member member) {
+        Member my = memberService.getMember(member.getStudentId());
+        return SuccessResponse.ok(MyPageResponse.from(my));
     }
 }

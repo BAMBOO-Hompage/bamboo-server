@@ -39,7 +39,7 @@ public class LibraryPostController {
         return SuccessResponse.ok(result);
     }
 
-    @PatchMapping("/{libraryPostId}")
+    @PutMapping("/{libraryPostId}")
     @Operation(summary = "알렉산드리아 글 수정")
     public SuccessResponse<String> update(
             @PathVariable("libraryPostId") Long id,
@@ -56,5 +56,15 @@ public class LibraryPostController {
     ) {
         libraryPostService.delete(id);
         return SuccessResponse.ok("알렉산드리아 글 삭제에 성공했습니다.");
+    }
+
+    @PatchMapping("/{libraryPostId}/tags")
+    @Operation(summary = "알렉산드리아 글의 태그 초기화")
+    public SuccessResponse<LibraryPostResponseDTO.GetOne> resetTags(
+            @PathVariable("libraryPostId") Long id,
+            @Valid @RequestBody LibraryPostRequestDTO.ResetTag request
+    ) {
+        LibraryPostResponseDTO.GetOne result = libraryPostService.resetTags(id, request);
+        return SuccessResponse.ok(result);
     }
 }

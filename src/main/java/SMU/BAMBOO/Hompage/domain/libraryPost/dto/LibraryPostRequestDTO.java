@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.libraryPost.dto;
 
-import SMU.BAMBOO.Hompage.domain.mapping.LibraryPostTag;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public class LibraryPostRequestDTO {
             @Schema(description = "발표자", example = "김진석") String speaker,
             @Schema(description = "논문 이름", example = "CV 논문") String paperName,
             @Schema(description = "주제", example = "CV") String topic,
-            @Schema(description = "태그", example = "[\"CV\", \"AI\"]") List<String> libraryPostTags
+            @Schema(description = "태그", example = "[\"CV\", \"AI\"]") List<String> tagNames
     ) {}
 
     @Schema(description = "알렉산드리아 도서관 글 수정 요청 DTO")
@@ -25,7 +24,12 @@ public class LibraryPostRequestDTO {
             @Schema(description = "발표자", example = "김진석") String speaker,
             @Schema(description = "논문 이름", example = "김진석") String paperName,
             @Schema(description = "주제", example = "CV") String topic,
-            @Schema(description = "태그", example = "['CV', 'AI']") List<LibraryPostTag> libraryPostTags
+            @Schema(description = "태그", example = "[\"CV\", \"AI\"]") List<String> tagNames
+    ) {}
+
+    @Schema(description = "알렉산드리아 도서관 글의 태그 초기화 요청 DTO")
+    public record ResetTag(
+            @Schema(description = "태그", example = "[\"ML\", \"AI\"]") List<String> tagNames
     ) {}
 }
 

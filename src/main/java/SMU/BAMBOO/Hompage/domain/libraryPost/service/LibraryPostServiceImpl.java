@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .build();
 
         // 태그 추가
-        dto.libraryPostTags().forEach(tagName -> {
+        dto.tagNames().forEach(tagName -> {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST));
 
@@ -69,7 +71,15 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public void update(Long id, LibraryPostRequestDTO.Update request) {
         LibraryPost libraryPost = getLibraryPostById(id);
-        libraryPost.update(request);
+
+        // 태그 이름을 기반으로 Tag 객체 리스트 생성
+        List<Tag> tags = request.tagNames().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST)))
+                .toList();
+
+        libraryPost.setTags(tags);
+        libraryPost.updateBasicFields(request);
     }
 
     @Override
@@ -77,5 +87,42 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     public void delete(Long id) {
         getLibraryPostById(id);
         libraryPostRepository.deleteById(id);
+    }
+
+    /**
+     * 태그를 변경하는 방식이 확정되면 수정 or 사용       //FIXME
+     */
+    @Override
+    @Transactional
+    public LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag request) {
+        LibraryPost libraryPost = getLibraryPostById(libraryPostId);
+
+        // 태그 조회
+        List<Tag> tags = request.tagNames().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST)))
+                .toList();
+
+        // 태그 추가
+        libraryPost.addTags(tags);
+
+        return LibraryPostResponseDTO.GetOne.from(libraryPost);
+    }
+
+    @Override
+    @Transactional
+    public LibraryPostResponseDTO.GetOne resetTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag request) {
+        LibraryPost libraryPost = getLibraryPostById(libraryPostId);
+
+        // 태그 조회
+        List<Tag> tags = request.tagNames().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST)))
+                .toList();
+
+        // 태그 리스트 초기화 및 설정
+        libraryPost.setTags(tags);
+
+        return LibraryPostResponseDTO.GetOne.from(libraryPost);
     }
 }

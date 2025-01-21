@@ -10,4 +10,6 @@ public interface LibraryPostService {
     LibraryPostResponseDTO.GetOne getById(Long id);
     void update(Long id, LibraryPostRequestDTO.Update dto);
     void delete(Long id);
+    LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);
+    LibraryPostResponseDTO.GetOne resetTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);
 }

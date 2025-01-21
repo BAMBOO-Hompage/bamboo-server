@@ -4,8 +4,6 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
-import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +32,7 @@ public class MainActivitiesController {
 
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFile("main-activities", request.getImages());
+            images = awsS3Service.uploadFiles("main-activities", request.getImages());
         }
         MainActivitiesResponseDTO.Create response = mainActivitiesService.create(request, images);
 
@@ -63,7 +61,7 @@ public class MainActivitiesController {
 
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFile("main-activities", request.getImages());
+            images = awsS3Service.uploadFiles("main-activities", request.getImages());
         }
         mainActivitiesService.updateMainActivity(id, request, images);
 

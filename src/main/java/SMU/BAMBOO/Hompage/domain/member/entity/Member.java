@@ -50,6 +50,8 @@ public class Member extends BaseEntity {
     @Column(length = 15)
     private Role role;
 
+    private String profileImageUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberStudy> memberStudies = new ArrayList<>();
@@ -57,7 +59,6 @@ public class Member extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
-
 
     public static Member from(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         return Member.builder()
@@ -69,5 +70,9 @@ public class Member extends BaseEntity {
                 .phone(request.phoneNumber())
                 .role(Role.ROLE_USER)
                 .build();
+    }
+
+    public void updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

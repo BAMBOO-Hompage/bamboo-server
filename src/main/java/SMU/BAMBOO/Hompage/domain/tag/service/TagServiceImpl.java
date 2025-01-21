@@ -1,9 +1,9 @@
-package SMU.BAMBOO.Hompage.domain.tag.entity.service;
+package SMU.BAMBOO.Hompage.domain.tag.service;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagRequestDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagResponseDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.repository.TagRepository;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagRequestDTO;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagResponseDTO;
+import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

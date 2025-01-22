@@ -1,10 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.member.controller;
 
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdateProfileDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdatePwDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.*;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -77,6 +74,23 @@ public class MemberController {
             @Valid @RequestBody UpdatePwDto request) {
         memberService.updatePw(member.getMemberId(), request);
         return SuccessResponse.ok("비밀번호를 변경했습니다.");
+    }
+
+    @PatchMapping("/{memberId}/role")
+    @Operation(summary = "권한 변경")
+    public SuccessResponse<MemberResponse> updateRole(
+            @CurrentMember Member member,
+            @Valid @RequestBody UpdateRoleDto request) {
+        MemberResponse result = memberService.updateRole(member.getMemberId(), request);
+        return SuccessResponse.ok(result);
+    }
+
+    @PatchMapping("/{memberId}/role/test")
+    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
+    public SuccessResponse<MemberResponse> testUpdateRole(
+            @Valid @RequestBody TestUpdateRoleDto request) {
+        MemberResponse result = memberService.testUpdateRole(request);
+        return SuccessResponse.ok(result);
     }
 
 }

@@ -36,6 +36,9 @@ public enum ErrorCode {
     PARAMETER_VALIDATION_ERROR("COMMON422", "파라미터 검증 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     PARAMETER_GRAMMAR_ERROR("COMMON422", "파라미터 문법 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 
+    // Role
+    INVALID_ROLE("ROLE400", "잘못된 Role 값입니다.", HttpStatus.BAD_REQUEST),
+
     // Auth
     AUTH_FAIL("AUTH401", "이메일 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
 
@@ -60,6 +63,7 @@ public enum ErrorCode {
     USER_ALREADY_EXIST("USER400", "이미 회원가입된 유저입니다.", HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST("USER404", "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND),
     USER_WRONG_PASSWORD("USER401", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
+    USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
 
     // Study (스터디)
     STUDY_ALREADY_EXIST("STUDY400", "이미 존재하는 스터디입니다.", HttpStatus.BAD_REQUEST),

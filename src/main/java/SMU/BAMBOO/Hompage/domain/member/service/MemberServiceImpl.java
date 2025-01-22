@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.member.service;
 
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdateProfileDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -113,9 +113,9 @@ public class MemberServiceImpl implements MemberService {
         return "로그아웃 성공";
     }
 
-    // 프로필 사진 수정
+    // 프로필 수정 (전화번호, 이미지)
     @Transactional
-    public MyPageResponse updateProfileImage(Long memberId, ProfileImageRequest request) {
+    public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
@@ -133,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
             profileImageUrl = awsS3Service.uploadFile("profile-images", file);
         }
 
-        member.updateProfileImage(profileImageUrl);
+        member.updateProfile(request.getPhoneNumber(), profileImageUrl);
 
         return MyPageResponse.from(member);
     }

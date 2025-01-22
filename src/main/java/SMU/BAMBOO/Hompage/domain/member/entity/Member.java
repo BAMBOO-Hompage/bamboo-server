@@ -72,7 +72,10 @@ public class Member extends BaseEntity {
                 .build();
     }
 
-    public void updateProfileImage(String profileImageUrl) {
+    public void updateProfile(String phoneNumber,
+                              String profileImageUrl) {
+        this.phone = phoneNumber;
         this.profileImageUrl = profileImageUrl;
     }
+
 }

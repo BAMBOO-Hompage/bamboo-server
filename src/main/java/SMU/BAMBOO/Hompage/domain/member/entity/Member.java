@@ -81,4 +81,8 @@ public class Member extends BaseEntity {
     public void updatePw(String pw) {
         this.pw = pw;
     }
+
+    public void updateRole(Role role) {
+        this.role = role;
+    }
 }

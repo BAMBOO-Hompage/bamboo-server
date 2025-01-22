@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdateProfileDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdatePwDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -68,4 +69,14 @@ public class MemberController {
         MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
+
+    @PatchMapping("/myPage/password")
+    @Operation(summary = "비밀번호 변경")
+    public SuccessResponse<String> updatePassword(
+            @CurrentMember Member member,
+            @Valid @RequestBody UpdatePwDto request) {
+        memberService.updatePw(member.getMemberId(), request);
+        return SuccessResponse.ok("비밀번호를 변경했습니다.");
+    }
+
 }

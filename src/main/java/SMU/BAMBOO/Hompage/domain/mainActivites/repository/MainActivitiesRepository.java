@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface MainActivitiesRepository {
     MainActivities save(MainActivities mainActivities);
-    Page<MainActivities> findByYear(int year, Pageable pageable);
+    Page<MainActivities> findByYear(String year, Pageable pageable);
     Optional<MainActivities> findById(Long id);
     void deleteById(Long id);
 

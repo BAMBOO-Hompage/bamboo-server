@@ -9,7 +9,6 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
-import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -57,7 +56,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     }
 
     @Override
-    public Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(int year, int page, int size) {
+    public Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(String year, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<MainActivities> activitiesPage = mainActivitiesRepository.findByYear(year, pageable);
 

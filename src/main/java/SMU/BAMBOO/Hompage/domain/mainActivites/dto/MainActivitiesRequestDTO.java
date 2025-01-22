@@ -1,8 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +27,7 @@ public class MainActivitiesRequestDTO {
         private LocalDate endDate;
 
         @Schema(description = "연도", example = "2025")
-        private int year;
+        private String year;
 
         @Schema(description = "이미지 파일 목록", example = "[]", required = false)
         private List<MultipartFile> images;
@@ -54,7 +52,7 @@ public class MainActivitiesRequestDTO {
         private LocalDate endDate;
 
         @Schema(description = "연도", example = "2025")
-        private int year;
+        private String year;
 
         @Schema(description = "이미지 파일 목록", example = "[]", required = false)
         private List<MultipartFile> images;

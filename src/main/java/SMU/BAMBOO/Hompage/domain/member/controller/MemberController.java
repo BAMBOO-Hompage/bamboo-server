@@ -3,7 +3,8 @@ package SMU.BAMBOO.Hompage.domain.member.controller;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdateProfileDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdatePwDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -59,13 +60,23 @@ public class MemberController {
         return SuccessResponse.ok(MyPageResponse.from(my));
     }
 
-    @PostMapping("/myPage/image")
-    @Operation(summary = "프로필 사진 변경")
-    public SuccessResponse<MyPageResponse> updateProfileImage(
+    @PatchMapping("/myPage")
+    @Operation(summary = "프로필 변경")
+    public SuccessResponse<MyPageResponse> updateProfile(
             @CurrentMember Member member,
-            @Valid @ModelAttribute ProfileImageRequest request
+            @Valid @ModelAttribute UpdateProfileDto request
     ) {
-        MyPageResponse result = memberService.updateProfileImage(member.getMemberId(), request);
+        MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
+
+    @PatchMapping("/myPage/password")
+    @Operation(summary = "비밀번호 변경")
+    public SuccessResponse<String> updatePassword(
+            @CurrentMember Member member,
+            @Valid @RequestBody UpdatePwDto request) {
+        memberService.updatePw(member.getMemberId(), request);
+        return SuccessResponse.ok("비밀번호를 변경했습니다.");
+    }
+
 }

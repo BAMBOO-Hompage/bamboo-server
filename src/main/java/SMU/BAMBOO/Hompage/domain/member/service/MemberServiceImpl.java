@@ -2,7 +2,8 @@ package SMU.BAMBOO.Hompage.domain.member.service;
 
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdateProfileDto;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.UpdatePwDto;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -56,7 +57,9 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
-    // 회원가입
+    /**
+     * 회원가입
+     */
     @Transactional
     public MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
@@ -64,7 +67,9 @@ public class MemberServiceImpl implements MemberService {
         return MemberResponse.from(member);
     }
 
-    // 로그인
+    /**
+     * 로그인
+     */
     @Transactional
     public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
         Member member = validateExistMember(request.studentId());
@@ -82,13 +87,17 @@ public class MemberServiceImpl implements MemberService {
         return LoginResponse.from(member);
     }
 
-    // 회원 정보
+    /**
+     * 회원 정보
+     */
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
-    // 로그아웃
+    /**
+     * 로그아웃
+     */
     @Transactional
     public String logout(String accessToken) {
 
@@ -113,9 +122,11 @@ public class MemberServiceImpl implements MemberService {
         return "로그아웃 성공";
     }
 
-    // 프로필 사진 수정
+    /**
+     * 프로필 수정 (전화번호, 이미지)
+     */
     @Transactional
-    public MyPageResponse updateProfileImage(Long memberId, ProfileImageRequest request) {
+    public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
@@ -133,8 +144,25 @@ public class MemberServiceImpl implements MemberService {
             profileImageUrl = awsS3Service.uploadFile("profile-images", file);
         }
 
-        member.updateProfileImage(profileImageUrl);
+        member.updateProfile(request.getPhoneNumber(), profileImageUrl);
 
         return MyPageResponse.from(member);
+    }
+
+    /**
+     * 비밀번호 수정
+     */
+    @Transactional
+    public void updatePw(Long memberId, UpdatePwDto request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+
+        // 회원의 비밀번호와 요청의 비밀번호를 비교
+        if (!passwordEncoder.matches(request.password(), member.getPw())) {
+            throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);
+        }
+
+        String newPassword = passwordEncoder.encode(request.newPassword());
+        member.updatePw(newPassword);
     }
 }

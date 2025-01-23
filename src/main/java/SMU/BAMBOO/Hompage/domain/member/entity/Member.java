@@ -72,7 +72,17 @@ public class Member extends BaseEntity {
                 .build();
     }
 
-    public void updateProfileImage(String profileImageUrl) {
+    public void updateProfile(String phoneNumber,
+                              String profileImageUrl) {
+        this.phone = phoneNumber;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updatePw(String pw) {
+        this.pw = pw;
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
     }
 }

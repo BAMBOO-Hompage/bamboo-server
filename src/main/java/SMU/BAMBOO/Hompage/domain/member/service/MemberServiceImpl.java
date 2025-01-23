@@ -1,8 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.member.service;
 
-import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberLoginDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.ProfileImageRequest;
+import SMU.BAMBOO.Hompage.domain.enums.Role;
+import SMU.BAMBOO.Hompage.domain.member.dto.request.*;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -50,13 +49,21 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // 학번으로 회원 존재 여부 검증 - 존재하면 반환
-    private Member validateExistMember(String studentId){
+    // ID로 회원 반환
+    private Member getMemberById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    }
+
+    // 학번으로 회원 반환
+    private Member getMemberByStudentId(String studentId){
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
-    // 회원가입
+    /**
+     * 회원가입
+     */
     @Transactional
     public MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
@@ -64,10 +71,12 @@ public class MemberServiceImpl implements MemberService {
         return MemberResponse.from(member);
     }
 
-    // 로그인
+    /**
+     * 로그인
+     */
     @Transactional
     public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
-        Member member = validateExistMember(request.studentId());
+        Member member = getMemberByStudentId(request.studentId());
 
         if (!passwordEncoder.matches(request.password(), member.getPw())) {
             throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);
@@ -82,13 +91,17 @@ public class MemberServiceImpl implements MemberService {
         return LoginResponse.from(member);
     }
 
-    // 회원 정보
+    /**
+     * 회원 정보
+     */
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
     }
 
-    // 로그아웃
+    /**
+     * 로그아웃
+     */
     @Transactional
     public String logout(String accessToken) {
 
@@ -113,11 +126,12 @@ public class MemberServiceImpl implements MemberService {
         return "로그아웃 성공";
     }
 
-    // 프로필 사진 수정
+    /**
+     * 프로필 수정 (전화번호, 이미지)
+     */
     @Transactional
-    public MyPageResponse updateProfileImage(Long memberId, ProfileImageRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
+        Member member = getMemberById(memberId);
 
         // 기존 프로필 이미지 삭제
         String oldImageUrl = member.getProfileImageUrl();
@@ -133,8 +147,69 @@ public class MemberServiceImpl implements MemberService {
             profileImageUrl = awsS3Service.uploadFile("profile-images", file);
         }
 
-        member.updateProfileImage(profileImageUrl);
+        member.updateProfile(request.getPhoneNumber(), profileImageUrl);
 
         return MyPageResponse.from(member);
+    }
+
+    /**
+     * 비밀번호 수정
+     */
+    @Transactional
+    public void updatePw(Long memberId, UpdatePwDto request) {
+        Member member = getMemberById(memberId);
+
+        // 회원의 비밀번호와 요청의 비밀번호를 비교
+        if (!passwordEncoder.matches(request.password(), member.getPw())) {
+            throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);
+        }
+
+        String newPassword = passwordEncoder.encode(request.newPassword());
+        member.updatePw(newPassword);
+    }
+
+    /**
+     * 권한 변경
+     */
+    @Transactional
+    public MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request) {
+        Member currentMember = getMemberById(currentMemberId);
+
+        // 임원진 권한 확인
+        if (!currentMember.getRole().equals(Role.ROLE_OPS)) {
+            throw new CustomException(ErrorCode.USER_FORBIDDEN);
+        }
+
+        // 변경 대상 회원 조회
+        Member member = getMemberById(request.memberId());
+
+        // 권한 변경
+        try {
+            Role role = Role.valueOf(request.role());
+            member.updateRole(role);
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.INVALID_ROLE);
+        }
+
+        return MemberResponse.from(member);
+    }
+
+    /**
+     * 임시 - 임원 권한이 필요 없는 권한 변경
+     */
+    @Transactional
+    public MemberResponse testUpdateRole(TestUpdateRoleDto request) {
+        // 변경 대상 회원 조회
+        Member member = getMemberById(request.memberId());
+
+        // 권한 변경
+        try {
+            Role role = Role.valueOf(request.role());
+            member.updateRole(role);
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.INVALID_ROLE);
+        }
+
+        return MemberResponse.from(member);
     }
 }

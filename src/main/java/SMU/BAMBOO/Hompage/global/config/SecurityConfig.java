@@ -35,6 +35,7 @@ public class SecurityConfig {
             "/api/members/login",
             "/api/members/sign-up",
             "/api/emails/**",
+            "/auth/reissue",
 
             // 아래는 테스트하느라 추가해 둔 api
             "/api/main-activities",
@@ -73,8 +74,8 @@ public class SecurityConfig {
 
         // 경로별 인가 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(allowedUrls).permitAll()
-                        .anyRequest().authenticated());
+                .requestMatchers(allowedUrls).permitAll()
+                .anyRequest().authenticated());
 
         // 예외 처리 설정
         http.exceptionHandling(e -> e
@@ -103,3 +104,4 @@ public class SecurityConfig {
         return source;
     }
 }
+

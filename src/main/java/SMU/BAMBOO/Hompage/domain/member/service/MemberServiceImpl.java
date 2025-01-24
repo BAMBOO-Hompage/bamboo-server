@@ -15,6 +15,10 @@ import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -97,6 +101,15 @@ public class MemberServiceImpl implements MemberService {
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    }
+
+    /**
+     * 회원 정보 목록
+     */
+    public Page<MemberResponse> getMembers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("role"));
+        return memberRepository.findAllWithCustomSort(pageable)
+                .map(MemberResponse::from);
     }
 
     /**

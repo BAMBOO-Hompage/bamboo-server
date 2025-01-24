@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,16 @@ public class MemberController {
     public SuccessResponse<String> logout(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessToken(request);
         String result = memberService.logout(accessToken);
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping
+    @Operation(summary = "회원 목록 조회 - 페이지네이션")
+    public SuccessResponse<Page<MemberResponse>> getMembers(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Page<MemberResponse> result = memberService.getMembers(page, size);
         return SuccessResponse.ok(result);
     }
 

@@ -1,9 +1,14 @@
 package SMU.BAMBOO.Hompage.domain.member.repository;
 
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.Optional;
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final MemberJpaRepository memberJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Member getByStudentId(String studentId) {
@@ -42,8 +48,24 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public List<Member> findAll() {
-        return memberJpaRepository.findAll();
+    public Page<Member> findAll(Pageable pageable) {
+        return memberJpaRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Member> findAllWithCustomSort(Pageable pageable) {
+        QMember member = QMember.member;
+
+        List<Member> content = queryFactory.selectFrom(member)
+                .orderBy(member.rolePriority.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory.select(member.count().coalesce(0L)) // null이면 0L 반환
+                .from(member)
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
+    }
 }

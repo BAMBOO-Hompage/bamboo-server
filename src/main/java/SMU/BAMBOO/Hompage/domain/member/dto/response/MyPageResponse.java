@@ -15,6 +15,7 @@ public class MyPageResponse {
     private String major;
     private String phone;
     private Role role;
+    private String profileImageUrl;
 
     public static MyPageResponse from(Member member) {
         return MyPageResponse.builder()
@@ -24,6 +25,7 @@ public class MyPageResponse {
                 .major(member.getMajor())
                 .phone(member.getPhone())
                 .role(member.getRole())
+                .profileImageUrl(member.getProfileImageUrl())
                 .build();
     }
 }

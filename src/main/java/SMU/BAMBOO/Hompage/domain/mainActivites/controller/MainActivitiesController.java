@@ -6,8 +6,6 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesService;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
-import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +35,7 @@ public class MainActivitiesController {
 
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFile("main-activities", request.getImages());
+            images = awsS3Service.uploadFiles("main-activities", request.getImages());
         }
         MainActivitiesResponseDTO.Create response = mainActivitiesService.create(request, images, member);
 
@@ -48,7 +46,7 @@ public class MainActivitiesController {
     @GetMapping(value = "/api/main-activities/year")
     @Operation(summary = "연도별 주요활동 게시판 조회")
     public SuccessResponse<Page<MainActivitiesResponseDTO.ActivitiesByYearResponse>> getMainActivitiesByYear(
-            @RequestParam("year") int year,
+            @RequestParam("year") String year,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
 
@@ -67,7 +65,7 @@ public class MainActivitiesController {
 
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFile("main-activities", request.getImages());
+            images = awsS3Service.uploadFiles("main-activities", request.getImages());
         }
         mainActivitiesService.updateMainActivity(id, request, images, member);
 

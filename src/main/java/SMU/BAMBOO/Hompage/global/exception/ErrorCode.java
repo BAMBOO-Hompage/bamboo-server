@@ -36,11 +36,15 @@ public enum ErrorCode {
     PARAMETER_VALIDATION_ERROR("COMMON422", "파라미터 검증 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     PARAMETER_GRAMMAR_ERROR("COMMON422", "파라미터 문법 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 
+    // Role
+    INVALID_ROLE("ROLE400", "잘못된 Role 값입니다.", HttpStatus.BAD_REQUEST),
+
     // Auth
     AUTH_FAIL("AUTH401", "이메일 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
 
     // Token
     TOKEN_INVALID("TOKEN401", "유효하지 않은 Token 입니다.", HttpStatus.UNAUTHORIZED),
+    TOKEN_INVALID_ROLE("TOKEN401", "JWT 토큰에 Role 정보가 없습니다.", HttpStatus.UNAUTHORIZED),
     ACCESS_TOKEN_EXPIRED("TOKEN401", "Access Token 이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
     ACCESS_TOKEN_INVALID("TOKEN401", "유효하지 않은 Access Token 입니다.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_NOT_FOUND("TOKEN404", "해당 사용자에 대한 Refresh Token 을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
@@ -50,6 +54,7 @@ public enum ErrorCode {
 
     // REDIS
     REDIS_STORE_FAILED("REDIS500", "Redis 저장에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    REDIS_STUDENT_ID_NOT_FOUND("REDIS404", "Redis 에서 학번을 찾지 못했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // EMAIL
     EMAIL_VERIFICATION_EXPIRED("EMAIL_VERIFICATION404", "인증 코드가 만료되었습니다.", HttpStatus.NOT_FOUND),
@@ -61,6 +66,7 @@ public enum ErrorCode {
     USER_NOT_EXIST("USER404", "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND),
     USER_WRONG_PASSWORD("USER401", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
+    USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
 
     // Study (스터디)
     STUDY_ALREADY_EXIST("STUDY400", "이미 존재하는 스터디입니다.", HttpStatus.BAD_REQUEST),
@@ -105,7 +111,9 @@ public enum ErrorCode {
 
     // UPLOAD (업로드)
     UPLOAD_FAILED("UPLOAD001", "업로드 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    DELETE_FAILED("DELETE001", "삭제 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    DELETE_FAILED("DELETE001", "삭제 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_URL("URL400", "유효하지 않은 파일 URL입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_URL_FORM("URL400", "S3 URL 형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
 
     private final String errorCode;
     private final String message;

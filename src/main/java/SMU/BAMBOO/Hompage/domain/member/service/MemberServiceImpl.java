@@ -108,7 +108,7 @@ public class MemberServiceImpl implements MemberService {
      */
     public Page<MemberResponse> getMembers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("role"));
-        return memberRepository.findAllWithCustomSort(pageable)
+        return memberRepository.findAllSortByRole(pageable)
                 .map(MemberResponse::from);
     }
 

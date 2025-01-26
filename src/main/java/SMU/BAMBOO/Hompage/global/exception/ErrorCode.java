@@ -60,6 +60,7 @@ public enum ErrorCode {
     USER_ALREADY_EXIST("USER400", "이미 회원가입된 유저입니다.", HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST("USER404", "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND),
     USER_WRONG_PASSWORD("USER401", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
+    USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
 
     // Study (스터디)
     STUDY_ALREADY_EXIST("STUDY400", "이미 존재하는 스터디입니다.", HttpStatus.BAD_REQUEST),

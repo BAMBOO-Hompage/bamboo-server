@@ -1,9 +1,11 @@
 package SMU.BAMBOO.Hompage.domain.member.repository;
 
+import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,11 +55,18 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Page<Member> findAllWithCustomSort(Pageable pageable) {
+    public Page<Member> findAllSortByRole(Pageable pageable) {
         QMember member = QMember.member;
 
+        // Role 에 변경이 없을 것이라 판단
         List<Member> content = queryFactory.selectFrom(member)
-                .orderBy(member.rolePriority.asc())
+                .orderBy(new CaseBuilder()
+                        .when(member.role.eq(Role.ROLE_USER)).then(4)
+                        .when(member.role.eq(Role.ROLE_MEMBER)).then(3)
+                        .when(member.role.eq(Role.ROLE_ADMIN)).then(2)
+                        .when(member.role.eq(Role.ROLE_OPS)).then(1)
+                        .otherwise(0) // 기본값
+                        .asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

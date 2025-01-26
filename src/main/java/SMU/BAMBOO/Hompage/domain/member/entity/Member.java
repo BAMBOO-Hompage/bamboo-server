@@ -50,8 +50,6 @@ public class Member extends BaseEntity {
     @Column(length = 15)
     private Role role;
 
-    @Column(name = "role_priority", nullable = false)
-    private int rolePriority;
 
     private String profileImageUrl;
 
@@ -62,12 +60,6 @@ public class Member extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
-
-    @PostLoad
-    @PostPersist
-    public void updateRolePriority() {
-        this.rolePriority = role.getPriority();
-    }
 
     public static Member from(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         return Member.builder()

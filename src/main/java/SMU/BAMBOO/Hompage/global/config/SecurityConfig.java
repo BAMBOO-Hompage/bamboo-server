@@ -34,12 +34,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/api/members/login",
             "/api/members/sign-up",
-            "/api/emails/**",
-
-            // 아래는 테스트하느라 추가해 둔 api
-            "/api/main-activities",
-            "/api/main-activities/year",
-            "/api/main-activities/{id}"
+            "/api/emails/**"
     };
 
     @Bean

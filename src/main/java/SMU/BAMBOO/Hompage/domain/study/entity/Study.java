@@ -27,21 +27,18 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
-    @Column(nullable = false, length = 50)
-    private String name;
-
-    @Column(name = "study_master", nullable = false)
-    private String studyMaster;
-
     @Column(nullable = false)
-    private int headcount;
+    private int cohort;
 
     @Builder.Default
     @Column(name = "is_book", nullable = false)
     private Boolean isBook = false;
 
     @Column(nullable = false)
-    private int year;
+    private int section;
+
+    @Column(name = "study_master", nullable = false)
+    private String studyMaster;
 
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)

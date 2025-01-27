@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class SubjectJpaRepositoryImpl implements SubjectRepository {
+public class SubjectRepositoryImpl implements SubjectRepository {
 
     private final SubjectJpaRepository subjectJpaRepository;
     @Override

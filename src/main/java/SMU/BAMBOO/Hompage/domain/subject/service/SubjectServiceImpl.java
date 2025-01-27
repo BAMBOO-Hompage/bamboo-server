@@ -27,16 +27,16 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public SubjectResponseDTO.Create create(SubjectRequestDTO.Create dto) {
-        try {
-            Subject subject = Subject.builder()
-                    .name(dto.name())
-                    .build();
-
-            subjectRepository.save(subject);
-            return SubjectResponseDTO.Create.from(subject);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(ErrorCode.SUBJECT_INVALID);
+        if (subjectRepository.findByName(dto.name()).isPresent()) {
+            throw new CustomException(ErrorCode.SUBJECT_ALREADY_EXIST);
         }
+
+        Subject subject = Subject.builder()
+                .name(dto.name())
+                .build();
+
+        subjectRepository.save(subject);
+        return SubjectResponseDTO.Create.from(subject);
     }
 
     @Override

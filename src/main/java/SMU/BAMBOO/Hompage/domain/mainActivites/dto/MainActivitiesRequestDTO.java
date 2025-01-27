@@ -27,7 +27,7 @@ public class MainActivitiesRequestDTO {
         private LocalDate endDate;
 
         @Schema(description = "연도", example = "2025")
-        private String year;
+        private int year;
 
         @Schema(description = "이미지 파일 목록", example = "[]", required = false)
         private List<MultipartFile> images;
@@ -52,7 +52,7 @@ public class MainActivitiesRequestDTO {
         private LocalDate endDate;
 
         @Schema(description = "연도", example = "2025")
-        private String year;
+        private int year;
 
         @Schema(description = "이미지 파일 목록", example = "[]", required = false)
         private List<MultipartFile> images;

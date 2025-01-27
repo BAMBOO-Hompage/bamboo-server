@@ -46,7 +46,7 @@ public class MainActivitiesController {
     @GetMapping(value = "/api/main-activities/year")
     @Operation(summary = "연도별 주요활동 게시판 조회")
     public SuccessResponse<Page<MainActivitiesResponseDTO.ActivitiesByYearResponse>> getMainActivitiesByYear(
-            @RequestParam("year") String year,
+            @RequestParam("year") int year,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
 

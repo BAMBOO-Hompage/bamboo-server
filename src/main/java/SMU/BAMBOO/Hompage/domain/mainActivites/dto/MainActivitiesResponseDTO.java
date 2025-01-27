@@ -24,7 +24,7 @@ public class MainActivitiesResponseDTO {
         private final String title;
         private final LocalDate startDate;
         private final LocalDate endDate;
-        private final String year;
+        private final int year;
         private final int views;
         private final List<String> images;
 
@@ -52,7 +52,7 @@ public class MainActivitiesResponseDTO {
         private final String title;
         private final LocalDate startDate;
         private final LocalDate endDate;
-        private final String year;
+        private final int year;
         private final int views;
         private final List<String> images;
 

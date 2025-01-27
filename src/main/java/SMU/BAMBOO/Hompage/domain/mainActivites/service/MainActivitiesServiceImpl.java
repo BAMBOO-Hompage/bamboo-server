@@ -9,6 +9,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
+import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,25 +31,17 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     private final AwsS3Service awsS3Service;
 
     @Override
-    public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images) {
+    public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images, Member member) {
 
         if (images == null) {
             images = new ArrayList<>();
         }
 
-        // Hardcoded member
-        Member hardcodedMember = Member.builder()
-                .memberId(1L)
-                .email("test@example.com")
-                .pw("password")
-                .name("John Doe")
-                .studentId("202312345")
-                .major("Computer Science")
-                .phone("01012345678")
-                .role(Role.ROLE_USER)
-                .build();
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
-        MainActivities mainActivities = MainActivities.from(request, hardcodedMember, images);
+        MainActivities mainActivities = MainActivities.from(request, member, images);
 
         MainActivities savedMainActivities = mainActivitiesRepository.save(mainActivities);
 
@@ -56,7 +49,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     }
 
     @Override
-    public Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(String year, int page, int size) {
+    public Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(int year, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<MainActivities> activitiesPage = mainActivitiesRepository.findByYear(year, pageable);
 
@@ -65,9 +58,13 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     @Transactional
-    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images){
+    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images, Member member) {
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
         // 기존 이미지 삭제
         List<String> oldImages = activity.getImages() != null ? activity.getImages() : List.of();
@@ -78,9 +75,13 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     @Transactional
-    public void deleteMainActivity(Long id){
+    public void deleteMainActivity(Long id, Member member){
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
         List<String> imageUrls = activity.getImages();
         imageUrls.forEach(awsS3Service::deleteFile);

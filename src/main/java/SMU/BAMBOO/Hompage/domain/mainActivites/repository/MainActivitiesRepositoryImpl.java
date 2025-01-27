@@ -20,7 +20,7 @@ public class MainActivitiesRepositoryImpl implements MainActivitiesRepository {
     }
 
     @Override
-    public Page<MainActivities> findByYear(String year, Pageable pageable) {
+    public Page<MainActivities> findByYear(int year, Pageable pageable) {
         return mainActivitiesJpaRepository.findByYear(year, pageable);
     }
 

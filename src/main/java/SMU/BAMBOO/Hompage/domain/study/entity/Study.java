@@ -47,4 +47,12 @@ public class Study extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
+
+    /**
+     * 연관 관계 편의 메서드
+     */
+    public void addMemberStudy(MemberStudy memberStudy) {
+        this.memberStudies.add(memberStudy);
+        memberStudy.associateStudy(this);
+    }
 }

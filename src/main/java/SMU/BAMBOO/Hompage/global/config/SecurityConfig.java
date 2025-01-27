@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/api/members/login",
             "/api/members/sign-up",
             "/api/emails/**",
-            "/auth/reissue"
+            "/auth/reissue",
+            "/api/main-activities/year"
     };
 
     private final String[] adminUrls = {

@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.subject.service;
 
-import SMU.BAMBOO.Hompage.domain.enums.SubjectName;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
@@ -30,7 +29,7 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectResponseDTO.Create create(SubjectRequestDTO.Create dto) {
         try {
             Subject subject = Subject.builder()
-                    .name(SubjectName.valueOf(dto.name()))
+                    .name(dto.name())
                     .build();
 
             subjectRepository.save(subject);

@@ -17,7 +17,7 @@ public class SubjectResponseDTO {
         public static Create from(Subject subject) {
             return new Create(
                     subject.getSubjectId(),
-                    subject.getName().name()
+                    subject.getName()
             );
         }
     }
@@ -30,7 +30,7 @@ public class SubjectResponseDTO {
         public static Update from(Subject subject) {
             return new Update(
                     subject.getSubjectId(),
-                    subject.getName().name()
+                    subject.getName()
             );
         }
     }
@@ -44,7 +44,7 @@ public class SubjectResponseDTO {
         public static GetOne from(Subject subject) {
             return new GetOne(
                     subject.getSubjectId(),
-                    subject.getName().name(),
+                    subject.getName(),
                     subject.getWeeklyContents()
             );
         }

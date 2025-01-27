@@ -146,18 +146,20 @@ public class MemberServiceImpl implements MemberService {
     public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
         Member member = getMemberById(memberId);
 
-        // 기존 프로필 이미지 삭제
-        String oldImageUrl = member.getProfileImageUrl();
-        if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
-            String key = awsS3Service.extractS3Key(oldImageUrl);
-            awsS3Service.deleteFile(key);
-        }
-
-        // 새 프로필 이미지 업로드
         String profileImageUrl = null;
         if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            // 기존 프로필 이미지 삭제
+            String oldImageUrl = member.getProfileImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                String key = awsS3Service.extractS3Key(oldImageUrl);
+                awsS3Service.deleteFile(key);
+            }
+
+            // 새 프로필 이미지 업로드
             MultipartFile file = request.getProfileImage();
             profileImageUrl = awsS3Service.uploadFile("profile-images", file);
+        } else {
+            profileImageUrl = member.getProfileImageUrl();
         }
 
         member.updateProfile(request.getPhoneNumber(), profileImageUrl);

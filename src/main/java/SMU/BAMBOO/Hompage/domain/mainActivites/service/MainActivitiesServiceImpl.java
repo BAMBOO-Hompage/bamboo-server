@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.service;
 
-import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
@@ -9,7 +8,6 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
-import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Hibernate;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     private final AwsS3Service awsS3Service;
 
     @Override
-    public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images, Member member) {
+    public MainActivitiesResponseDTO.Detail create(MainActivitiesRequestDTO.Create request, List<String> images, Member member) {
 
         if (images == null) {
             images = new ArrayList<>();
@@ -45,7 +45,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
         MainActivities savedMainActivities = mainActivitiesRepository.save(mainActivities);
 
-        return MainActivitiesResponseDTO.Create.from(savedMainActivities);
+        return MainActivitiesResponseDTO.Detail.from(savedMainActivities);
     }
 
     @Override
@@ -54,6 +54,17 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
         Page<MainActivities> activitiesPage = mainActivitiesRepository.findByYear(year, pageable);
 
         return activitiesPage.map(MainActivitiesResponseDTO.ActivitiesByYearResponse::from);
+    }
+
+    @Override
+    public MainActivitiesResponseDTO.Detail getMainActivity(Long id){
+
+        MainActivities mainActivity = mainActivitiesRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+        // Lazy Loading 초기화
+        Hibernate.initialize(mainActivity.getMember());
+        return MainActivitiesResponseDTO.Detail.from(mainActivity);
+
     }
 
     @Override

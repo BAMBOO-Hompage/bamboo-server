@@ -2,6 +2,7 @@ package SMU.BAMBOO.Hompage.domain.mainActivites.controller;
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
+import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
 import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesService;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
@@ -29,7 +30,7 @@ public class MainActivitiesController {
     /** 주요활동 게시판 게시물 생성 API */
     @PostMapping(value = "/api/main-activities", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "주요활동 게시판 게시물 생성 (이미지 업로드는 Postman에서 테스트해주세요)")
-    public SuccessResponse<MainActivitiesResponseDTO.Create> createMainActivities(
+    public SuccessResponse<MainActivitiesResponseDTO.Detail> createMainActivities(
             @Valid @ModelAttribute MainActivitiesRequestDTO.Create request,
             @CurrentMember Member member) {
 
@@ -37,7 +38,7 @@ public class MainActivitiesController {
         if (request.getImages() != null && !request.getImages().isEmpty()) {
             images = awsS3Service.uploadFiles("main-activities", request.getImages());
         }
-        MainActivitiesResponseDTO.Create response = mainActivitiesService.create(request, images, member);
+        MainActivitiesResponseDTO.Detail response = mainActivitiesService.create(request, images, member);
 
         return SuccessResponse.ok(response);
     }
@@ -53,6 +54,14 @@ public class MainActivitiesController {
         Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> activities = mainActivitiesService.getMainActivitiesByYear(year, page - 1, size);
 
         return SuccessResponse.ok(activities);
+    }
+
+    /** 주요활동 게시판 게시물 단일 조회 API */
+    @GetMapping(value = "/api/main-activities/{id}")
+    @Operation(summary = "주요활동 게시물 단일 조회")
+    public SuccessResponse<MainActivitiesResponseDTO.Detail> getMainActivity(@PathVariable Long id) {
+        MainActivitiesResponseDTO.Detail response = mainActivitiesService.getMainActivity(id);
+        return SuccessResponse.ok(response);
     }
 
     /** 주요활동 게시판 게시물 수정 API */

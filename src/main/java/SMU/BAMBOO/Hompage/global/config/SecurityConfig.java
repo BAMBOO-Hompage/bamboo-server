@@ -43,6 +43,10 @@ public class SecurityConfig {
             "/api/main-activities/{id}"
     };
 
+    private final String[] adminUrls = {
+            "/api/subjects/**"
+    };
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -75,6 +79,7 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(allowedUrls).permitAll()
+                .requestMatchers(adminUrls).hasAnyRole("ADMIN", "OPS")
                 .anyRequest().authenticated());
 
         // 예외 처리 설정

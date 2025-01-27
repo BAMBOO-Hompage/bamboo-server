@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class SubjectController {
 
     @PostMapping
     @Operation(summary = "과목 생성")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<SubjectResponseDTO.Create> create(
             @Valid @RequestBody SubjectRequestDTO.Create request) {
         SubjectResponseDTO.Create result = subjectService.create(request);
@@ -46,6 +48,7 @@ public class SubjectController {
 
     @PutMapping("/{subjectId}")
     @Operation(summary = "과목 수정")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<SubjectResponseDTO.Update> update(
             @PathVariable("subjectId") Long id,
             @Valid @RequestBody SubjectRequestDTO.Update request
@@ -56,6 +59,7 @@ public class SubjectController {
 
     @DeleteMapping("/{subjectId}")
     @Operation(summary = "과목 삭제")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<String> delete(
             @PathVariable("subjectId") Long id
     ) {

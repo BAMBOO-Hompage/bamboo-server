@@ -17,6 +17,7 @@ public interface MemberService {
     Page<MemberResponse> getMembers(int page, int size);
     String logout(String accessToken);
     MyPageResponse updateProfile(Long memberId, UpdateProfileDto request);
+    MyPageResponse deleteProfileImage(Long memberId);
     void updatePw(Long memberId, UpdatePwDto request);
     MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request);
     MemberResponse testUpdateRole(TestUpdateRoleDto request);

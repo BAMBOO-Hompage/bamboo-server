@@ -168,6 +168,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
+     * 프로필 이미지 삭제
+     */
+    @Transactional
+    public MyPageResponse deleteProfileImage(Long memberId) {
+        Member member = getMemberById(memberId);
+
+        String oldImageUrl = member.getProfileImageUrl();
+        if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+            String key = awsS3Service.extractS3Key(oldImageUrl);
+            awsS3Service.deleteFile(key);
+        }
+
+        member.setBasicProfileImage();
+
+        return MyPageResponse.from(member);
+    }
+
+    /**
      * 비밀번호 수정
      */
     @Transactional

@@ -18,20 +18,20 @@ public class MainActivitiesResponseDTO {
     @Getter
     @Builder
     @Schema(description = "주요활동 게시판 게시물 생성 응답 DTO")
-    public static class Create {
+    public static class Detail {
         private final Long mainActivitiesId;
-        private final Member member;
+        private final String memberName;
         private final String title;
         private final LocalDate startDate;
         private final LocalDate endDate;
-        private final String year;
+        private final int year;
         private final int views;
         private final List<String> images;
 
-        public static Create from(MainActivities mainActivities) {
-            return Create.builder()
+        public static Detail from(MainActivities mainActivities) {
+            return Detail.builder()
                     .mainActivitiesId(mainActivities.getMainActivitiesId())
-                    .member(mainActivities.getMember())
+                    .memberName(mainActivities.getMember().getName())
                     .title(mainActivities.getTitle())
                     .startDate(mainActivities.getStartDate())
                     .endDate(mainActivities.getEndDate())
@@ -42,7 +42,7 @@ public class MainActivitiesResponseDTO {
         }
     }
 
-    /** 주요활동 게시판 게시물 연도별 조회 API */
+    /** 주요활동 게시판 게시물 연도별 조회 Response DTO */
     @Getter
     @Builder
     @Schema(description = "주요활동 게시판 연도별 조회 응답 DTO")
@@ -52,7 +52,7 @@ public class MainActivitiesResponseDTO {
         private final String title;
         private final LocalDate startDate;
         private final LocalDate endDate;
-        private final String year;
+        private final int year;
         private final int views;
         private final List<String> images;
 
@@ -68,7 +68,6 @@ public class MainActivitiesResponseDTO {
                     .build();
         }
     }
-
 
 
 }

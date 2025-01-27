@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MainActivitiesJpaRepository extends JpaRepository<MainActivities, Long> {
-    Page<MainActivities> findByYear(String year, Pageable pageable);
+    Page<MainActivities> findByYear(int year, Pageable pageable);
 }

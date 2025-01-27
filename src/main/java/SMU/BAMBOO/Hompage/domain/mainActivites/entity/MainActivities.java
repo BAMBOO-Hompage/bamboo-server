@@ -39,7 +39,7 @@ public class MainActivities extends BaseEntity {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private String year;
+    private int year;
 
     @Builder.Default
     @Column(nullable = false)

@@ -35,12 +35,7 @@ public class SecurityConfig {
             "/api/members/login",
             "/api/members/sign-up",
             "/api/emails/**",
-            "/auth/reissue",
-
-            // 아래는 테스트하느라 추가해 둔 api
-            "/api/main-activities",
-            "/api/main-activities/year",
-            "/api/main-activities/{id}"
+            "/auth/reissue"
     };
 
     private final String[] adminUrls = {
@@ -109,4 +104,3 @@ public class SecurityConfig {
         return source;
     }
 }
-

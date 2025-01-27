@@ -79,6 +79,10 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
+    public void setBasicProfileImage() {
+        this.profileImageUrl = null;
+    }
+
     public void updatePw(String pw) {
         this.pw = pw;
     }

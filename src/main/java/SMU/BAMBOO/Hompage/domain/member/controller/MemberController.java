@@ -78,6 +78,13 @@ public class MemberController {
         return SuccessResponse.ok(result);
     }
 
+    @PatchMapping("/myPage/profileImage")
+    @Operation(summary = "기본 프로필 이미지로 변경")
+    public SuccessResponse<MyPageResponse> deleteProfileImage(@CurrentMember Member member) {
+        MyPageResponse result = memberService.deleteProfileImage(member.getMemberId());
+        return SuccessResponse.ok(result);
+    }
+
     @PatchMapping("/myPage/password")
     @Operation(summary = "비밀번호 변경")
     public SuccessResponse<String> updatePassword(

@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
@@ -15,6 +16,8 @@ public interface MemberRepository {
     Optional<Member> findByStudentId(String studentId);
 
     Optional<Member> findByEmail(String email);
+
+    List<Member> findAllByStudentId(List<String> studentIds);
 
     Member save(Member member);
 

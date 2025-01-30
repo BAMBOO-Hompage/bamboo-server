@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.global.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,8 +40,10 @@ public class SecurityConfig {
             "/api/main-activities/year"
     };
 
+    // 운영진 이상의 권한 필요 (ADMIN, OPS)
     private final String[] adminUrls = {
-            "/api/subjects/**"
+            "/api/subjects/**",
+            "/api/studies/**"
     };
 
     @Bean
@@ -75,7 +78,11 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(allowedUrls).permitAll()
-                .requestMatchers(adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.GET, adminUrls).permitAll()
+                .requestMatchers(HttpMethod.POST, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyRole("ADMIN", "OPS")
                 .anyRequest().authenticated());
 
         // 예외 처리 설정

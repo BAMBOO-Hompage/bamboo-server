@@ -90,4 +90,12 @@ public class Member extends BaseEntity {
     public void updateRole(Role role) {
         this.role = role;
     }
+
+    /**
+     * 연관 관계 편의 메서드
+     */
+    public void addMemberStudy(MemberStudy memberStudy) {
+        this.memberStudies.add(memberStudy);
+        memberStudy.associateMember(this);
+    }
 }

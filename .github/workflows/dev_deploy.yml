@@ -51,6 +51,7 @@ jobs:
         with:
           name: BambooServer
           path: build/libs/*.jar
+          retention-days: 7
 
   deploy:
     needs: build  # build 작업이 성공적으로 완료된 후 실행

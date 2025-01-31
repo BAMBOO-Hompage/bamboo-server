@@ -2,6 +2,8 @@ package SMU.BAMBOO.Hompage.domain.inventory.repository;
 
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory;
+import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -58,5 +60,10 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Override
     public void deleteById(Long id) {
         inventoryJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Boolean existsByMemberAndStudyAndWeek(Member member, Study study, int week) {
+        return inventoryJpaRepository.existsByMemberAndStudyAndWeek(member, study, week);
     }
 }

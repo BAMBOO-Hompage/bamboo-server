@@ -48,6 +48,11 @@ public class InventoryServiceImpl implements InventoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
+        // 동일한 사람이 같은 주차에 이미 작성했는지 확인
+        if (inventoryRepository.existsByMemberAndStudyAndWeek(member, study, request.week())) {
+            throw new CustomException(ErrorCode.INVENTORY_ALREADY_EXIST);
+        }
+
         // 스터디 정리본 객체 생성
         Inventory inventory = Inventory.builder()
                 .study(study)

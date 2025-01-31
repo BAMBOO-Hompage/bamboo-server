@@ -46,6 +46,11 @@ public class SecurityConfig {
             "/api/studies/**"
     };
 
+    // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
+    private final String[] memberUrls = {
+            "/api/inventories/**"
+    };
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -83,6 +88,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyRole("ADMIN", "OPS")
                 .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyRole("ADMIN", "OPS")
                 .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
                 .anyRequest().authenticated());
 
         // 예외 처리 설정

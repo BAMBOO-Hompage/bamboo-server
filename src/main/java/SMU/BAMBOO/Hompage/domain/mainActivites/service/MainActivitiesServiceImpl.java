@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Hibernate;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.ArrayList;
@@ -69,19 +70,26 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     @Transactional
-    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images, Member member) {
+    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<Object> images, Member member) {
         MainActivities activity = mainActivitiesRepository.findById(id)
-                .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
 
         if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
             throw new CustomException(ErrorCode.USER_NO_PERMISSION);
         }
 
-        // 기존 이미지 삭제
-        List<String> oldImages = activity.getImages() != null ? activity.getImages() : List.of();
-        oldImages.forEach(awsS3Service::deleteFile);
+        List<String> finalImageUrls = new ArrayList<>();
 
-        activity.update(request, images);
+        for (Object image : images) {
+            if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
+                finalImageUrls.add(url);
+            } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
+                String uploadedUrl = awsS3Service.uploadFile("main-activities", file);
+                finalImageUrls.add(uploadedUrl);
+            }
+        }
+
+        activity.update(request, finalImageUrls);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.inventory.entity;
 
 import SMU.BAMBOO.Hompage.domain.award.entity.Award;
+import SMU.BAMBOO.Hompage.domain.inventory.dto.InventoryRequestDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
@@ -39,4 +40,20 @@ public class Inventory extends BaseEntity {
 
     @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
     private Award award;
+
+    public void updateInventory(InventoryRequestDTO.Update updateRequest) {
+        if (updateRequest.title() != null) {
+            this.title = updateRequest.title();
+        }
+        if (updateRequest.content() != null) {
+            this.content = updateRequest.content();
+        }
+        if (updateRequest.week() > 0) {
+            this.week = updateRequest.week();
+        }
+    }
+
+    public void addAward(Award award) {
+        this.award = award;
+    }
 }

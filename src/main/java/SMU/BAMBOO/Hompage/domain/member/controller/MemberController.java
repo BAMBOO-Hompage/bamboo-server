@@ -111,4 +111,17 @@ public class MemberController {
         return SuccessResponse.ok(result);
     }
 
+    @PostMapping("/deactivate")
+    @Operation(summary = "회원 탈퇴 - 7일 후 자동 삭제")
+    public SuccessResponse<String> deactivateMember(@CurrentMember Member member) {
+        memberService.deactivateMember(member.getMemberId());
+        return SuccessResponse.ok("회원 탈퇴 요청이 완료되었습니다. 7일 후 계정이 삭제됩니다.");
+    }
+
+    @PostMapping("/{memberId}/deactivate")
+    @Operation(summary = "회원 삭제 - 7일 후 자동 삭제")
+    public SuccessResponse<String> deleteMember(@PathVariable Long memberId) {
+        memberService.deactivateMember(memberId);
+        return SuccessResponse.ok("회원 비활성화에 성공했습니다.");
+    }
 }

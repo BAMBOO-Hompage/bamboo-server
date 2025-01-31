@@ -20,11 +20,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -69,6 +71,7 @@ public class MemberServiceImpl implements MemberService {
      * 회원가입
      */
     @Transactional
+    @Override
     public MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
         Member member = memberRepository.save(Member.from(request, encoder));
@@ -79,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
      * 로그인
      */
     @Transactional
+    @Override
     public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
         Member member = getMemberByStudentId(request.studentId());
 
@@ -98,6 +102,7 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 회원 정보
      */
+    @Override
     public Member getMember(String studentId) {
         return memberRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
@@ -106,6 +111,7 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 회원 정보 목록
      */
+    @Override
     public Page<MemberResponse> getMembers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("role"));
         return memberRepository.findAllSortByRole(pageable)
@@ -116,6 +122,7 @@ public class MemberServiceImpl implements MemberService {
      * 로그아웃
      */
     @Transactional
+    @Override
     public String logout(String accessToken) {
 
         // Access Token 검증
@@ -143,6 +150,7 @@ public class MemberServiceImpl implements MemberService {
      * 프로필 수정 (전화번호, 이미지)
      */
     @Transactional
+    @Override
     public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
         Member member = getMemberById(memberId);
 
@@ -171,6 +179,7 @@ public class MemberServiceImpl implements MemberService {
      * 프로필 이미지 삭제
      */
     @Transactional
+    @Override
     public MyPageResponse deleteProfileImage(Long memberId) {
         Member member = getMemberById(memberId);
 
@@ -189,6 +198,7 @@ public class MemberServiceImpl implements MemberService {
      * 비밀번호 수정
      */
     @Transactional
+    @Override
     public void updatePw(Long memberId, UpdatePwDto request) {
         Member member = getMemberById(memberId);
 
@@ -205,6 +215,7 @@ public class MemberServiceImpl implements MemberService {
      * 권한 변경
      */
     @Transactional
+    @Override
     public MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request) {
         Member currentMember = getMemberById(currentMemberId);
 
@@ -231,6 +242,7 @@ public class MemberServiceImpl implements MemberService {
      * 임시 - 임원 권한이 필요 없는 권한 변경
      */
     @Transactional
+    @Override
     public MemberResponse testUpdateRole(TestUpdateRoleDto request) {
         // 변경 대상 회원 조회
         Member member = getMemberById(request.memberId());
@@ -244,5 +256,26 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return MemberResponse.from(member);
+    }
+
+    /**
+     * 회원 비활성화 (Soft Delete)
+     */
+    @Transactional
+    @Override
+    public void deactivateMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+        member.deactivate();
+    }
+
+    /**
+     * 7일이 지난 Soft Deleted 데이터 완전 삭제
+     */
+    @Scheduled(cron = "0 0 4 * * ?") // (초 분 시 일 월 요일) -> 매일 새벽 4시 실행
+    @Transactional
+    public void removeOldDeletedMembers() {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(7);
+        memberRepository.hardDeleteOldMembers(threshold);
     }
 }

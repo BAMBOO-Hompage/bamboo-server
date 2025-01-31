@@ -21,4 +21,5 @@ public interface MemberService {
     void updatePw(Long memberId, UpdatePwDto request);
     MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request);
     MemberResponse testUpdateRole(TestUpdateRoleDto request);
+    void deactivateMember(Long memberId);
 }

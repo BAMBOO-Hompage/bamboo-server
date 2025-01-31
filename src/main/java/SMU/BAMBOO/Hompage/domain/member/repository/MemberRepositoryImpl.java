@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +82,15 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public void hardDeleteOldMembers(LocalDateTime threshold) {
+        QMember member = QMember.member;
+
+        queryFactory.delete(member)
+                .where(member.isDeleted.eq(true)
+                        .and(member.deletedAt.loe(threshold)))
+                .execute();
     }
 }

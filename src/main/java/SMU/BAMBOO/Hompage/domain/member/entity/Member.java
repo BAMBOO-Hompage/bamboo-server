@@ -8,8 +8,11 @@ import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@SQLDelete(sql = "UPDATE member SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE member_id = ?")
+@SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
 
     @Id
@@ -50,8 +55,13 @@ public class Member extends BaseEntity {
     @Column(length = 15)
     private Role role;
 
-
     private String profileImageUrl;
+
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
+    @Column
+    private LocalDateTime deletedAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -89,6 +99,12 @@ public class Member extends BaseEntity {
 
     public void updateRole(Role role) {
         this.role = role;
+    }
+
+    /** 비활성화 - Soft Delete */
+    public void deactivate() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 
     /**

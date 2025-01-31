@@ -7,7 +7,6 @@ public class InventoryRequestDTO {
 
     @Schema(description = "스터디 정리본 생성 요청 DTO")
     public record Create(
-            @Schema(description = "회원 ID", example = "1") Long memberId,
             @Schema(description = "스터디 ID", example = "1") Long studyId,
             @Schema(description = "제목", example = "1주차 CV 스터디 정리") String title,
             @Schema(description = "내용", example = "이것 저것 배웠습니다~") String content,

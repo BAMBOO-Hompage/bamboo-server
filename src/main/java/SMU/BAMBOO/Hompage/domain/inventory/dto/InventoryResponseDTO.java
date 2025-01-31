@@ -11,9 +11,6 @@ public class InventoryResponseDTO {
 
     @Schema(description = "스터디 정리본 생성 응답 DTO")
     public record Create(
-            @Schema(description = "정리본 ID")
-            Long inventoryId,
-
             @Schema(description = "작성한 멤버 정보")
             MemberResponse member,
 
@@ -28,7 +25,6 @@ public class InventoryResponseDTO {
     ) {
         public static Create from(Inventory inventory) {
             return new Create(
-                    inventory.getInventoryId(),
                     MemberResponse.from(inventory.getMember()),
                     StudyResponseDTO.GetOne.from(inventory.getStudy()),
                     inventory.getTitle(),
@@ -39,9 +35,6 @@ public class InventoryResponseDTO {
 
     @Schema(description = "스터디 정리본 수정 응답 DTO")
     public record Update(
-            @Schema(description = "정리본 ID")
-            Long inventoryId,
-
             @Schema(description = "작성한 멤버 정보")
             MemberResponse member,
 
@@ -56,7 +49,6 @@ public class InventoryResponseDTO {
     ) {
         public static Update from(Inventory inventory) {
             return new Update(
-                    inventory.getInventoryId(),
                     MemberResponse.from(inventory.getMember()),
                     StudyResponseDTO.GetOne.from(inventory.getStudy()),
                     inventory.getTitle(),
@@ -96,6 +88,22 @@ public class InventoryResponseDTO {
                     inventory.getTitle(),
                     inventory.getContent(),
                     inventory.getWeek(),
+                    inventory.getAward() // FIXME 나중에 DTO 로 변경 가능성
+            );
+        }
+    }
+
+    @Schema(description = "스터디 정리본 어워드 추가 응답 DTO")
+    public record AddAward(
+            @Schema(description = "정리본 ID")
+            Long inventoryId,
+
+            @Schema(description = "수상 내역")
+            Award award
+    ) {
+        public static AddAward from(Inventory inventory) {
+            return new AddAward(
+                    inventory.getInventoryId(),
                     inventory.getAward() // FIXME 나중에 DTO 로 변경 가능성
             );
         }

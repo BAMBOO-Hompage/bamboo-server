@@ -13,6 +13,8 @@ public interface InventoryRepository {
 
     Optional<Inventory> findById(Long id);
 
+    Page<Inventory> findByStudy(Long studyId, Pageable pageable);
+
     List<Inventory> findAll();
 
     Page<Inventory> findByPage(Pageable pageable);

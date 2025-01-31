@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +75,19 @@ public class InventoryServiceImpl implements InventoryService {
     public InventoryResponseDTO.GetOne getById(Long id) {
         Inventory inventory = getInventoryById(id);
         return InventoryResponseDTO.GetOne.from(inventory);
+    }
+
+    /**
+     * 특정 스터디의 스터디 정리본 페이지 조회
+     */
+    public Page<InventoryResponseDTO.GetOne> getInventoriesByStudy(Long studyId, int page, int size) {
+        studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inventory> inventories = inventoryRepository.findByStudy(studyId, pageable);
+
+        return inventories.map(InventoryResponseDTO.GetOne::from);
     }
 
     /**

@@ -10,6 +10,7 @@ public interface InventoryService {
 
     InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request);
     InventoryResponseDTO.GetOne getById(Long id);
+    Page<InventoryResponseDTO.GetOne> getInventoriesByStudy(Long studyId, int page, int size);
     Page<InventoryResponseDTO.GetOne> getInventories(int page, int size);
     List<InventoryResponseDTO.GetOne> findAll();
     InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request);

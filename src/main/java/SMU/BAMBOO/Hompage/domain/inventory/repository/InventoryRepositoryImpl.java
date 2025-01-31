@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.inventory.repository;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,31 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Override
     public Optional<Inventory> findById(Long id) {
         return inventoryJpaRepository.findById(id);
+    }
+
+    @Override
+    public Page<Inventory> findByStudy(Long studyId, Pageable pageable) {
+        QInventory inventory = QInventory.inventory;
+        QStudy study = QStudy.study;
+
+        // 전체 개수 조회 (NPE 방지 위해 Optional 사용)
+        Long totalCount = Optional.ofNullable(
+                queryFactory.select(inventory.count())
+                        .from(inventory)
+                        .where(inventory.study.studyId.eq(studyId))
+                        .fetchOne()
+        ).orElse(0L);
+
+        // 데이터 조회
+        List<Inventory> inventories = queryFactory
+                .selectFrom(inventory)
+                .where(inventory.study.studyId.eq(studyId))
+                .orderBy(inventory.week.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(inventories, pageable, totalCount);
     }
 
     @Override

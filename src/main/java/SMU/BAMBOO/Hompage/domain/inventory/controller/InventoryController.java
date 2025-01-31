@@ -44,6 +44,17 @@ public class InventoryController {
         return SuccessResponse.ok(result);
     }
 
+    @GetMapping("/study/{studyId}")
+    @Operation(summary = "스터디별 스터디 정리본 페이지 조회")
+    public SuccessResponse<Page<InventoryResponseDTO.GetOne>> getInventoriesByStudy(
+            @PathVariable("studyId") Long studyId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Page<InventoryResponseDTO.GetOne> result = inventoryService.getInventoriesByStudy(studyId, page, size);
+        return SuccessResponse.ok(result);
+    }
+
     @GetMapping("/all")
     @Operation(summary = "스터디 정리본 전체 조회")
     public SuccessResponse<List<InventoryResponseDTO.GetOne>> findAll() {

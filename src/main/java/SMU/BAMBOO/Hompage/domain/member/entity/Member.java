@@ -57,6 +57,7 @@ public class Member extends BaseEntity {
 
     private String profileImageUrl;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
@@ -80,6 +81,8 @@ public class Member extends BaseEntity {
                 .major(request.major())
                 .phone(request.phoneNumber())
                 .role(Role.ROLE_USER)
+                .isDeleted(false)
+                .deletedAt(null)
                 .build();
     }
 

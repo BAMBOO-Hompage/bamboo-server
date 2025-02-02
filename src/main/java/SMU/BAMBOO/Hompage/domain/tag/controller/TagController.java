@@ -1,8 +1,8 @@
-package SMU.BAMBOO.Hompage.domain.tag.entity.controller;
+package SMU.BAMBOO.Hompage.domain.tag.controller;
 
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagRequestDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagResponseDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.service.TagService;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagRequestDTO;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagResponseDTO;
+import SMU.BAMBOO.Hompage.domain.tag.service.TagService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

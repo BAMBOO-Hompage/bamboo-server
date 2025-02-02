@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.service;
 
-import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
@@ -9,7 +8,6 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
-import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Hibernate;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,29 +32,21 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     private final AwsS3Service awsS3Service;
 
     @Override
-    public MainActivitiesResponseDTO.Create create(MainActivitiesRequestDTO.Create request, List<String> images) {
+    public MainActivitiesResponseDTO.Detail create(MainActivitiesRequestDTO.Create request, List<String> images, Member member) {
 
         if (images == null) {
             images = new ArrayList<>();
         }
 
-        // Hardcoded member
-        Member hardcodedMember = Member.builder()
-                .memberId(1L)
-                .email("test@example.com")
-                .pw("password")
-                .name("John Doe")
-                .studentId("202312345")
-                .major("Computer Science")
-                .phone("01012345678")
-                .role(Role.ROLE_USER)
-                .build();
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
-        MainActivities mainActivities = MainActivities.from(request, hardcodedMember, images);
+        MainActivities mainActivities = MainActivities.from(request, member, images);
 
         MainActivities savedMainActivities = mainActivitiesRepository.save(mainActivities);
 
-        return MainActivitiesResponseDTO.Create.from(savedMainActivities);
+        return MainActivitiesResponseDTO.Detail.from(savedMainActivities);
     }
 
     @Override
@@ -65,23 +58,49 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     }
 
     @Override
-    @Transactional
-    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<String> images){
-        MainActivities activity = mainActivitiesRepository.findById(id)
+    public MainActivitiesResponseDTO.Detail getMainActivity(Long id){
+
+        MainActivities mainActivity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+        // Lazy Loading 초기화
+        Hibernate.initialize(mainActivity.getMember());
+        return MainActivitiesResponseDTO.Detail.from(mainActivity);
 
-        // 기존 이미지 삭제
-        List<String> oldImages = activity.getImages() != null ? activity.getImages() : List.of();
-        oldImages.forEach(awsS3Service::deleteFile);
-
-        activity.update(request, images);
     }
 
     @Override
     @Transactional
-    public void deleteMainActivity(Long id){
+    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<Object> images, Member member) {
+        MainActivities activity = mainActivitiesRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
+
+        List<String> finalImageUrls = new ArrayList<>();
+
+        for (Object image : images) {
+            if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
+                finalImageUrls.add(url);
+            } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
+                String uploadedUrl = awsS3Service.uploadFile("main-activities", file);
+                finalImageUrls.add(uploadedUrl);
+            }
+        }
+
+        activity.update(request, finalImageUrls);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMainActivity(Long id, Member member){
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
+
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
         List<String> imageUrls = activity.getImages();
         imageUrls.forEach(awsS3Service::deleteFile);

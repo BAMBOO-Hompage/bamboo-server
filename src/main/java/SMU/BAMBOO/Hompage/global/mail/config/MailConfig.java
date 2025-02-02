@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.global.mail.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -20,7 +21,7 @@ public class MailConfig {
     }
 
     @Bean
-    public SpringTemplateEngine templateEngine(SpringResourceTemplateResolver templateResolver) {
+    public SpringTemplateEngine templateEngine(@Qualifier("templateResolver") SpringResourceTemplateResolver templateResolver) {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver);
         return engine;

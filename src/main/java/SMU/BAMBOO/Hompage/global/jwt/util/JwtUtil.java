@@ -5,7 +5,6 @@ import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +89,9 @@ public class JwtUtil {
 
     // Redis 에서 Refresh Token 조회
     public String getRefreshTokenFromRedis(String studentId) {
+        if (studentId == null) {
+            throw new CustomException(ErrorCode.REDIS_STORE_FAILED);
+        }
         return redisTemplate.opsForValue().get(getRefreshTokenKey(studentId));
     }
 
@@ -120,12 +122,17 @@ public class JwtUtil {
     // JWT에서 Role 추출
     public String getRole(String token) {
         try {
-            return Jwts.parser()
+            String role = Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()
                     .get("role", String.class);
+
+            if (role == null || role.isEmpty()) {
+                throw new CustomException(ErrorCode.TOKEN_INVALID_ROLE);
+            }
+            return role;
         } catch (JwtException e) {
             throw new CustomException(ErrorCode.ACCESS_TOKEN_INVALID);
         }

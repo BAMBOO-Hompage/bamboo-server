@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.global.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,11 +36,19 @@ public class SecurityConfig {
             "/api/members/login",
             "/api/members/sign-up",
             "/api/emails/**",
+            "/auth/reissue",
+            "/api/main-activities/year"
+    };
 
-            // 아래는 테스트하느라 추가해 둔 api
-            "/api/main-activities",
-            "/api/main-activities/year",
-            "/api/main-activities/{id}"
+    // 운영진 이상의 권한 필요 (ADMIN, OPS)
+    private final String[] adminUrls = {
+            "/api/subjects/**",
+            "/api/studies/**"
+    };
+
+    // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
+    private final String[] memberUrls = {
+            "/api/inventories/**"
     };
 
     @Bean
@@ -73,8 +82,14 @@ public class SecurityConfig {
 
         // 경로별 인가 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(allowedUrls).permitAll()
-                        .anyRequest().authenticated());
+                .requestMatchers(allowedUrls).permitAll()
+                .requestMatchers(HttpMethod.GET, adminUrls).permitAll()
+                .requestMatchers(HttpMethod.POST, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyRole("ADMIN", "OPS")
+                .requestMatchers(memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
+                .anyRequest().authenticated());
 
         // 예외 처리 설정
         http.exceptionHandling(e -> e

@@ -29,7 +29,7 @@ public class AwsS3Service {
     private final AmazonS3 s3Client;
 
     // 여러개의 파일 업로드
-    public List<String> uploadFile(String folderName, List<MultipartFile> multipartFile) {
+    public List<String> uploadFiles(String folderName, List<MultipartFile> multipartFile) {
         List<String> fileNameList = new ArrayList<>();
 
         multipartFile.forEach(file -> {
@@ -51,6 +51,24 @@ public class AwsS3Service {
 
         return fileNameList;
     }
+
+    // 파일 하나 업로드
+    public String uploadFile(String folderName, MultipartFile multipartFile) {
+        String fileName = createFileName(folderName, multipartFile.getOriginalFilename());
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        try(InputStream inputStream = multipartFile.getInputStream()) {
+            s3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch(IOException e) {
+            throw new CustomException(ErrorCode.UPLOAD_FAILED);
+        }
+
+        return "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
+    }
+
 
     // 파일 삭제
     public void deleteFile(String fileName) {
@@ -85,5 +103,18 @@ public class AwsS3Service {
             throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public String extractS3Key(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
+        }
+
+        String prefix = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/";
+        if (!fileUrl.startsWith(prefix)) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
+        }
+
+        return fileUrl.substring(prefix.length());
     }
 }

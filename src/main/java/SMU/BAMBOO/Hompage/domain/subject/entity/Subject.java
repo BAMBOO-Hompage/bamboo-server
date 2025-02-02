@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.subject.entity;
 
-import SMU.BAMBOO.Hompage.domain.enums.SubjectName;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
+import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.weeklyContent.entity.WeeklyContent;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -23,9 +23,8 @@ public class Subject extends BaseEntity {
     @Column(name = "subject_id")
     private Long subjectId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 15)
-    private SubjectName name;
+    @Column(nullable = false, length = 15)
+    private String name;
 
     @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
@@ -34,4 +33,8 @@ public class Subject extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<WeeklyContent> weeklyContents = new ArrayList<>();
+
+    public void updateName(SubjectRequestDTO.Update request) {
+        this.name = request.name();
+    }
 }

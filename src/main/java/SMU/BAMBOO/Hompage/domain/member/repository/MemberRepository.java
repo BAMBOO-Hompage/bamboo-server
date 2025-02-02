@@ -1,7 +1,10 @@
 package SMU.BAMBOO.Hompage.domain.member.repository;
 
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +18,13 @@ public interface MemberRepository {
 
     Optional<Member> findByEmail(String email);
 
+    List<Member> findAllByStudentId(List<String> studentIds);
+
     Member save(Member member);
 
-    List<Member> findAll();
+    Page<Member> findAll(Pageable pageable);
+
+    Page<Member> findAllSortByRole(Pageable pageable);
+
+    void hardDeleteOldMembers(LocalDateTime threshold);
 }

@@ -8,8 +8,11 @@ import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@SQLDelete(sql = "UPDATE member SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE member_id = ?")
+@SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
 
     @Id
@@ -50,6 +55,15 @@ public class Member extends BaseEntity {
     @Column(length = 15)
     private Role role;
 
+    private String profileImageUrl;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
+    @Column
+    private LocalDateTime deletedAt;
+
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberStudy> memberStudies = new ArrayList<>();
@@ -57,7 +71,6 @@ public class Member extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
-
 
     public static Member from(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
         return Member.builder()
@@ -68,6 +81,40 @@ public class Member extends BaseEntity {
                 .major(request.major())
                 .phone(request.phoneNumber())
                 .role(Role.ROLE_USER)
+                .isDeleted(false)
+                .deletedAt(null)
                 .build();
+    }
+
+    public void updateProfile(String phoneNumber,
+                              String profileImageUrl) {
+        this.phone = phoneNumber;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void setBasicProfileImage() {
+        this.profileImageUrl = null;
+    }
+
+    public void updatePw(String pw) {
+        this.pw = pw;
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+    /** 비활성화 - Soft Delete */
+    public void deactivate() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    /**
+     * 연관 관계 편의 메서드
+     */
+    public void addMemberStudy(MemberStudy memberStudy) {
+        this.memberStudies.add(memberStudy);
+        memberStudy.associateMember(this);
     }
 }

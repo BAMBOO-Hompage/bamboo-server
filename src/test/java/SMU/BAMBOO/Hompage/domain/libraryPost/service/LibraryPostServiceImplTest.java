@@ -52,7 +52,6 @@ class LibraryPostServiceImplTest {
         fakeLibraryPostRepository.save(LibraryPost.builder()
                 .libraryPostId(1L)
                 .member(testMember)
-                .speaker("김재관")
                 .paperName("CV 논문1")
                 .year(2025)
                 .topic("CV의 ~에 대하여")
@@ -66,7 +65,6 @@ class LibraryPostServiceImplTest {
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
                 2025,
-                "김재관",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -78,7 +76,6 @@ class LibraryPostServiceImplTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.speaker()).isEqualTo("김재관");
         assertThat(response.paperName()).isEqualTo("CV 논문");
         assertThat(response.year()).isEqualTo(2025);
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
@@ -102,7 +99,6 @@ class LibraryPostServiceImplTest {
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
                 2024,
-                "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "[수정] 최신 논문에 대한 정리",
@@ -121,7 +117,6 @@ class LibraryPostServiceImplTest {
         assertThat(response).isNotNull();
         assertThat(response.link()).isEqualTo("http://linkkk.com");
         assertThat(response.year()).isEqualTo(2024);
-        assertThat(response.speaker()).isEqualTo("김재관이");
         assertThat(response.paperName()).isEqualTo("CV 논문2");
         assertThat(response.topic()).isEqualTo("머신러닝의 ~에 대하여");
         assertThat(response.content()).isEqualTo("[수정] 최신 논문에 대한 정리");
@@ -134,7 +129,6 @@ class LibraryPostServiceImplTest {
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
                 2024,
-                "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -153,7 +147,6 @@ class LibraryPostServiceImplTest {
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
                 2024,
-                "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "최신 논문에 대한 정리",

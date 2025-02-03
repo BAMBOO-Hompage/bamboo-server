@@ -7,12 +7,14 @@ import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Builder
 @RequestMapping("/api/tags")
 @RequiredArgsConstructor
 @Tag(name = "태그(알렉산드리아) API")

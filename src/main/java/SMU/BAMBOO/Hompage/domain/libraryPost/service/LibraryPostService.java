@@ -9,7 +9,7 @@ public interface LibraryPostService {
 
     LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member);
     LibraryPostResponseDTO.GetOne getById(Long id);
-    Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(int page, int size);
+    Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(String tab, String keyword, int page, int size);
     void update(Long id, LibraryPostRequestDTO.Update dto);
     void delete(Long id);
     LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);

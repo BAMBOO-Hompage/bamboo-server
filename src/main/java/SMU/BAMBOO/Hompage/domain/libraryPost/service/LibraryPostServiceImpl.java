@@ -74,10 +74,21 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     }
 
     @Override
-    public Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(int page, int size) {
+    public Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(String tab, String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return libraryPostRepository.findByPage(pageable)
-                .map(LibraryPostResponseDTO.GetOne::from);
+
+        Page<LibraryPost> libraryPosts;
+        if ("paperName".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByPaperName(keyword, pageable);
+        } else if ("year".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByYear(keyword, pageable);
+        } else if ("tag".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByTag(keyword, pageable);
+        } else {
+            libraryPosts = libraryPostRepository.findByPage(pageable);
+        }
+
+        return libraryPosts.map(LibraryPostResponseDTO.GetOne::from);
     }
 
     @Override

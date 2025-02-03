@@ -29,8 +29,18 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
+    public List<Tag> findByNameIn(List<String> names) {
+        return tagJpaRepository.findByNameIn(names);
+    }
+
+    @Override
     public Tag save(Tag tag) {
         return tagJpaRepository.save(tag);
+    }
+
+    @Override
+    public void saveAll(List<Tag> tags) {
+        tagJpaRepository.saveAll(tags);
     }
 
     @Override

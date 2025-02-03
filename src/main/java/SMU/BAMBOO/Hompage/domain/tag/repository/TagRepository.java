@@ -13,7 +13,11 @@ public interface TagRepository {
 
     List<Tag> findAll();
 
+    List<Tag> findByNameIn(List<String> names);
+
     Tag save(Tag tag);
+
+    void saveAll(List<Tag> tags);
 
     void deleteById(Long id);
 

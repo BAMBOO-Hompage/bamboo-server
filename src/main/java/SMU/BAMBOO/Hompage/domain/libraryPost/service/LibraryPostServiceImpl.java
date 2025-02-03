@@ -17,8 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Builder
@@ -38,6 +43,8 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member) {
 
+        List<String> tagNames = dto.tagNames() != null ? dto.tagNames() : List.of();
+
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
                 .member(member)
@@ -49,16 +56,32 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .link(dto.link())
                 .build();
 
-        // 태그 추가
-        dto.tagNames().forEach(tagName -> {
-            Tag tag = tagRepository.findByName(tagName)
-                    .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST));
+        // 이미 존재하는 태그 조회
+        List<Tag> existingTags = Optional.ofNullable(tagRepository.findByNameIn(tagNames))
+                .orElse(List.of());
+        Set<String> existingTagNames = existingTags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
 
+        // 존재하지 않는 태그는 새로 생성
+        List<Tag> newTags = tagNames.stream()
+                .filter(tagName -> !existingTagNames.contains(tagName))
+                .map(tagName -> Tag.builder().name(tagName).build())
+                .toList();
+
+        if (!newTags.isEmpty()) {
+            tagRepository.saveAll(newTags);
+        }
+
+        // 태그 리스트
+        List<Tag> tags = Stream.concat(existingTags.stream(), newTags.stream()).toList();
+
+        // 관계 설정
+        tags.forEach(tag -> {
             LibraryPostTag libraryPostTag = LibraryPostTag.builder()
                     .tag(tag)
                     .libraryPost(libraryPost)
                     .build();
-
             libraryPost.addLibraryPostTag(libraryPostTag);
         });
 
@@ -78,12 +101,14 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<LibraryPost> libraryPosts;
-        if ("paperName".equalsIgnoreCase(tab)) {
-            libraryPosts = libraryPostRepository.findByPaperName(keyword, pageable);
-        } else if ("year".equalsIgnoreCase(tab)) {
-            libraryPosts = libraryPostRepository.findByYear(keyword, pageable);
-        } else if ("tag".equalsIgnoreCase(tab)) {
-            libraryPosts = libraryPostRepository.findByTag(keyword, pageable);
+
+        if (StringUtils.hasText(keyword)) {
+            libraryPosts = switch (tab) {
+                case "논문 이름" -> libraryPostRepository.findByPaperName(keyword, pageable);
+                case "연도" -> libraryPostRepository.findByYear(keyword, pageable);
+                case "태그" -> libraryPostRepository.findByTag(keyword, pageable);
+                default -> libraryPostRepository.findByPage(pageable);
+            };
         } else {
             libraryPosts = libraryPostRepository.findByPage(pageable);
         }
@@ -94,15 +119,32 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Override
     @Transactional
     public void update(Long id, LibraryPostRequestDTO.Update request) {
-        LibraryPost libraryPost = getLibraryPostById(id);
 
-        // 태그 이름을 기반으로 Tag 객체 리스트 생성
-        List<Tag> tags = request.tagNames().stream()
-                .map(tagName -> tagRepository.findByName(tagName)
-                        .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST)))
+        LibraryPost libraryPost = getLibraryPostById(id);
+        List<String> tagNames = request.tagNames() != null ? request.tagNames() : List.of();
+
+        // 이미 존재하는 태그 조회
+        List<Tag> existingTags = Optional.ofNullable(tagRepository.findByNameIn(tagNames))
+                .orElse(List.of());
+        Set<String> existingTagNames = existingTags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+
+        // 존재하지 않는 태그는 새로 생성
+        List<Tag> newTags = tagNames.stream()
+                .filter(tagName -> !existingTagNames.contains(tagName))
+                .map(tagName -> Tag.builder().name(tagName).build())
                 .toList();
 
-        libraryPost.setTags(tags);
+        if (!newTags.isEmpty()) {
+            tagRepository.saveAll(newTags);
+        }
+
+        // 태그 리스트
+        List<Tag> allTags = Stream.concat(existingTags.stream(), newTags.stream()).toList();
+
+        // 태그 업데이트
+        libraryPost.setTags(allTags);
         libraryPost.updateBasicFields(request);
     }
 

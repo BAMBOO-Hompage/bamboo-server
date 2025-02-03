@@ -124,24 +124,6 @@ class LibraryPostServiceImplTest {
     }
 
     @Test
-    void 존재하지_않는_Tag_예외_테스트() {
-        // Given
-        LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
-                "http://linkkk.com",
-                2024,
-                "CV 논문2",
-                "머신러닝의 ~에 대하여",
-                "최신 논문에 대한 정리",
-                List.of("not exist")
-        );
-
-        // When & Then
-        assertThatThrownBy(() -> libraryPostService.update(1L, request))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorCode.TAG_NOT_EXIST.getMessage());
-    }
-
-    @Test
     void 존재하지_않는_LibraryPost_수정_예외_테스트() {
         // Given
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(

@@ -69,6 +69,7 @@ class LibraryPostServiceImplTest {
                 "김재관",
                 "CV 논문",
                 "CV의 ~에 대하여",
+                "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
 
@@ -81,6 +82,7 @@ class LibraryPostServiceImplTest {
         assertThat(response.paperName()).isEqualTo("CV 논문");
         assertThat(response.year()).isEqualTo(2025);
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
+        assertThat(response.content()).isEqualTo("최신 논문에 대한 정리");
         assertThat(response.link()).isEqualTo("http://link.com");
         assertThat(response.tagNames()).hasSize(2).contains("CV", "ML");
     }
@@ -103,6 +105,7 @@ class LibraryPostServiceImplTest {
                 "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
+                "[수정] 최신 논문에 대한 정리",
                 List.of("ML")
         );
 
@@ -121,6 +124,7 @@ class LibraryPostServiceImplTest {
         assertThat(response.speaker()).isEqualTo("김재관이");
         assertThat(response.paperName()).isEqualTo("CV 논문2");
         assertThat(response.topic()).isEqualTo("머신러닝의 ~에 대하여");
+        assertThat(response.content()).isEqualTo("[수정] 최신 논문에 대한 정리");
         assertThat(response.tagNames()).hasSize(1).contains("ML");
     }
 
@@ -133,6 +137,7 @@ class LibraryPostServiceImplTest {
                 "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
+                "최신 논문에 대한 정리",
                 List.of("not exist")
         );
 
@@ -151,6 +156,7 @@ class LibraryPostServiceImplTest {
                 "김재관이",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
+                "최신 논문에 대한 정리",
                 List.of("ML")
         );
 

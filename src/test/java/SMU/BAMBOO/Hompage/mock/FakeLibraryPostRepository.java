@@ -38,6 +38,7 @@ public class FakeLibraryPostRepository implements LibraryPostRepository {
                     .paperName(libraryPost.getPaperName())
                     .year(libraryPost.getYear())
                     .topic(libraryPost.getTopic())
+                    .content(libraryPost.getContent())
                     .link(libraryPost.getLink())
                     .libraryPostTags(libraryPost.getLibraryPostTags())
                     .build();

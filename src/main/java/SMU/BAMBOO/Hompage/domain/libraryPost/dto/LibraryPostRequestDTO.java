@@ -14,6 +14,7 @@ public class LibraryPostRequestDTO {
             @Schema(description = "발표자", example = "김진석") String speaker,
             @Schema(description = "논문 이름", example = "CV 논문") String paperName,
             @Schema(description = "주제", example = "CV") String topic,
+            @Schema(description = "내용", example = "최신 논문에 대한 정리") String content,
             @Schema(description = "태그", example = "[\"CV\", \"AI\"]") List<String> tagNames
     ) {}
 
@@ -22,8 +23,9 @@ public class LibraryPostRequestDTO {
             @Schema(description = "논문 링크", example = "xxx.xxx") String link,
             @Schema(description = "연도", example = "2025") int year,
             @Schema(description = "발표자", example = "김진석") String speaker,
-            @Schema(description = "논문 이름", example = "김진석") String paperName,
+            @Schema(description = "논문 이름", example = "[수정] CV 논문") String paperName,
             @Schema(description = "주제", example = "CV") String topic,
+            @Schema(description = "내용", example = "[수정] 최신 논문에 대한 정리") String content,
             @Schema(description = "태그", example = "[\"CV\", \"AI\"]") List<String> tagNames
     ) {}
 

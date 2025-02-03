@@ -42,6 +42,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .paperName(dto.paperName())
                 .year(dto.year())
                 .topic(dto.topic())
+                .content(dto.content())
                 .link(dto.link())
                 .build();
 

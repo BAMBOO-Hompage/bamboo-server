@@ -59,7 +59,7 @@ public class LibraryPostControllerTest {
         // Then
         assertThat(response.link()).isEqualTo("http://link.com");
         assertThat(response.year()).isEqualTo(2025);
-        assertThat(response.speaker()).isEqualTo("김재관");
+        assertThat(response.member().getName()).isEqualTo("김재관");
         assertThat(response.paperName()).isEqualTo("CV 논문");
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
         assertThat(response.content()).isEqualTo("최신 논문에 대한 정리");

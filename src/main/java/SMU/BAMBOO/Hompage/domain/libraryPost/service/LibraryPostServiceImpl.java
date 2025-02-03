@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,7 +57,8 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .build();
 
         // 이미 존재하는 태그 조회
-        List<Tag> existingTags = tagRepository.findByNameIn(tagNames);
+        List<Tag> existingTags = Optional.ofNullable(tagRepository.findByNameIn(tagNames))
+                .orElse(List.of());
         Set<String> existingTagNames = existingTags.stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
@@ -122,7 +124,8 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         List<String> tagNames = request.tagNames() != null ? request.tagNames() : List.of();
 
         // 이미 존재하는 태그 조회
-        List<Tag> existingTags = tagRepository.findByNameIn(tagNames);
+        List<Tag> existingTags = Optional.ofNullable(tagRepository.findByNameIn(tagNames))
+                .orElse(List.of());
         Set<String> existingTagNames = existingTags.stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());

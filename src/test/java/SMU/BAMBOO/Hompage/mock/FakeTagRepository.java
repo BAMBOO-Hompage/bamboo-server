@@ -34,6 +34,16 @@ public class FakeTagRepository implements TagRepository {
     }
 
     @Override
+    public List<Tag> findByNameIn(List<String> names) {
+        return null;
+    }
+
+    @Override
+    public void saveAll(List<Tag> tags) {
+
+    }
+
+    @Override
     public Tag save(Tag tag) {
         if (tag.getTagId() == null || tag.getTagId() == 0) {
             Tag newTag = Tag.builder()

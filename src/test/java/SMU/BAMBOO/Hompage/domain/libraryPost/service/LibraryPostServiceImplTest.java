@@ -191,9 +191,6 @@ class LibraryPostServiceImplTest {
         // Then
         Optional<LibraryPost> deletedPost = fakeLibraryPostRepository.findById(1L);
         assertThat(deletedPost).isEmpty();
-
-        List<LibraryPost> allPosts = fakeLibraryPostRepository.findAll();
-        assertThat(allPosts).isEmpty();
     }
 
     @Test

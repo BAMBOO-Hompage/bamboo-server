@@ -78,11 +78,11 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<LibraryPost> libraryPosts;
-        if ("paperName".equalsIgnoreCase(tab)) {
+        if ("논문 이름".equalsIgnoreCase(tab)) {
             libraryPosts = libraryPostRepository.findByPaperName(keyword, pageable);
-        } else if ("year".equalsIgnoreCase(tab)) {
+        } else if ("연도".equalsIgnoreCase(tab)) {
             libraryPosts = libraryPostRepository.findByYear(keyword, pageable);
-        } else if ("tag".equalsIgnoreCase(tab)) {
+        } else if ("태그".equalsIgnoreCase(tab)) {
             libraryPosts = libraryPostRepository.findByTag(keyword, pageable);
         } else {
             libraryPosts = libraryPostRepository.findByPage(pageable);

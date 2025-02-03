@@ -45,10 +45,10 @@ public class LibraryPostController {
     @GetMapping
     @Operation(summary = "알렉산드리아 글 목록 조회")
     public SuccessResponse<Page<LibraryPostResponseDTO.GetOne>> getLibraryPosts(
-            @RequestParam(value = "tab", required = false, defaultValue = "paperName") String tab,
+            @RequestParam(value = "tab", required = false, defaultValue = "논문 이름") String tab,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "15") int size
+            @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         Page<LibraryPostResponseDTO.GetOne> result = libraryPostService.getLibraryPosts(tab, keyword, page, size);
         return SuccessResponse.ok(result);

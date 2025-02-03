@@ -2,6 +2,8 @@ package SMU.BAMBOO.Hompage.mock;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +40,7 @@ public class FakeLibraryPostRepository implements LibraryPostRepository {
                     .paperName(libraryPost.getPaperName())
                     .year(libraryPost.getYear())
                     .topic(libraryPost.getTopic())
+                    .content(libraryPost.getContent())
                     .link(libraryPost.getLink())
                     .libraryPostTags(libraryPost.getLibraryPostTags())
                     .build();
@@ -51,13 +54,29 @@ public class FakeLibraryPostRepository implements LibraryPostRepository {
         }
     }
 
-    @Override
-    public List<LibraryPost> findAll() {
-        return new ArrayList<>(data);
-    }
 
     @Override
     public void deleteById(Long id) {
         data.removeIf(post -> post.getLibraryPostId().equals(id));
+    }
+
+    @Override
+    public Page<LibraryPost> findByPage(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<LibraryPost> findByPaperName(String paperName, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<LibraryPost> findByYear(String year, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<LibraryPost> findByTag(String tag, Pageable pageable) {
+        return null;
     }
 }

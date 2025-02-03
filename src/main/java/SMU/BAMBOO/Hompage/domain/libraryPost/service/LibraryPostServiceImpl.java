@@ -12,6 +12,9 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +41,11 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
                 .member(member)
-                .speaker(dto.speaker())
+                .speaker(member.getName())
                 .paperName(dto.paperName())
                 .year(dto.year())
                 .topic(dto.topic())
+                .content(dto.content())
                 .link(dto.link())
                 .build();
 
@@ -67,6 +71,24 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     public LibraryPostResponseDTO.GetOne getById(Long id) {
         LibraryPost libraryPost = getLibraryPostById(id);
         return LibraryPostResponseDTO.GetOne.from(libraryPost);
+    }
+
+    @Override
+    public Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(String tab, String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<LibraryPost> libraryPosts;
+        if ("paperName".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByPaperName(keyword, pageable);
+        } else if ("year".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByYear(keyword, pageable);
+        } else if ("tag".equalsIgnoreCase(tab)) {
+            libraryPosts = libraryPostRepository.findByTag(keyword, pageable);
+        } else {
+            libraryPosts = libraryPostRepository.findByPage(pageable);
+        }
+
+        return libraryPosts.map(LibraryPostResponseDTO.GetOne::from);
     }
 
     @Override

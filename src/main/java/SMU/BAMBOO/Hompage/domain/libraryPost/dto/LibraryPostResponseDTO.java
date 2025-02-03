@@ -16,6 +16,7 @@ public class LibraryPostResponseDTO {
             String paperName,
             int year,
             String topic,
+            String content,
             String link,
             List<String> tagNames
     ) {
@@ -27,6 +28,7 @@ public class LibraryPostResponseDTO {
                     libraryPost.getPaperName(),
                     libraryPost.getYear(),
                     libraryPost.getTopic(),
+                    libraryPost.getContent(),
                     libraryPost.getLink(),
                     libraryPost.getLibraryPostTags().stream()
                             .map(libraryPostTag -> libraryPostTag.getTag().getName())
@@ -43,6 +45,7 @@ public class LibraryPostResponseDTO {
             String paperName,
             int year,
             String topic,
+            String content,
             String link,
             List<String> tagNames
     ) {
@@ -54,6 +57,7 @@ public class LibraryPostResponseDTO {
                     libraryPost.getPaperName(),
                     libraryPost.getYear(),
                     libraryPost.getTopic(),
+                    libraryPost.getContent(),
                     libraryPost.getLink(),
                     libraryPost.getLibraryPostTags().stream()
                             .map(libraryPostTag -> libraryPostTag.getTag().getName())

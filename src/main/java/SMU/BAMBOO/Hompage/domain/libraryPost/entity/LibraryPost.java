@@ -40,6 +40,9 @@ public class LibraryPost extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String topic;
 
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String link;
 
@@ -48,10 +51,10 @@ public class LibraryPost extends BaseEntity {
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
 
     public void updateBasicFields(LibraryPostRequestDTO.Update request) {
-        this.speaker = request.speaker();
         this.paperName = request.paperName();
         this.year = request.year();
         this.topic = request.topic();
+        this.content = request.content();
         this.link = request.link();
     }
 

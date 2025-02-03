@@ -6,9 +6,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnvConfig {
     static {
-        Dotenv dotenv = Dotenv.load(); // .env 파일 로드
-        dotenv.entries().forEach(entry ->
-                System.setProperty(entry.getKey(), entry.getValue()) // 환경 변수 설정
-        );
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
+
+        dotenv.entries().forEach(entry -> {
+            if (System.getProperty(entry.getKey()) == null) {
+                System.setProperty(entry.getKey(), entry.getValue());
+            }
+        });
     }
 }

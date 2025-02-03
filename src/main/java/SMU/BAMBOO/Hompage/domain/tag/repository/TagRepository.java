@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.domain.tag.entity.repository;
+package SMU.BAMBOO.Hompage.domain.tag.repository;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 

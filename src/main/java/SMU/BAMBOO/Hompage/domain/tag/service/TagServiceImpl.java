@@ -1,11 +1,12 @@
-package SMU.BAMBOO.Hompage.domain.tag.entity.service;
+package SMU.BAMBOO.Hompage.domain.tag.service;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagRequestDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.dto.TagResponseDTO;
-import SMU.BAMBOO.Hompage.domain.tag.entity.repository.TagRepository;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagRequestDTO;
+import SMU.BAMBOO.Hompage.domain.tag.dto.TagResponseDTO;
+import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Builder
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {

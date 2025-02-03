@@ -9,9 +9,12 @@ import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+@Builder
 @RestController
 @RequestMapping("/api/library-posts")
 @RequiredArgsConstructor
@@ -36,6 +39,18 @@ public class LibraryPostController {
             @PathVariable("libraryPostId") Long id
     ) {
         LibraryPostResponseDTO.GetOne result = libraryPostService.getById(id);
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping
+    @Operation(summary = "알렉산드리아 글 목록 조회")
+    public SuccessResponse<Page<LibraryPostResponseDTO.GetOne>> getLibraryPosts(
+            @RequestParam(value = "tab", required = false, defaultValue = "paperName") String tab,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) {
+        Page<LibraryPostResponseDTO.GetOne> result = libraryPostService.getLibraryPosts(tab, keyword, page, size);
         return SuccessResponse.ok(result);
     }
 

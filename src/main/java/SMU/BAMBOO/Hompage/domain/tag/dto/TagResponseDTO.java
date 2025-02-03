@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.domain.tag.entity.dto;
+package SMU.BAMBOO.Hompage.domain.tag.dto;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;

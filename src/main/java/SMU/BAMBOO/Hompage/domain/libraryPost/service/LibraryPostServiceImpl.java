@@ -38,7 +38,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
                 .member(member)
-                .speaker(dto.speaker())
+                .speaker(member.getName())
                 .paperName(dto.paperName())
                 .year(dto.year())
                 .topic(dto.topic())

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,6 +39,8 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member) {
 
+        List<String> tagNames = dto.tagNames() != null ? dto.tagNames() : new ArrayList<>();
+
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
                 .member(member)
@@ -50,7 +53,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .build();
 
         // 태그 추가
-        dto.tagNames().forEach(tagName -> {
+        tagNames.forEach(tagName -> {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_EXIST));
 

@@ -12,6 +12,9 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +71,13 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     public LibraryPostResponseDTO.GetOne getById(Long id) {
         LibraryPost libraryPost = getLibraryPostById(id);
         return LibraryPostResponseDTO.GetOne.from(libraryPost);
+    }
+
+    @Override
+    public Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return libraryPostRepository.findByPage(pageable)
+                .map(LibraryPostResponseDTO.GetOne::from);
     }
 
     @Override

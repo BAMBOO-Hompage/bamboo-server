@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @Builder
@@ -38,6 +39,16 @@ public class LibraryPostController {
             @PathVariable("libraryPostId") Long id
     ) {
         LibraryPostResponseDTO.GetOne result = libraryPostService.getById(id);
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping
+    @Operation(summary = "알렉산드리아 글 목록 조회")
+    public SuccessResponse<Page<LibraryPostResponseDTO.GetOne>> getLibraryPosts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) {
+        Page<LibraryPostResponseDTO.GetOne> result = libraryPostService.getLibraryPosts(page, size);
         return SuccessResponse.ok(result);
     }
 

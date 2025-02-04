@@ -95,6 +95,7 @@ public enum ErrorCode {
 
     // Knowledge (지식 공유)
     KNOWLEDGE_NOT_EXIST("KNOWLEDGE404", "존재하지 않는 지식 공유글입니다.", HttpStatus.NOT_FOUND),
+    KNOWLEDGE_INVALID_TYPE("KNOWLEDGE400", "잘못된 지식 공유 유형입니다. RESOURCES, INSIGHTS, CAREERS 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
 
     // Knowledge_Comment (지식 공유 게시판 댓글)
     KNOWLEDGE_COMMENT_NOT_EXIST("KNOWLEDGE_COMMENT404", "존재하지 않는 공지 공유 게시판 댓글입니다.", HttpStatus.NOT_FOUND),

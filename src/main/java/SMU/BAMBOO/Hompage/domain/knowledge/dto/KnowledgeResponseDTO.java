@@ -28,8 +28,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),
-                    knowledge.getImage(),
-                    knowledge.getFile()
+                    knowledge.getImages(),
+                    knowledge.getFiles()
             );
         }
     }
@@ -49,8 +49,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),
-                    knowledge.getImage(),
-                    knowledge.getFile()
+                    knowledge.getImages(),
+                    knowledge.getFiles()
             );
         }
     }
@@ -75,8 +75,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getContent(),
                     knowledge.getType(),
                     knowledge.getViews(),
-                    knowledge.getImage(),
-                    knowledge.getFile(),
+                    knowledge.getImages(),
+                    knowledge.getFiles(),
                     knowledge.getKnowledgeComments().stream()
                             .map(KnowledgeCommentResponse.GetOne::from)
                             .collect(Collectors.toList())

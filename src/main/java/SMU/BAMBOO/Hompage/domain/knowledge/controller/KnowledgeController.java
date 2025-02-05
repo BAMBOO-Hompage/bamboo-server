@@ -6,10 +6,6 @@ import SMU.BAMBOO.Hompage.domain.knowledge.service.KnowledgeService;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
-import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,32 +75,30 @@ public class KnowledgeController {
     public SuccessResponse<KnowledgeResponseDTO.Update> updateKnowledge(
             @PathVariable Long id,
             @Valid @ModelAttribute KnowledgeRequestDTO.Update request,
-            @RequestPart(required = false) String imageUrls,  // 기존 이미지 URL을 JSON으로 받음
+            @RequestParam(required = false) List<String> imageUrls,  // 기존 이미지 URL을 JSON 배열로 받음
             @RequestPart(required = false) List<MultipartFile> newImages, // 새 이미지 파일
-            @RequestPart(required = false) String fileUrls,
+            @RequestParam(required = false) List<String> fileUrls,
             @RequestPart(required = false) List<MultipartFile> newFiles) {
+
+        // 빈 문자열로 들어온 경우 null 처리
+        if (newImages != null && newImages.size() == 1 && newImages.get(0).isEmpty()) {
+            newImages = null;
+        }
+        if (newFiles != null && newFiles.size() == 1 && newFiles.get(0).isEmpty()) {
+            newFiles = null;
+        }
 
         List<Object> finalImages = new ArrayList<>();
         List<Object> finalFiles = new ArrayList<>();
 
-        // 기존 이미지 URL JSON 파싱
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            try {
-                List<String> existingImageUrls = objectMapper.readValue(imageUrls, new TypeReference<List<String>>() {});
-                finalImages.addAll(existingImageUrls);
-            } catch (JsonProcessingException e) {
-                throw new CustomException(ErrorCode.INVALID_URL);
-            }
+        // 기존 이미지 추가
+        if (imageUrls != null) {
+            finalImages.addAll(imageUrls);
         }
 
-        // 기존 파일 URL JSON 파싱
-        if (fileUrls != null && !fileUrls.isEmpty()) {
-            try {
-                List<String> existingFileUrls = objectMapper.readValue(fileUrls, new TypeReference<List<String>>() {});
-                finalFiles.addAll(existingFileUrls);
-            } catch (JsonProcessingException e) {
-                throw new CustomException(ErrorCode.INVALID_URL);
-            }
+        // 기존 파일 추가
+        if (fileUrls != null) {
+            finalFiles.addAll(fileUrls);
         }
 
         // 새 이미지 추가

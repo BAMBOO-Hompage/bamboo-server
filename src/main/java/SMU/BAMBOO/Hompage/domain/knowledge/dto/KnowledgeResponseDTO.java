@@ -6,6 +6,7 @@ import SMU.BAMBOO.Hompage.domain.knowledgeComment.dto.KnowledgeCommentResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +29,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),
-                    knowledge.getImages(),
-                    knowledge.getFiles()
+                    knowledge.getImages() != null ? knowledge.getImages() : new ArrayList<>(),
+                    knowledge.getFiles() != null ? knowledge.getFiles() : new ArrayList<>()
             );
         }
     }
@@ -49,8 +50,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),
-                    knowledge.getImages(),
-                    knowledge.getFiles()
+                    knowledge.getImages() != null ? knowledge.getImages() : new ArrayList<>(),
+                    knowledge.getFiles() != null ? knowledge.getFiles() : new ArrayList<>()
             );
         }
     }
@@ -75,8 +76,8 @@ public class KnowledgeResponseDTO {
                     knowledge.getContent(),
                     knowledge.getType(),
                     knowledge.getViews(),
-                    knowledge.getImages(),
-                    knowledge.getFiles(),
+                    knowledge.getImages() != null ? knowledge.getImages() : new ArrayList<>(),
+                    knowledge.getFiles() != null ? knowledge.getFiles() : new ArrayList<>(),
                     knowledge.getKnowledgeComments().stream()
                             .map(KnowledgeCommentResponse.GetOne::from)
                             .collect(Collectors.toList())

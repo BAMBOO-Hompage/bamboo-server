@@ -39,8 +39,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Transactional
     public KnowledgeResponseDTO.Create create(KnowledgeRequestDTO.Create request, Member member, List<MultipartFile> images, List<MultipartFile> files) {
         // 파일 업로드 처리
-        List<String> imageUrls = images != null ? awsS3Service.uploadFiles("knowledge/images", images) : new ArrayList<>();
-        List<String> fileUrls = files != null ? awsS3Service.uploadFiles("knowledge/files", files) : new ArrayList<>();
+        List<String> imageUrls = (images != null && !images.isEmpty()) ? awsS3Service.uploadFiles("knowledge/images", images) : new ArrayList<>();
+        List<String> fileUrls = (files != null && !files.isEmpty()) ? awsS3Service.uploadFiles("knowledge/files", files) : new ArrayList<>();
 
         Knowledge knowledge = Knowledge.from(request, member, imageUrls, fileUrls);
         Knowledge saveKnowledge = knowledgeRepository.save(knowledge);

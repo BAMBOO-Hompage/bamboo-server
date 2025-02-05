@@ -77,14 +77,14 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
                 queryFactory
                         .select(Wildcard.count)
                         .from(knowledge)
-                        .where(knowledge.title.eq(title))
+                        .where(knowledge.title.containsIgnoreCase(title))
                         .fetchOne()
         ).orElse(0L);
 
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
-                .where(knowledge.title.eq(title))
+                .where(knowledge.title.containsIgnoreCase(title))
                 .orderBy(knowledge.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -102,7 +102,7 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         if (type != null) {
             whereClause.and(knowledge.type.eq(type));
         }
-        // 제목(title) 검색
+        // title 검색
         if (keyword != null && !keyword.isEmpty()) {
             whereClause.and(knowledge.title.containsIgnoreCase(keyword));
         }

@@ -40,6 +40,14 @@ public class KnowledgeController {
             @RequestPart(required = false) List<MultipartFile> files,
             @CurrentMember Member member) {
 
+        // 빈 문자열로 들어온 경우 null 처리
+        if (images != null && images.size() == 1 && images.get(0).isEmpty()) {
+            images = null;
+        }
+        if (files != null && files.size() == 1 && files.get(0).isEmpty()) {
+            files = null;
+        }
+
         KnowledgeResponseDTO.Create response = knowledgeService.create(request, member, images, files);
         return SuccessResponse.ok(response);
     }

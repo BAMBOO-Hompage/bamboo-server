@@ -207,6 +207,11 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.USER_WRONG_PASSWORD);
         }
 
+        // 동일한 비밀번호로 변경 불가
+        if (passwordEncoder.matches(request.newPassword(), member.getPw())) {
+            throw new CustomException(ErrorCode.USER_SAME_PASSWORD);
+        }
+
         String newPassword = passwordEncoder.encode(request.newPassword());
         member.updatePw(newPassword);
     }

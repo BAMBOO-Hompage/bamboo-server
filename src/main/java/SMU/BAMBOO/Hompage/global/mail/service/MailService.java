@@ -40,15 +40,9 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String mailSenderAddress;
 
-    public void sendMail(String toEmail, String title, String authCode) {
-        try {
-            MimeMessage emailForm = createEmailForm(toEmail, title, authCode);
-            mailSender.send(emailForm);
-            log.info("이메일 발송 성공: toEmail={}, title={}", toEmail, title);
-        } catch (MessagingException | MailException e) {
-            log.error("이메일 발송 실패: toEmail={}, title={}, error={}", toEmail, title, e.getMessage(), e);
-            throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
-        }
+    public void sendMail(String toEmail, String title, String authCode) throws MessagingException {
+        MimeMessage emailForm = createEmailForm(toEmail, title, authCode);
+        mailSender.send(emailForm);
     }
 
     private MimeMessage createEmailForm(String toEmail, String title, String authCode) throws MessagingException {
@@ -79,16 +73,25 @@ public class MailService {
         String title = "BAMBOO 이메일 인증 번호";
         String authCode = generateAuthCode();
 
-        sendMail(email, title, authCode);
+        try {
+            sendMail(email, title, authCode);
 
-        // Redis에 인증 코드 저장 (key: AuthCode + email, value: authCode)
-        redisService.setValues(
-                AUTH_CODE_PREFIX + email,
-                authCode,
-                Duration.ofMillis(authCodeExpirationMillis)
-        );
+            // Redis에 인증 코드 저장 (key: AuthCode + email, value: authCode)
+            redisService.setValues(
+                    AUTH_CODE_PREFIX + email,
+                    authCode,
+                    Duration.ofMillis(authCodeExpirationMillis)
+            );
 
-        log.info("이메일 인증 코드 전송 성공: {}", email);
+            log.info("이메일 인증 코드 전송 성공: {}", email);
+        } catch (Exception e) {
+            log.error("이메일 전송 실패: email={}, error={}", email, e.getMessage(), e);
+
+            // 이메일 전송 실패 시 Redis에 저장된 인증 코드 삭제
+            redisService.deleteValues(AUTH_CODE_PREFIX + email);
+
+            throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
+        }
     }
 
     // 이메일 인증 코드 검증

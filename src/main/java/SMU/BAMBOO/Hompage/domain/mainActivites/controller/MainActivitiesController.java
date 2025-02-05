@@ -42,7 +42,7 @@ public class MainActivitiesController {
 
         List<String> images = new ArrayList<>();
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFiles("main-activities", request.getImages());
+            images = awsS3Service.uploadFiles("main-activities", request.getImages(), true);
         }
         MainActivitiesResponseDTO.Detail response = mainActivitiesService.create(request, images, member);
 

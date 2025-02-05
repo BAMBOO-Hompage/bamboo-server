@@ -48,7 +48,8 @@ public class SecurityConfig {
 
     // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
     private final String[] memberUrls = {
-            "/api/inventories/**"
+            "/api/inventories/**",
+            "/api/knowledges/**"
     };
 
     @Bean
@@ -84,11 +85,15 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(allowedUrls).permitAll()
                 .requestMatchers(HttpMethod.GET, adminUrls).permitAll()
-                .requestMatchers(HttpMethod.POST, adminUrls).hasAnyRole("ADMIN", "OPS")
-                .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyRole("ADMIN", "OPS")
-                .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyRole("ADMIN", "OPS")
-                .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyRole("ADMIN", "OPS")
-                .requestMatchers(memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.POST, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.GET, memberUrls).permitAll()
+                .requestMatchers(HttpMethod.POST, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.PUT, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.PATCH, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.DELETE, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
                 .anyRequest().authenticated());
 
         // 예외 처리 설정

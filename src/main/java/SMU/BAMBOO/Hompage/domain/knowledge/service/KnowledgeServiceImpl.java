@@ -35,6 +35,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.KNOWLEDGE_NOT_EXIST));
     }
 
+    /** 지식공유 글 생성 */
     @Override
     @Transactional
     public KnowledgeResponseDTO.Create create(KnowledgeRequestDTO.Create request, Member member, List<MultipartFile> images, List<MultipartFile> files) {
@@ -48,12 +49,19 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return KnowledgeResponseDTO.Create.from(saveKnowledge);
     }
 
+    /** 지식공유 글 ID 단일 조회 */
     @Override
     public KnowledgeResponseDTO.GetOne getById(Long id) {
         Knowledge knowledge = getKnowledgeById(id);
         return KnowledgeResponseDTO.GetOne.from(knowledge);
     }
 
+    /** 지식공유 글 목록 조회 - 각 경우마다 다른 검색
+     * 1. Type, Keyword(검색어) 둘 다 있는 경우
+     * 2. Type 있는 경우
+     * 3. Keyword 있는 경우
+     * 4. 둘 다 없는 경우
+     */
     @Override
     public Page<KnowledgeResponseDTO.GetOne> getKnowledges(String type, String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -87,6 +95,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return knowledgePage.map(KnowledgeResponseDTO.GetOne::from);
     }
 
+    /** 지식공유 글 수정 */
     @Override
     @Transactional
     public KnowledgeResponseDTO.Update update(Long id, KnowledgeRequestDTO.Update request, List<Object> images, List<Object> files) {
@@ -118,16 +127,17 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return KnowledgeResponseDTO.Update.from(knowledge);
     }
 
+    /** 지식공유 글 삭제 */
     @Override
     @Transactional
     public void delete(Long id) {
         Knowledge knowledge = getKnowledgeById(id);
 
         List<String> imageUrls = knowledge.getImages();
-        List<String> fileUrls = knowledge.getImages();
+        List<String> fileUrls = knowledge.getFiles();
 
-        imageUrls.forEach(awsS3Service::deleteFile);
-        fileUrls.forEach(awsS3Service::deleteFile);
+        imageUrls.forEach(imageUrl -> awsS3Service.deleteFile(awsS3Service.extractS3Key(imageUrl)));
+        fileUrls.forEach(fileUrl -> awsS3Service.deleteFile(awsS3Service.extractS3Key(fileUrl)));
 
         knowledgeRepository.deleteById(id);
     }

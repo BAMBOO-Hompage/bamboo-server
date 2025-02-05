@@ -72,7 +72,10 @@ public class MemberRepositoryImpl implements MemberRepository {
                         .when(member.role.eq(Role.ROLE_ADMIN)).then(2)
                         .when(member.role.eq(Role.ROLE_OPS)).then(1)
                         .otherwise(0) // 기본값
-                        .asc())
+                        .asc(),
+                    member.studentId.asc(),
+                    member.name.asc()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

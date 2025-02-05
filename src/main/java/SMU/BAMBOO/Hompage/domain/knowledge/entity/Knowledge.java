@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.knowledge.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
+import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeRequestDTO;
 import SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.KnowledgeComment;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
@@ -27,7 +28,7 @@ public class Knowledge extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -37,20 +38,50 @@ public class Knowledge extends BaseEntity {
     @Column(length = 15)
     private KnowledgeType type;
 
+    @Builder.Default
     @Column(nullable = false)
-    private int views;
+    private int views = 0;
 
+    @Builder.Default
     @ElementCollection
-    @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
+    @CollectionTable(name = "knowledge_images", joinColumns = @JoinColumn(name = "knowledge_id"))
     @Column(name = "image_url")
-    private List<String> image;
+    private List<String> images = new ArrayList<>();
 
+    @Builder.Default
     @ElementCollection
-    @CollectionTable(name = "main_activities_files", joinColumns = @JoinColumn(name = "main_activities_id"))
+    @CollectionTable(name = "knowledge_files", joinColumns = @JoinColumn(name = "knowledge_id"))
     @Column(name = "file_url")
-    private List<String> file;
+    private List<String> files = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "knowledge", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<KnowledgeComment> knowledgeComments = new ArrayList<>();
+
+    public static Knowledge from(KnowledgeRequestDTO.Create request, Member member, List<String> images, List<String> files) {
+        return Knowledge.builder()
+                .member(member)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .type(KnowledgeType.valueOf(request.getType()))
+                .views(0)
+                .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
+                .files(files != null ? new ArrayList<>(files) : new ArrayList<>())
+                .build();
+    }
+
+    public void update(KnowledgeRequestDTO.Update request,  List<String> newImages, List<String> newFiles) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.type = KnowledgeType.valueOf(request.getType());
+        if (newImages != null) {
+            this.images.clear();
+            this.images.addAll(newImages);
+        }
+        if (newFiles != null) {
+            this.files.clear();
+            this.files.addAll(newFiles);
+        }
+    }
 }
+

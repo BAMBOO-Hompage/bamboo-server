@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,44 +24,57 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Autowired
     private final AmazonS3 s3Client;
 
-    // 여러개의 파일 업로드
-    public List<String> uploadFiles(String folderName, List<MultipartFile> multipartFile) {
-        List<String> fileNameList = new ArrayList<>();
+    // 여러 개의 파일 업로드
+    public List<String> uploadFiles(String folderName, List<MultipartFile> files, boolean isImage) {
+        return uploadFilesToFolder(folderName, files, isImage);
+    }
 
-        multipartFile.forEach(file -> {
-            String fileName = createFileName(folderName, file.getOriginalFilename());
+    // 단일 파일 업로드
+    public String uploadFile(String folderName, MultipartFile file, boolean isImage) {
+        return uploadFileToFolder(folderName, file, isImage);
+    }
+
+    // 공통 - 여러개의 파일 업로드
+    private List<String> uploadFilesToFolder(String folderName, List<MultipartFile> files, boolean isImage) {
+        List<String> fileUrlList = new ArrayList<>();
+
+        files.forEach(file -> {
+
+            String fileName = createFileName(folderName, file.getOriginalFilename(), isImage);
+
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
 
-            try(InputStream inputStream = file.getInputStream()) {
+            try (InputStream inputStream = file.getInputStream()) {
                 s3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch(IOException e) {
+            } catch (IOException e) {
                 throw new CustomException(ErrorCode.UPLOAD_FAILED);
             }
 
             String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
-            fileNameList.add(fileUrl);
+            fileUrlList.add(fileUrl);
         });
 
-        return fileNameList;
+        return fileUrlList;
     }
 
-    // 파일 하나 업로드
-    public String uploadFile(String folderName, MultipartFile multipartFile) {
-        String fileName = createFileName(folderName, multipartFile.getOriginalFilename());
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+    // 공통 - 파일 하나 업로드
+    private String uploadFileToFolder(String folderName, MultipartFile file, boolean isImage) {
 
-        try(InputStream inputStream = multipartFile.getInputStream()) {
+        String fileName = createFileName(folderName, file.getOriginalFilename(), isImage);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+
+        try (InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new CustomException(ErrorCode.UPLOAD_FAILED);
         }
 
@@ -81,30 +93,40 @@ public class AwsS3Service {
 
 
     // 파일명 중복 방지 (UUID)
-    private String createFileName(String folderName, String fileName) {
-        String uniqueFileName = UUID.randomUUID().toString() + getFileExtension(fileName);
+    private String createFileName(String folderName, String fileName, boolean isImage) {
+        String uniqueFileName = UUID.randomUUID().toString() + getFileExtension(fileName, isImage);
         return folderName + "/" + uniqueFileName;
     }
 
     // 파일 유효성 검사
-    private String getFileExtension(String fileName) {
-        if (fileName.length() == 0) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST);
+    public String getFileExtension(String fileName, boolean isImage) {
+        fileName = fileName.trim();
+
+        // 확장자 추출
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+        List<String> imageExtensions = new ArrayList<>(List.of("jpg", "jpeg", "png"));
+        List<String> documentExtensions = new ArrayList<>(List.of("pdf", "docx", "xlsx", "txt", "csv", "zip"));
+
+        // 리스트에서 확장자 포함 여부 확인
+        boolean isValidImage = imageExtensions.contains(fileExtension);
+        boolean isValidDocument = documentExtensions.contains(fileExtension);
+
+        if (isImage) {
+            if (!isValidImage) {
+                throw new CustomException(ErrorCode.INVALID_REQUEST);
+            }
+            return fileExtension;
+        } else {
+            if (!isValidDocument) {
+                throw new CustomException(ErrorCode.INVALID_REQUEST);
+            }
         }
-        ArrayList<String> fileValidate = new ArrayList<>();
-        fileValidate.add(".jpg");
-        fileValidate.add(".jpeg");
-        fileValidate.add(".png");
-        fileValidate.add(".JPG");
-        fileValidate.add(".JPEG");
-        fileValidate.add(".PNG");
-        String idxFileName = fileName.substring(fileName.lastIndexOf("."));
-        if (!fileValidate.contains(idxFileName)) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST);
-        }
-        return fileName.substring(fileName.lastIndexOf("."));
+
+        return fileExtension;
     }
 
+    // S3에서 파일 키 추출
     public String extractS3Key(String fileUrl) {
         if (fileUrl == null || fileUrl.isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_REQUEST);

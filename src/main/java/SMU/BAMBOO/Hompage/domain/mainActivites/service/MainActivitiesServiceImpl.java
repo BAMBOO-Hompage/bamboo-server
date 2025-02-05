@@ -84,7 +84,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
             if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
                 finalImageUrls.add(url);
             } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
-                String uploadedUrl = awsS3Service.uploadFile("main-activities", file);
+                String uploadedUrl = awsS3Service.uploadFile("main-activities", file, true);
                 finalImageUrls.add(uploadedUrl);
             }
         }

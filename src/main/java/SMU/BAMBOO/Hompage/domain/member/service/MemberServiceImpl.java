@@ -165,7 +165,7 @@ public class MemberServiceImpl implements MemberService {
 
             // 새 프로필 이미지 업로드
             MultipartFile file = request.getProfileImage();
-            profileImageUrl = awsS3Service.uploadFile("profile-images", file);
+            profileImageUrl = awsS3Service.uploadFile("profile-images", file, true);
         } else {
             profileImageUrl = member.getProfileImageUrl();
         }

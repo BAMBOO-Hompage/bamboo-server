@@ -31,13 +31,13 @@ public class LibraryPost extends BaseEntity {
     @Column(nullable = false, length = 10)
     private String speaker;
 
-    @Column(name = "paper_name", nullable = false, length = 50)
+    @Column(name = "paper_name", nullable = false, length = 200)
     private String paperName;
 
     @Column(nullable = false)
     private int year;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String topic;
 
     @Column(columnDefinition = "TEXT")

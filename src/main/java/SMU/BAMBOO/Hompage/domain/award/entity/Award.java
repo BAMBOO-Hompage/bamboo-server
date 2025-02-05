@@ -27,13 +27,13 @@ public class Award extends BaseEntity {
     @Column(nullable = false)
     private int year;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String chapter;
 
     @Column(nullable = false)
     private int session;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false)

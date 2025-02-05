@@ -29,7 +29,7 @@ public class Inventory extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = true)
     private Study study;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")

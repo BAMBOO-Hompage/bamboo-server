@@ -40,8 +40,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Transactional
     public KnowledgeResponseDTO.Create create(KnowledgeRequestDTO.Create request, Member member, List<MultipartFile> images, List<MultipartFile> files) {
         // 파일 업로드 처리
-        List<String> imageUrls = (images != null && !images.isEmpty()) ? awsS3Service.uploadFiles("knowledge/images", images) : new ArrayList<>();
-        List<String> fileUrls = (files != null && !files.isEmpty()) ? awsS3Service.uploadFiles("knowledge/files", files) : new ArrayList<>();
+        List<String> imageUrls = (images != null && !images.isEmpty())
+                ? awsS3Service.uploadFiles("knowledge/images", images, true)
+                : new ArrayList<>();
+        List<String> fileUrls = (files != null && !files.isEmpty())
+                ? awsS3Service.uploadFiles("knowledge/files", files, false)
+                : new ArrayList<>();
 
         Knowledge knowledge = Knowledge.from(request, member, imageUrls, fileUrls);
         Knowledge saveKnowledge = knowledgeRepository.save(knowledge);
@@ -98,28 +102,24 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     /** 지식공유 글 수정 */
     @Override
     @Transactional
-    public KnowledgeResponseDTO.Update update(Long id, KnowledgeRequestDTO.Update request, List<Object> images, List<Object> files) {
+    public KnowledgeResponseDTO.Update update(Long id, KnowledgeRequestDTO.Update request,
+                                              List<String> imageUrls, List<MultipartFile> newImages,
+                                              List<String> fileUrls, List<MultipartFile> newFiles) {
         Knowledge knowledge = getKnowledgeById(id);
 
-        List<String> finalImageUrls = new ArrayList<>();
-        List<String> finalFileUrls = new ArrayList<>();
+        List<String> finalImageUrls = new ArrayList<>(imageUrls != null ? imageUrls : new ArrayList<>());
+        List<String> finalFileUrls = new ArrayList<>(fileUrls != null ? fileUrls : new ArrayList<>());
 
-        for (Object image : images) {
-            if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
-                finalImageUrls.add(url);
-            } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
-                String uploadedUrl = awsS3Service.uploadFile("knowledge/images", file);
-                finalImageUrls.add(uploadedUrl);
-            }
+        // 새 이미지 업로드
+        if (newImages != null && !newImages.isEmpty()) {
+            List<String> uploadedImageUrls = awsS3Service.uploadFiles("knowledge/images", newImages, true);
+            finalImageUrls.addAll(uploadedImageUrls);
         }
 
-        for (Object file : files) {
-            if (file instanceof String url) { // 기존 파일 URL이면 그대로 유지
-                finalFileUrls.add(url);
-            } else if (file instanceof MultipartFile multipartFile) { // 새 파일이면 업로드 후 URL 저장
-                String uploadedUrl = awsS3Service.uploadFile("knowledge/files", multipartFile);
-                finalFileUrls.add(uploadedUrl);
-            }
+        // 새 파일 업로드
+        if (newFiles != null && !newFiles.isEmpty()) {
+            List<String> uploadedFileUrls = awsS3Service.uploadFiles("knowledge/files", newFiles, false);
+            finalFileUrls.addAll(uploadedFileUrls);
         }
 
         knowledge.update(request, finalImageUrls, finalFileUrls);

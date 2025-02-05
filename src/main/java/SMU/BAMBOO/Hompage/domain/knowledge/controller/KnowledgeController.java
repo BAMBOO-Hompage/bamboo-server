@@ -31,7 +31,7 @@ public class KnowledgeController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "지식 공유 게시판 게시물 생성 (이미지 & 파일 업로드는 Postman에서 테스트)")
     public SuccessResponse<KnowledgeResponseDTO.Create> createKnowledge(
-            @Valid @ModelAttribute KnowledgeRequestDTO.Create request,
+            @Valid @RequestPart(value = "request") KnowledgeRequestDTO.Create request,
             @RequestPart(required = false) List<MultipartFile> images,
             @RequestPart(required = false) List<MultipartFile> files,
             @CurrentMember Member member) {
@@ -74,7 +74,7 @@ public class KnowledgeController {
     @Operation(summary = "지식 공유 게시물 수정 (기존 URL은 JSON 배열, 새 파일은 Multipart로 전송)")
     public SuccessResponse<KnowledgeResponseDTO.Update> updateKnowledge(
             @PathVariable Long id,
-            @Valid @ModelAttribute KnowledgeRequestDTO.Update request,
+            @Valid @RequestPart(value = "request") KnowledgeRequestDTO.Update request,
             @RequestParam(required = false) List<String> imageUrls,  // 기존 이미지 URL을 JSON 배열로 받음
             @RequestPart(required = false) List<MultipartFile> newImages, // 새 이미지 파일
             @RequestParam(required = false) List<String> fileUrls,
@@ -88,30 +88,7 @@ public class KnowledgeController {
             newFiles = null;
         }
 
-        List<Object> finalImages = new ArrayList<>();
-        List<Object> finalFiles = new ArrayList<>();
-
-        // 기존 이미지 추가
-        if (imageUrls != null) {
-            finalImages.addAll(imageUrls);
-        }
-
-        // 기존 파일 추가
-        if (fileUrls != null) {
-            finalFiles.addAll(fileUrls);
-        }
-
-        // 새 이미지 추가
-        if (newImages != null && !newImages.isEmpty()) {
-            finalImages.addAll(newImages);
-        }
-
-        // 새 파일 추가
-        if (newFiles != null && !newFiles.isEmpty()) {
-            finalFiles.addAll(newFiles);
-        }
-
-        KnowledgeResponseDTO.Update result = knowledgeService.update(id, request, finalImages, finalFiles);
+        KnowledgeResponseDTO.Update result = knowledgeService.update(id, request, imageUrls, newImages, fileUrls, newFiles);
         return SuccessResponse.ok(result);
     }
 

@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.notice.entity;
 
-import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.noticeComment.entity.NoticeComment;
@@ -28,7 +27,7 @@ public class Notice extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")

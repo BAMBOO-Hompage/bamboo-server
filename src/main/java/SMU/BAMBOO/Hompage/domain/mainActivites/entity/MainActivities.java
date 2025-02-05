@@ -29,7 +29,7 @@ public class MainActivities extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(name = "start_date", nullable = false)

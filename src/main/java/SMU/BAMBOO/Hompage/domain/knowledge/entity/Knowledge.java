@@ -28,7 +28,7 @@ public class Knowledge extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")

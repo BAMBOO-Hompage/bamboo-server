@@ -8,6 +8,8 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,8 +30,10 @@ public class KnowledgeController {
     private final KnowledgeService knowledgeService;
     private final ObjectMapper objectMapper;
 
+    @RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE))) // request 내부에 Content Type 이 없으면 오류남. 그래서 application/json 설정
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "지식 공유 게시판 게시물 생성 (이미지 & 파일 업로드는 Postman에서 테스트)")
+    @Operation(summary = "지식 공유 게시판 게시물 생성")
     public SuccessResponse<KnowledgeResponseDTO.Create> createKnowledge(
             @Valid @RequestPart(value = "request") KnowledgeRequestDTO.Create request,
             @RequestPart(required = false) List<MultipartFile> images,
@@ -69,7 +73,8 @@ public class KnowledgeController {
         return SuccessResponse.ok(response);
     }
 
-
+    @RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "지식 공유 게시물 수정 (기존 URL은 JSON 배열, 새 파일은 Multipart로 전송)")
     public SuccessResponse<KnowledgeResponseDTO.Update> updateKnowledge(

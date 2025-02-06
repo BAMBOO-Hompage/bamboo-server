@@ -17,7 +17,7 @@ public class MainActivitiesResponseDTO {
     /** 주요활동 게시판 게시물 생성 Response DTO */
     @Getter
     @Builder
-    @Schema(description = "주요활동 게시판 게시물 생성 응답 DTO")
+    @Schema(description = "주요활동 게시판 게시물 단일 응답 DTO")
     public static class Detail {
         private final Long mainActivitiesId;
         private final String memberName;

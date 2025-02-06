@@ -53,7 +53,7 @@ class LibraryPostServiceImplTest {
                 .libraryPostId(1L)
                 .member(testMember)
                 .paperName("CV 논문1")
-                .year(2025)
+                .year("2025")
                 .topic("CV의 ~에 대하여")
                 .link("link..")
                 .build());
@@ -64,7 +64,7 @@ class LibraryPostServiceImplTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -77,7 +77,7 @@ class LibraryPostServiceImplTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.paperName()).isEqualTo("CV 논문");
-        assertThat(response.year()).isEqualTo(2025);
+        assertThat(response.year()).isEqualTo("2025");
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
         assertThat(response.content()).isEqualTo("최신 논문에 대한 정리");
         assertThat(response.link()).isEqualTo("http://link.com");
@@ -98,7 +98,7 @@ class LibraryPostServiceImplTest {
         //given
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
-                2024,
+                "2024",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "[수정] 최신 논문에 대한 정리",
@@ -116,7 +116,7 @@ class LibraryPostServiceImplTest {
 
         assertThat(response).isNotNull();
         assertThat(response.link()).isEqualTo("http://linkkk.com");
-        assertThat(response.year()).isEqualTo(2024);
+        assertThat(response.year()).isEqualTo("2024");
         assertThat(response.paperName()).isEqualTo("CV 논문2");
         assertThat(response.topic()).isEqualTo("머신러닝의 ~에 대하여");
         assertThat(response.content()).isEqualTo("[수정] 최신 논문에 대한 정리");
@@ -128,7 +128,7 @@ class LibraryPostServiceImplTest {
         // Given
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
-                2024,
+                "2024",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "최신 논문에 대한 정리",

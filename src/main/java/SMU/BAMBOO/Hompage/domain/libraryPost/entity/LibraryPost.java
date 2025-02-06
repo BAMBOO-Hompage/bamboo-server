@@ -35,7 +35,7 @@ public class LibraryPost extends BaseEntity {
     private String paperName;
 
     @Column(nullable = false)
-    private int year;
+    private String year;
 
     @Column(nullable = false, length = 200)
     private String topic;

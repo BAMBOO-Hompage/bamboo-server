@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.notice.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
-import SMU.BAMBOO.Hompage.domain.noticeComment.entity.NoticeComment;
+import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,9 +44,39 @@ public class Notice extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "notice_images", joinColumns = @JoinColumn(name = "notice_id"))
     @Column(name = "image_url")
-    private List<String> image;
+    private List<String> images;
 
     @Builder.Default
-    @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<NoticeComment> noticeComments = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "notice_files", joinColumns = @JoinColumn(name = "notice_id"))
+    @Column(name = "file_url")
+    private List<String> files = new ArrayList<>();
+
+    public static Notice from(NoticeRequestDTO.Create request, Member member, List<String> images, List<String> files) {
+        return Notice.builder()
+                .member(member)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .type(NoticeType.valueOf(request.getType()))
+                .views(0)
+                .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
+                .files(files != null ? new ArrayList<>(files) : new ArrayList<>())
+                .build();
+    }
+
+/**
+    public void update(NoticeRequestDTO.Update request,  List<String> newImages, List<String> newFiles) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.type = NoticeType.valueOf(request.getType());
+        if (newImages != null) {
+            this.images.clear();
+            this.images.addAll(newImages);
+        }
+        if (newFiles != null) {
+            this.files.clear();
+            this.files.addAll(newFiles);
+        }
+    }*/
+
 }

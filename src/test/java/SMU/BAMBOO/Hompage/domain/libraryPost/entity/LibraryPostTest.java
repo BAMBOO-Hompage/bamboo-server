@@ -17,7 +17,7 @@ public class LibraryPostTest {
         LibraryPost libraryPost = LibraryPost.builder()
                 .libraryPostId(1L)
                 .paperName("CV 논문1")
-                .year(2025)
+                .year("2025")
                 .topic("CV의 ~에 대하여")
                 .content("최신 논문에 대한 정리")
                 .link("http://link.com")
@@ -25,7 +25,7 @@ public class LibraryPostTest {
 
         LibraryPostRequestDTO.Update request = new LibraryPostRequestDTO.Update(
                 "http://linkkk.com",
-                2024,
+                "2024",
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "[수정] 최신 논문에 대한 정리",
@@ -37,7 +37,7 @@ public class LibraryPostTest {
 
         // Then
         assertThat(libraryPost.getPaperName()).isEqualTo("CV 논문2");
-        assertThat(libraryPost.getYear()).isEqualTo(2024);
+        assertThat(libraryPost.getYear()).isEqualTo("2024");
         assertThat(libraryPost.getTopic()).isEqualTo("머신러닝의 ~에 대하여");
         assertThat(libraryPost.getContent()).isEqualTo("[수정] 최신 논문에 대한 정리");
         assertThat(libraryPost.getLink()).isEqualTo("http://linkkk.com");

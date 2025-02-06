@@ -22,7 +22,7 @@ public class LibraryPostResponseDTO {
             String paperName,
 
             @Schema(description = "연도")
-            int year,
+            String year,
 
             @Schema(description = "주제")
             String topic,
@@ -68,7 +68,7 @@ public class LibraryPostResponseDTO {
             String paperName,
 
             @Schema(description = "연도")
-            int year,
+            String year,
 
             @Schema(description = "주제")
             String topic,

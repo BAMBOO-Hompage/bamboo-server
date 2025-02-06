@@ -45,7 +45,7 @@ public class LibraryPostControllerTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -58,7 +58,7 @@ public class LibraryPostControllerTest {
 
         // Then
         assertThat(response.link()).isEqualTo("http://link.com");
-        assertThat(response.year()).isEqualTo(2025);
+        assertThat(response.year()).isEqualTo("2025");
         assertThat(response.member().getName()).isEqualTo("김재관");
         assertThat(response.paperName()).isEqualTo("CV 논문");
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
@@ -71,7 +71,7 @@ public class LibraryPostControllerTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -84,7 +84,7 @@ public class LibraryPostControllerTest {
 
         // Then
         assertThat(response.link()).isEqualTo("http://link.com");
-        assertThat(response.year()).isEqualTo(2025);
+        assertThat(response.year()).isEqualTo("2025");
         assertThat(response.paperName()).isEqualTo("CV 논문");
         assertThat(response.topic()).isEqualTo("CV의 ~에 대하여");
         assertThat(response.content()).isEqualTo("최신 논문에 대한 정리");
@@ -96,7 +96,7 @@ public class LibraryPostControllerTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -106,7 +106,7 @@ public class LibraryPostControllerTest {
 
         LibraryPostRequestDTO.Update updateRequest = new LibraryPostRequestDTO.Update(
                 "http://newlink.com",
-                2020,
+                "2020",
                 "DL 논문",
                 "DL의 ~에 대하여",
                 "최신 딥러닝 논문에 대한 정리",
@@ -119,7 +119,7 @@ public class LibraryPostControllerTest {
 
         // Then
         assertThat(updatedPost.link()).isEqualTo("http://newlink.com");
-        assertThat(updatedPost.year()).isEqualTo(2020);
+        assertThat(updatedPost.year()).isEqualTo("2020");
         assertThat(updatedPost.paperName()).isEqualTo("DL 논문");
         assertThat(updatedPost.topic()).isEqualTo("DL의 ~에 대하여");
         assertThat(updatedPost.content()).isEqualTo("최신 딥러닝 논문에 대한 정리");
@@ -131,7 +131,7 @@ public class LibraryPostControllerTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",
@@ -151,7 +151,7 @@ public class LibraryPostControllerTest {
         // Given
         LibraryPostRequestDTO.Create request = new LibraryPostRequestDTO.Create(
                 "http://link.com",
-                2025,
+                "2025",
                 "CV 논문",
                 "CV의 ~에 대하여",
                 "최신 논문에 대한 정리",

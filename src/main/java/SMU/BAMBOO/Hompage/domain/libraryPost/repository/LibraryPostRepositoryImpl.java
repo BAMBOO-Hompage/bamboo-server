@@ -91,20 +91,19 @@ public class LibraryPostRepositoryImpl implements LibraryPostRepository {
     @Override
     public Page<LibraryPost> findByYear(String year, Pageable pageable) {
         QLibraryPost libraryPost = QLibraryPost.libraryPost;
-        int yearInt = Integer.parseInt(year);
 
         long total = Optional.ofNullable(
                 queryFactory
                         .select(Wildcard.count)
                         .from(libraryPost)
-                        .where(libraryPost.year.eq(yearInt))
+                        .where(libraryPost.year.eq(year))
                         .fetchOne()
             ).orElse(0L);
 
 
         List<LibraryPost> results = queryFactory
                 .selectFrom(libraryPost)
-                .where(libraryPost.year.eq(Integer.parseInt(year)))
+                .where(libraryPost.year.eq(year))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(libraryPost.createdAt.desc())

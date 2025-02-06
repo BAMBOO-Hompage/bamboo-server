@@ -35,7 +35,7 @@ public class MainActivitiesController {
 
     /** 주요활동 게시판 게시물 생성 API */
     @PostMapping(value = "/api/main-activities", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "주요활동 게시판 게시물 생성 (이미지 업로드는 Postman에서 테스트해주세요)")
+    @Operation(summary = "주요활동 게시판 게시물 생성")
     public SuccessResponse<MainActivitiesResponseDTO.Detail> createMainActivities(
             @Valid @ModelAttribute MainActivitiesRequestDTO.Create request,
             @CurrentMember Member member) {

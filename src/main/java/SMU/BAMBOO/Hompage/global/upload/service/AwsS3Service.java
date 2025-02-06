@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.global.upload;
+package SMU.BAMBOO.Hompage.global.upload.service;
 
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;

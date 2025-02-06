@@ -7,7 +7,7 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesReposito
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

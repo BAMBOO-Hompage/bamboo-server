@@ -24,4 +24,20 @@ public class NoticeRequestDTO {
         @Schema(description = "타입", example = "EVENTS")
         private String type;
     }
+
+    @Schema(description = "공지사항 게시판 수정 요청 DTO")
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Update {
+        @Schema(description = "제목", example = "공지사항 제목 수정")
+        private String title;
+
+        @Schema(description = "내용", example = "공지사항 내용 수정")
+        private String content;
+
+        @Schema(description = "타입", example = "EVENTS")
+        private String type;
+    }
 }

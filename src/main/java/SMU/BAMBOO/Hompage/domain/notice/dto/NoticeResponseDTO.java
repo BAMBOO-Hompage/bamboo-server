@@ -18,7 +18,6 @@ public class NoticeResponseDTO {
             @Schema(description = "제목") String title,
             @Schema(description = "내용") String content,
             @Schema(description = "게시글 유형(EVENTS, NOTICE)") NoticeType type,
-            @Schema(description = "조회수") int views,
             @Schema(description = "이미지 리스트") List<String> images,
             @Schema(description = "파일 리스트") List<String> files
     ) {
@@ -29,7 +28,6 @@ public class NoticeResponseDTO {
                     notice.getTitle(),
                     notice.getContent(),
                     notice.getType(),
-                    notice.getViews(),
                     notice.getImages() != null ? notice.getImages() : new ArrayList<>(),
                     notice.getFiles() != null ? notice.getFiles() : new ArrayList<>()
             );

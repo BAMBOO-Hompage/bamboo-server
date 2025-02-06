@@ -37,10 +37,6 @@ public class Notice extends BaseEntity {
     @Column(length = 15)
     private NoticeType type;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private int views = 0;
-
     @ElementCollection
     @CollectionTable(name = "notice_images", joinColumns = @JoinColumn(name = "notice_id"))
     @Column(name = "image_url")
@@ -58,13 +54,11 @@ public class Notice extends BaseEntity {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .type(NoticeType.valueOf(request.getType()))
-                .views(0)
                 .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
                 .files(files != null ? new ArrayList<>(files) : new ArrayList<>())
                 .build();
     }
 
-/**
     public void update(NoticeRequestDTO.Update request,  List<String> newImages, List<String> newFiles) {
         this.title = request.getTitle();
         this.content = request.getContent();
@@ -77,6 +71,6 @@ public class Notice extends BaseEntity {
             this.files.clear();
             this.files.addAll(newFiles);
         }
-    }*/
+    }
 
 }

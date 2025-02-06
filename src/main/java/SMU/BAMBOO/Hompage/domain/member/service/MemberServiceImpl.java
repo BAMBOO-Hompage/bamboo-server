@@ -11,7 +11,7 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import SMU.BAMBOO.Hompage.global.jwt.util.JwtUtil;
-import SMU.BAMBOO.Hompage.global.upload.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

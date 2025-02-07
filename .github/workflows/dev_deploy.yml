@@ -75,12 +75,12 @@ jobs:
           
           # 새로운 JAR 파일 업로드
           jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
-          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/BambooServer.jar
+          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/BambooServer-new.jar
           
           # 무중단 배포 실행
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             chmod +x /home/$EC2_USERNAME/deploy.sh
-            nohup /home/$EC2_USERNAME/deploy.sh > /home/$EC2_USERNAME/deploy.log 2>&1 & disown
+            nohup /home/$EC2_USERNAME/deploy.sh > /home/$EC2_USERNAME/deploy.log 2>&1 &
           "
 
           

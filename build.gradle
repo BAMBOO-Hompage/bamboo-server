@@ -46,6 +46,10 @@ dependencies {
 	// env
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 
+	// Logback 추가
+	implementation 'ch.qos.logback:logback-classic:1.5.13'
+	implementation 'ch.qos.logback:logback-core:1.5.13'
+
 	// JUnit
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'

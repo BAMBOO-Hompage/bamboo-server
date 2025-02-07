@@ -37,7 +37,8 @@ public class SecurityConfig {
             "/api/members/sign-up",
             "/api/emails/**",
             "/auth/reissue",
-            "/api/main-activities/year"
+            "/api/main-activities/year",
+            "/api/health"
     };
 
     // 운영진 이상의 권한 필요 (ADMIN, OPS)

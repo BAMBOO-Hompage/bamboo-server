@@ -1,8 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.notice.controller;
 
-import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeRequestDTO;
-import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeResponseDTO;
-import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;

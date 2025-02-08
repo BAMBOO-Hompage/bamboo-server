@@ -32,7 +32,7 @@ public class WeeklyContentServiceImpl implements WeeklyContentService {
     @Transactional
     public WeeklyContentResponseDTO.Create create(Long memberId, WeeklyContentRequestDTO.Create request) {
         Subject subject = subjectRepository.findById(request.subjectId())
-                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST))
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));

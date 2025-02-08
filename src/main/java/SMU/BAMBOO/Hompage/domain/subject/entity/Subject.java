@@ -37,4 +37,10 @@ public class Subject extends BaseEntity {
     public void updateName(SubjectRequestDTO.Update request) {
         this.name = request.name();
     }
+
+    /** 연관관계 편의 메서드 */
+    public void addWeeklyContent(WeeklyContent weeklyContent) {
+        this.weeklyContents.add(weeklyContent);
+        weeklyContent.associateSubject(this);
+    }
 }

@@ -87,6 +87,7 @@ public enum ErrorCode {
 
     // WeeklyContent (주차별 내용)
     WEEKLY_CONTENT_NOT_EXIST("WEEKLY_CONTENT404", "존재하지 않는 주차별 내용입니다.", HttpStatus.NOT_FOUND),
+    WEEKLY_CONTENT_ALREADY_EXISTS("WEEKLY_CONTENT400", "해당 주차의 주차별 내용이 이미 존재합니다.", HttpStatus.BAD_REQUEST),
 
     // Notice (공지사항)
     NOTICE_NOT_EXIST("NOTICE404", "존재하지 않는 공지글입니다.", HttpStatus.NOT_FOUND),

@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.subject.dto;
 
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
-import SMU.BAMBOO.Hompage.domain.weeklyContent.entity.WeeklyContent;
+import SMU.BAMBOO.Hompage.domain.weeklyContent.dto.WeeklyContentResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -39,13 +39,15 @@ public class SubjectResponseDTO {
     public record GetOne(
             Long subjectId,
             String name,
-            List<WeeklyContent> weeklyContents
+            List<WeeklyContentResponseDTO.GetOne> weeklyContents
     ) {
         public static GetOne from(Subject subject) {
             return new GetOne(
                     subject.getSubjectId(),
                     subject.getName(),
-                    subject.getWeeklyContents()
+                    subject.getWeeklyContents().stream()
+                            .map(WeeklyContentResponseDTO.GetOne::from)
+                            .toList()
             );
         }
     }

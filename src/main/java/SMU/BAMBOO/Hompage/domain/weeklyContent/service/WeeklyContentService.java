@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface WeeklyContentService {
 
-    WeeklyContentResponseDTO.Create create(Long memberId, WeeklyContentRequestDTO.Create request);
+    WeeklyContentResponseDTO.Create create(Long memberId, Long subjectId, WeeklyContentRequestDTO.Create request);
     WeeklyContentResponseDTO.GetOne getById(Long id);
     List<WeeklyContentResponseDTO.GetOne> getWeeklyContentBySubjectId(Long subjectId);
-    WeeklyContentResponseDTO.Update update(Long id, WeeklyContentRequestDTO.Update request);
-    void delete(Long id);
+    WeeklyContentResponseDTO.Update update(Long id, Long subjectId, WeeklyContentRequestDTO.Update request);
+    void delete(Long id, Long subjectId);
 }

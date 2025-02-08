@@ -7,7 +7,6 @@ public class WeeklyContentRequestDTO {
 
     @Schema(description = "주차별 내용 생성 요청 DTO")
     public record Create(
-            @Schema(description = "과목 ID", example = "1") Long subjectId,
             @Schema(description = "내용", example = "PY 1주차 커리큘럼") String content,
             @Schema(description = "주차", example = "1") int week
     ) {}

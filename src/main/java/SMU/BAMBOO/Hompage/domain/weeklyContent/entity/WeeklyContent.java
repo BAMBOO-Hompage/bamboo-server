@@ -33,4 +33,8 @@ public class WeeklyContent extends BaseEntity {
         this.content = request.content();
         this.week = request.week();
     }
+
+    public void associateSubject(Subject subject) {
+        this.subject = subject;
+    }
 }

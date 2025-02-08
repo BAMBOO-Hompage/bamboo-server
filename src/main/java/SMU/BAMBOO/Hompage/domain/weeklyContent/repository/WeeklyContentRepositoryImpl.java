@@ -32,6 +32,11 @@ public class WeeklyContentRepositoryImpl implements WeeklyContentRepository {
     }
 
     @Override
+    public Optional<WeeklyContent> findBySubjectIdAndWeek(Long subjectId, int week) {
+        return weeklyContentJpaRepository.findBySubjectIdAndWeek(subjectId, week);
+    }
+
+    @Override
     public WeeklyContent save(WeeklyContent weeklyContent) {
         return weeklyContentJpaRepository.save(weeklyContent);
     }

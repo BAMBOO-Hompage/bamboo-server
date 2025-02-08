@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.weeklyContent.repository;
 
+import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.domain.weeklyContent.entity.WeeklyContent;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
@@ -27,13 +28,13 @@ public class WeeklyContentRepositoryImpl implements WeeklyContentRepository {
     }
 
     @Override
-    public List<WeeklyContent> findBySubject(Long subjectId) {
-        return weeklyContentJpaRepository.findBySubjectId(subjectId);
+    public List<WeeklyContent> findBySubject(Subject subject) {
+        return weeklyContentJpaRepository.findBySubject(subject);
     }
 
     @Override
-    public Optional<WeeklyContent> findBySubjectIdAndWeek(Long subjectId, int week) {
-        return weeklyContentJpaRepository.findBySubjectIdAndWeek(subjectId, week);
+    public Optional<WeeklyContent> findBySubjectAndWeek(Subject subject, int week) {
+        return weeklyContentJpaRepository.findBySubjectAndWeek(subject, week);
     }
 
     @Override

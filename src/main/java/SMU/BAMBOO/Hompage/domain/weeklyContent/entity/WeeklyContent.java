@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.weeklyContent.entity;
 
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
+import SMU.BAMBOO.Hompage.domain.weeklyContent.dto.WeeklyContentRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,4 +25,12 @@ public class WeeklyContent extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column(nullable = false)
+    private int week;
+
+    public void update(WeeklyContentRequestDTO.Update request) {
+        this.content = request.content();
+        this.week = request.week();
+    }
 }

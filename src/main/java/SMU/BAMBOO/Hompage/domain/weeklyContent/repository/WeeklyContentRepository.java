@@ -9,6 +9,7 @@ public interface WeeklyContentRepository {
     Optional<WeeklyContent> findById(Long id);
     WeeklyContent getById(Long id);
     List<WeeklyContent> findBySubject(Long subjectId);
+    Optional<WeeklyContent> findBySubjectIdAndWeek(Long subjectId, int week);
     WeeklyContent save(WeeklyContent weeklyContent);
     void delete(Long id);
 }

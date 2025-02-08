@@ -13,7 +13,7 @@ public class InventoryRequestDTO {
             @Schema(description = "스터디 주차", example = "1") int week
     ) {}
 
-    @Schema(description = "스터디 정리본 생성 요청 DTO")
+    @Schema(description = "스터디 정리본 수정 요청 DTO")
     public record Update(
             @Schema(description = "제목", example = "CV 스터디 정리") String title,
             @Schema(description = "내용", example = "수정했습니다~") String content,

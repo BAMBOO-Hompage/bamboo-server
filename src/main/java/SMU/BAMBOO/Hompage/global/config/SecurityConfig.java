@@ -111,6 +111,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인
+        config.addAllowedOrigin("http://localhost:8000");
         config.addAllowedOrigin("https://smu-bamboo.com");
         config.addAllowedOrigin("https://api.smu-bamboo.com");
         config.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST 등)

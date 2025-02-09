@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class MainActivitiesRequestDTO {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     @Schema(description = "주요활동 게시판 게시물 생성 요청 DTO")
     public static class Create {
         @Schema(description = "제목", example = "대회 참여")
@@ -39,6 +41,7 @@ public class MainActivitiesRequestDTO {
      */
     @Getter
     @Setter
+    @AllArgsConstructor
     @NoArgsConstructor
     @Schema(description = "주요활동 게시판 수정 요청 DTO")
     public static class Update {

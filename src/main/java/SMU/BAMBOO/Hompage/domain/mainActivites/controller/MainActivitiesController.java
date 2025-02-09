@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Builder
 @Tag(name = "주요활동 게시판 API")
 public class MainActivitiesController {
 
@@ -41,6 +43,7 @@ public class MainActivitiesController {
             @CurrentMember Member member) {
 
         List<String> images = new ArrayList<>();
+
         if (request.getImages() != null && !request.getImages().isEmpty()) {
             images = awsS3Service.uploadFiles("main-activities", request.getImages(), true);
         }

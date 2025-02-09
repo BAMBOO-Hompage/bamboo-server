@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.mock;
 import SMU.BAMBOO.Hompage.domain.libraryPost.controller.LibraryPostController;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.service.LibraryPostServiceImpl;
+import SMU.BAMBOO.Hompage.domain.mainActivites.controller.MainActivitiesController;
 import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesRepository;
 import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesServiceImpl;
 import SMU.BAMBOO.Hompage.domain.tag.controller.TagController;
@@ -24,6 +25,7 @@ public class TestContainer {
 
     public final LibraryPostController libraryPostController;
     public final TagController tagController;
+    public final MainActivitiesController mainActivitiesController;
 
     public final AwsS3Service awsS3Service;
 
@@ -49,6 +51,10 @@ public class TestContainer {
                 .build();
         this.tagController = TagController.builder()
                 .tagService(this.tagService)
+                .build();
+        this.mainActivitiesController = MainActivitiesController.builder()
+                .mainActivitiesService(this.mainActivitiesService)
+                .awsS3Service(this.awsS3Service)
                 .build();
     }
 }

@@ -79,7 +79,7 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     @Transactional(readOnly = true)
     public Page<NoticeResponseDTO.Detail> getNoticesByType(String type, PageRequest pageRequest) {
-        return noticeRepository.findByType(NoticeType.valueOf(type.toUpperCase()), pageRequest)
+        return noticeRepository.findByType(NoticeType.from(type), pageRequest)
                 .map(NoticeResponseDTO.Detail::from);
     }
 

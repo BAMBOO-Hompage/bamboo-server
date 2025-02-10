@@ -1,7 +1,12 @@
 package SMU.BAMBOO.Hompage.domain.enums;
 
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Arrays;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NoticeType {
@@ -17,5 +22,13 @@ public enum NoticeType {
     @JsonValue
     public String getDescription() {
         return description;
+    }
+
+    @JsonCreator
+    public static NoticeType from(String value) {
+        return Arrays.stream(NoticeType.values())
+                .filter(type -> type.name().equalsIgnoreCase(value.trim()) || type.description.equals(value.trim()))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTICE_INVALID_TYPE));
     }
 }

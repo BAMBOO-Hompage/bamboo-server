@@ -91,6 +91,7 @@ public enum ErrorCode {
 
     // Notice (공지사항)
     NOTICE_NOT_EXIST("NOTICE404", "존재하지 않는 공지글입니다.", HttpStatus.NOT_FOUND),
+    NOTICE_INVALID_TYPE("NOTICE400", "잘못된 공지사항 유형입니다.", HttpStatus.BAD_REQUEST),
 
     // NoticeComment (공지사항 댓글)
     NOTICE_COMMENT_NOT_EXIST("NOTICE_COMMENT404", "존재하지 않는 공지 댓글입니다.", HttpStatus.NOT_FOUND),

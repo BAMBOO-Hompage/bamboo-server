@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,9 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -66,8 +64,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // CORS 설정 활성화
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        // CORS 설정 WebMvcConfigurer로 위임 (별도의 CORS 설정 없음)
+        http.cors(Customizer.withDefaults());
 
         // csrf 비활성화
         http.csrf(AbstractHttpConfigurer::disable);
@@ -107,23 +105,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인
-        config.addAllowedOrigin("http://localhost:8000");
-        config.addAllowedOrigin("https://smu-bamboo.com");
-        config.addAllowedOrigin("https://api.smu-bamboo.com");
-        config.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST 등)
-        config.addAllowedHeader("*"); // 모든 헤더 허용
-        config.addExposedHeader("Authorization");
-        config.addExposedHeader("refresh-token");
-        config.setAllowCredentials(true); // 쿠키 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 설정
-        // source.registerCorsConfiguration("/api/**", config);
-
-        return source;
-    }
 }

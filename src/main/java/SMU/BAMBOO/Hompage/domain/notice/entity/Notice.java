@@ -53,7 +53,7 @@ public class Notice extends BaseEntity {
                 .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .type(NoticeType.valueOf(request.getType()))
+                .type(request.getType())
                 .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
                 .files(files != null ? new ArrayList<>(files) : new ArrayList<>())
                 .build();
@@ -62,7 +62,7 @@ public class Notice extends BaseEntity {
     public void update(NoticeRequestDTO.Update request,  List<String> newImages, List<String> newFiles) {
         this.title = request.getTitle();
         this.content = request.getContent();
-        this.type = NoticeType.valueOf(request.getType());
+        this.type = request.getType();
         if (newImages != null) {
             this.images.clear();
             this.images.addAll(newImages);

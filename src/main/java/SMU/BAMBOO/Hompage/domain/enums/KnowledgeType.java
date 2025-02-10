@@ -27,12 +27,12 @@ public enum KnowledgeType {
 
     @JsonCreator
     public static KnowledgeType from(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
 
         return Arrays.stream(KnowledgeType.values())
-                .filter(type -> {
-                    System.out.println("Checking against: [" + type.name() + "] and [" + type.description + "]");
-                    return type.name().equalsIgnoreCase(value) || type.description.equals(value);
-                })
+                .filter(type -> type.name().equalsIgnoreCase(value) || type.description.equals(value))
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.KNOWLEDGE_INVALID_TYPE));
     }

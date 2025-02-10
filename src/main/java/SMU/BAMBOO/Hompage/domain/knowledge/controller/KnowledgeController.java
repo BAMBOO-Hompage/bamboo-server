@@ -61,6 +61,9 @@ public class KnowledgeController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
+        type = (type == null || type.trim().isEmpty()) ? null : type.trim();
+        keyword = (keyword == null || keyword.trim().isEmpty()) ? null : keyword.trim();
+
         Page<KnowledgeResponseDTO.GetOne> knowledgeList = knowledgeService.getKnowledges(type, keyword, page - 1, size);
         return SuccessResponse.ok(knowledgeList);
     }

@@ -63,7 +63,7 @@ public class Knowledge extends BaseEntity {
                 .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .type(KnowledgeType.valueOf(request.getType()))
+                .type(request.getType())
                 .views(0)
                 .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
                 .files(files != null ? new ArrayList<>(files) : new ArrayList<>())
@@ -73,7 +73,7 @@ public class Knowledge extends BaseEntity {
     public void update(KnowledgeRequestDTO.Update request,  List<String> newImages, List<String> newFiles) {
         this.title = request.getTitle();
         this.content = request.getContent();
-        this.type = KnowledgeType.valueOf(request.getType());
+        this.type = request.getType();
         if (newImages != null) {
             this.images.clear();
             this.images.addAll(newImages);

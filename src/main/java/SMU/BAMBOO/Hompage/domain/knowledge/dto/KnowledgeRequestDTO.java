@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.knowledge.dto;
 
+import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +22,8 @@ public class KnowledgeRequestDTO {
         @Schema(description = "내용", example = "~Python 지식 방출 중~")
         private String content;
 
-        @Schema(description = "타입", example = "RESOURCES")
-        private String type;
+        @Schema(description = "타입", example = "학습 자료")
+        private KnowledgeType type;
     }
 
 
@@ -38,7 +39,7 @@ public class KnowledgeRequestDTO {
         @Schema(description = "내용", example = "[수정] Python 지식 방출 중~")
         private String content;
 
-        @Schema(description = "타입", example = "RESOURCES")
-        private String type;
+        @Schema(description = "타입", example = "커리어 및 취업 정보")
+        private KnowledgeType type;
     }
 }

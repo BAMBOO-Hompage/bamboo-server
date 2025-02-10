@@ -72,9 +72,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         // type 유효성 검사
         KnowledgeType knowledgeType = null;
-        if (type != null && !type.isEmpty()) {
+        if (type != null) {
             try {
-                knowledgeType = KnowledgeType.valueOf(type.toUpperCase());
+                knowledgeType = KnowledgeType.from(type.trim());
             } catch (IllegalArgumentException e) {
                 throw new CustomException(ErrorCode.KNOWLEDGE_INVALID_TYPE);
             }

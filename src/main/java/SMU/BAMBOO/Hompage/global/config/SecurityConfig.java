@@ -42,7 +42,8 @@ public class SecurityConfig {
     // 운영진 이상의 권한 필요 (ADMIN, OPS)
     private final String[] adminUrls = {
             "/api/subjects/**",
-            "/api/studies/**"
+            "/api/studies/**",
+            "/api/notices/**"
     };
 
     // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)

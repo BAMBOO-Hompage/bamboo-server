@@ -54,10 +54,10 @@ public class MemberController {
     @GetMapping
     @Operation(summary = "회원 목록 조회 - 페이지네이션")
     public SuccessResponse<Page<MemberResponse>> getMembers(
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<MemberResponse> result = memberService.getMembers(page, size);
+        Page<MemberResponse> result = memberService.getMembers(page-1, size);
         return SuccessResponse.ok(result);
     }
 

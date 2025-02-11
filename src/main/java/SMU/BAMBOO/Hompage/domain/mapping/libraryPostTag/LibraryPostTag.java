@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.domain.mapping;
+package SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;

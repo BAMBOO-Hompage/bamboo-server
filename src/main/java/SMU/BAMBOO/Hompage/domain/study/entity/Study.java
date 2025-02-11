@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.study.entity;
 
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
-import SMU.BAMBOO.Hompage.domain.mapping.MemberStudy;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;

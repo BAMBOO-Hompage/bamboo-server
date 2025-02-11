@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.member.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
-import SMU.BAMBOO.Hompage.domain.mapping.MemberStudy;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.dto.request.MemberSignUpDto;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;

@@ -26,8 +26,12 @@ public enum NoticeType {
 
     @JsonCreator
     public static NoticeType from(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
         return Arrays.stream(NoticeType.values())
-                .filter(type -> type.name().equalsIgnoreCase(value.trim()) || type.description.equals(value.trim()))
+                .filter(type -> type.name().equalsIgnoreCase(value) || type.description.equals(value))
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.NOTICE_INVALID_TYPE));
     }

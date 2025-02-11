@@ -91,14 +91,14 @@ public enum ErrorCode {
 
     // Notice (공지사항)
     NOTICE_NOT_EXIST("NOTICE404", "존재하지 않는 공지글입니다.", HttpStatus.NOT_FOUND),
-    NOTICE_INVALID_TYPE("NOTICE400", "잘못된 공지사항 유형입니다. 대회 및 세미나, 동아리 공지 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
+    NOTICE_INVALID_TYPE("NOTICE400", "잘못된 공지사항 유형입니다. '대회 및 세미나', '동아리 공지' 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
 
     // NoticeComment (공지사항 댓글)
     NOTICE_COMMENT_NOT_EXIST("NOTICE_COMMENT404", "존재하지 않는 공지 댓글입니다.", HttpStatus.NOT_FOUND),
 
     // Knowledge (지식 공유)
     KNOWLEDGE_NOT_EXIST("KNOWLEDGE404", "존재하지 않는 지식 공유글입니다.", HttpStatus.NOT_FOUND),
-    KNOWLEDGE_INVALID_TYPE("KNOWLEDGE400", "잘못된 지식 공유 유형입니다. 학습 자료, 기술 트렌드 및 뉴스, 커리어 및 취업 정보 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
+    KNOWLEDGE_INVALID_TYPE("KNOWLEDGE400", "잘못된 지식 공유 유형입니다. '학습 자료', '기술 트렌드 및 뉴스', '커리어 및 취업 정보' 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
 
     // Knowledge_Comment (지식 공유 게시판 댓글)
     KNOWLEDGE_COMMENT_NOT_EXIST("KNOWLEDGE_COMMENT404", "존재하지 않는 공지 공유 게시판 댓글입니다.", HttpStatus.NOT_FOUND),

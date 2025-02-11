@@ -69,6 +69,9 @@ public enum ErrorCode {
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
     USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
 
+    // MemberStudy (회원, 스터디 매핑 테이블)
+    MEMBER_STUDY_NOT_FOUND("MEMBER_STUDY404", "해당 멤버 스터디 (매핑) 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // Study (스터디)
     STUDY_ALREADY_EXIST("STUDY400", "이미 존재하는 스터디입니다.", HttpStatus.BAD_REQUEST),
     STUDY_NOT_EXIST("STUDY404", "존재하지 않는 스터디입니다.", HttpStatus.NOT_FOUND),

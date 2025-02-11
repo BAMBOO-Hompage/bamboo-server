@@ -74,9 +74,10 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          # 새로운 JAR 파일 업로드
-          scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/*.jar $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/BambooServer-new.jar
-          
+          # 가장 최신 JAR 파일만 전송
+          LATEST_JAR=$(ls -t build/libs/*.jar | head -n 1)
+          scp -i private_key.pem -o StrictHostKeyChecking=no "$LATEST_JAR" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/BambooServer-new.jar
+
           # 무중단 배포 실행
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             chmod +x /home/$EC2_USERNAME/deploy.sh

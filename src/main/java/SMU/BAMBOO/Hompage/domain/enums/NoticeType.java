@@ -11,7 +11,7 @@ import java.util.Arrays;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NoticeType {
     EVENTS("대회 및 세미나"),
-    NOTICE("공지사항");
+    NOTICE("동아리 공지");
 
     private final String description;
 

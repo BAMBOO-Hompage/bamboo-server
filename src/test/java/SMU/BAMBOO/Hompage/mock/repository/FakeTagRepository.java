@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.mock;
+package SMU.BAMBOO.Hompage.mock.repository;
 
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;

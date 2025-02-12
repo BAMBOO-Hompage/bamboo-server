@@ -4,7 +4,7 @@ import SMU.BAMBOO.Hompage.domain.tag.dto.TagRequestDTO;
 import SMU.BAMBOO.Hompage.domain.tag.dto.TagResponseDTO;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.mock.TestContainer;
+import SMU.BAMBOO.Hompage.mock.container.TestContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

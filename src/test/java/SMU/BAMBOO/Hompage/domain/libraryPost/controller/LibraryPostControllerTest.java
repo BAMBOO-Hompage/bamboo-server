@@ -6,7 +6,7 @@ import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.mock.TestContainer;
+import SMU.BAMBOO.Hompage.mock.container.TestContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

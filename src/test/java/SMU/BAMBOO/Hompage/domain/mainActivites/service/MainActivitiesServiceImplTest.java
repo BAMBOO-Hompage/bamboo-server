@@ -9,7 +9,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
-import SMU.BAMBOO.Hompage.mock.FakeMainActivitiesRepository;
+import SMU.BAMBOO.Hompage.mock.repository.FakeMainActivitiesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

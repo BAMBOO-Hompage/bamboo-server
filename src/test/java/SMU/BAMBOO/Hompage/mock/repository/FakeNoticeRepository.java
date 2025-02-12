@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.mock;
+package SMU.BAMBOO.Hompage.mock.repository;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
 import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;

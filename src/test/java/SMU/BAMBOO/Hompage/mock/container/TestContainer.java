@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.mock;
+package SMU.BAMBOO.Hompage.mock.container;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.controller.LibraryPostController;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
@@ -10,6 +10,9 @@ import SMU.BAMBOO.Hompage.domain.tag.controller.TagController;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.domain.tag.service.TagServiceImpl;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.mock.repository.FakeLibraryPostRepository;
+import SMU.BAMBOO.Hompage.mock.repository.FakeMainActivitiesRepository;
+import SMU.BAMBOO.Hompage.mock.repository.FakeTagRepository;
 import lombok.Builder;
 import org.mockito.Mockito;
 

@@ -9,11 +9,10 @@ import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
-import SMU.BAMBOO.Hompage.mock.FakeNoticeRepository;
+import SMU.BAMBOO.Hompage.mock.repository.FakeNoticeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;

@@ -7,18 +7,12 @@ import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import SMU.BAMBOO.Hompage.mock.container.TestContainer;
+import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -26,7 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class KnowledgeServiceImplTest {
@@ -47,18 +42,7 @@ class KnowledgeServiceImplTest {
                 .role(Role.ROLE_ADMIN)
                 .build();
 
-        // UserDetails 객체 생성
-        UserDetails userDetails = new CustomUserDetails(
-                testMember.getStudentId(),
-                testMember.getPw(),
-                testMember.getRole()
-        );
-
-        // SecurityContext 설정
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityTestUtil.setAuthentication(testMember);
     }
 
     @Test

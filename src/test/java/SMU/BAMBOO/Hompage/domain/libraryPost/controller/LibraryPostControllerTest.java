@@ -8,12 +8,9 @@ import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
 import SMU.BAMBOO.Hompage.mock.container.TestContainer;
+import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -41,18 +38,7 @@ public class LibraryPostControllerTest {
                 .role(Role.ROLE_USER)
                 .build();
 
-        // UserDetails 객체 생성
-        UserDetails userDetails = new CustomUserDetails(
-                testMember.getStudentId(),
-                testMember.getPw(),
-                testMember.getRole()
-        );
-
-        // SecurityContext 설정
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityTestUtil.setAuthentication(testMember);
 
         testContainer.tagRepository.save(Tag.builder().tagId(1L).name("CV").build());
         testContainer.tagRepository.save(Tag.builder().tagId(2L).name("ML").build());

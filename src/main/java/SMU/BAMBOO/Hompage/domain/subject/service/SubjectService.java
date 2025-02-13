@@ -10,7 +10,7 @@ public interface SubjectService {
 
     SubjectResponseDTO.Create create(SubjectRequestDTO.Create dto);
     SubjectResponseDTO.GetOne getById(Long id);
-    List<SubjectResponseDTO.GetOne> findAll();
+    List<SubjectResponseDTO.GetOne> findAll(Boolean isBook);
     List<StudyResponseDTO.GetOne> getStudiesBySubject(Long subjectId);
     SubjectResponseDTO.Update update(Long id, SubjectRequestDTO.Update dto);
     void delete(Long id);

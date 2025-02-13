@@ -46,6 +46,11 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
+    public List<Subject> findByIsBook(Boolean isBook) {
+        return subjectJpaRepository.findByIsBook(isBook);
+    }
+
+    @Override
     public Subject save(Subject subject) {
         return subjectJpaRepository.save(subject);
     }

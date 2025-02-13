@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface SubjectRepository {
     Optional<Subject> findById(Long id);
     Optional<Subject> findByName(String name);
+    List<Subject> findByIsBook(Boolean isBook);
     List<Subject> findAll();
     List<StudyResponseDTO.GetOne> findStudiesBySubjectId(Long subjectId);
     Subject save(Subject subject);

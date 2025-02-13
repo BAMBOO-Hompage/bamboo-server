@@ -11,40 +11,46 @@ public class SubjectResponseDTO {
 
     @Schema(description = "과목 생성 응답 DTO")
     public record Create(
-            Long subjectId,
-            String name
+            @Schema(description = "과목 ID") Long subjectId,
+            @Schema(description = "과목 이름") String name,
+            @Schema(description = "커리큘럼 유뮤") Boolean isBook
     ) {
         public static Create from(Subject subject) {
             return new Create(
                     subject.getSubjectId(),
-                    subject.getName()
+                    subject.getName(),
+                    subject.getIsBook()
             );
         }
     }
 
     @Schema(description = "과목 수정 응답 DTO")
     public record Update(
-            Long subjectId,
-            String name
+            @Schema(description = "과목 ID") Long subjectId,
+            @Schema(description = "과목 이름") String name,
+            @Schema(description = "커리큘럼 유뮤") Boolean isBook
     ) {
         public static Update from(Subject subject) {
             return new Update(
                     subject.getSubjectId(),
-                    subject.getName()
+                    subject.getName(),
+                    subject.getIsBook()
             );
         }
     }
 
     @Schema(description = "단일 과목 조회 응답 DTO")
     public record GetOne(
-            Long subjectId,
-            String name,
-            List<WeeklyContentResponseDTO.GetOne> weeklyContents
+            @Schema(description = "과목 ID") Long subjectId,
+            @Schema(description = "과목 이름") String name,
+            @Schema(description = "커리큘럼 유뮤") Boolean isBook,
+            @Schema(description = "주차별 내용") List<WeeklyContentResponseDTO.GetOne> weeklyContents
     ) {
         public static GetOne from(Subject subject) {
             return new GetOne(
                     subject.getSubjectId(),
                     subject.getName(),
+                    subject.getIsBook(),
                     subject.getWeeklyContents().stream()
                             .map(WeeklyContentResponseDTO.GetOne::from)
                             .toList()

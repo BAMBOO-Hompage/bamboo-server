@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.subject.service;
 
+import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,6 +53,16 @@ public class SubjectServiceImpl implements SubjectService {
         return subjects.stream()
                 .map(SubjectResponseDTO.GetOne::from)
                 .toList();
+    }
+
+    @Override
+    public List<StudyResponseDTO.GetOne> getStudiesBySubject(Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
+
+        return subject.getStudies().stream()
+                .map(StudyResponseDTO.GetOne::from)
+                .collect(Collectors.toList());
     }
 
     @Override

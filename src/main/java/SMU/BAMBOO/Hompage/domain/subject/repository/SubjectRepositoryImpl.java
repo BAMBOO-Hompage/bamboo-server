@@ -1,6 +1,9 @@
 package SMU.BAMBOO.Hompage.domain.subject.repository;
 
+import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
+import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +15,8 @@ import java.util.Optional;
 public class SubjectRepositoryImpl implements SubjectRepository {
 
     private final SubjectJpaRepository subjectJpaRepository;
+    private final JPAQueryFactory queryFactory;
+
     @Override
     public Optional<Subject> findById(Long id) {
         return subjectJpaRepository.findById(id);
@@ -25,6 +30,19 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     @Override
     public List<Subject> findAll() {
         return subjectJpaRepository.findAll();
+    }
+
+    @Override
+    public List<StudyResponseDTO.GetOne> findStudiesBySubjectId(Long subjectId) {
+        QStudy study = QStudy.study;
+
+        return queryFactory
+                .selectFrom(study)
+                .where(study.subject.subjectId.eq(subjectId))
+                .fetch()
+                .stream()
+                .map(StudyResponseDTO.GetOne::from)
+                .toList();
     }
 
     @Override

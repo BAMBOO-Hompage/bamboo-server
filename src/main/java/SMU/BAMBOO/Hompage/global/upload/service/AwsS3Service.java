@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -94,7 +95,19 @@ public class AwsS3Service {
 
     // 파일명 중복 방지 (UUID)
     private String createFileName(String folderName, String fileName, boolean isImage) {
-        String uniqueFileName = UUID.randomUUID().toString() + getFileExtension(fileName, isImage);
+        String extension = getFileExtension(fileName, isImage);
+
+        int lastDotIndex = fileName.lastIndexOf(".");
+        String baseName = (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
+
+        // 한글 및 특수문자 처리: Unicode 정규화 (NFC)
+        String normalizedFileName = Normalizer.normalize(baseName, Normalizer.Form.NFC);
+
+        // 공백 및 특수문자 제거 (한글, 영어, 숫자만 허용)
+        String safeFileName = normalizedFileName.replaceAll("[^a-zA-Z0-9가-힣]", "_");
+
+        String uniqueFileName = safeFileName + "_" + UUID.randomUUID() + "." + extension;
+
         return folderName + "/" + uniqueFileName;
     }
 

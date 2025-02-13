@@ -1,5 +1,8 @@
 package SMU.BAMBOO.Hompage.mock.container;
 
+import SMU.BAMBOO.Hompage.domain.knowledge.controller.KnowledgeController;
+import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
+import SMU.BAMBOO.Hompage.domain.knowledge.service.KnowledgeServiceImpl;
 import SMU.BAMBOO.Hompage.domain.libraryPost.controller.LibraryPostController;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.service.LibraryPostServiceImpl;
@@ -13,10 +16,7 @@ import SMU.BAMBOO.Hompage.domain.tag.controller.TagController;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.domain.tag.service.TagServiceImpl;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
-import SMU.BAMBOO.Hompage.mock.repository.FakeLibraryPostRepository;
-import SMU.BAMBOO.Hompage.mock.repository.FakeMainActivitiesRepository;
-import SMU.BAMBOO.Hompage.mock.repository.FakeNoticeRepository;
-import SMU.BAMBOO.Hompage.mock.repository.FakeTagRepository;
+import SMU.BAMBOO.Hompage.mock.repository.*;
 import lombok.Builder;
 import org.mockito.Mockito;
 
@@ -26,16 +26,19 @@ public class TestContainer {
     public final TagRepository tagRepository;
     public final MainActivitiesRepository mainActivitiesRepository;
     public final NoticeRepository noticeRepository;
+    public final KnowledgeRepository knowledgeRepository;
 
     public final LibraryPostServiceImpl libraryPostService;
     public final TagServiceImpl tagService;
     public final MainActivitiesServiceImpl mainActivitiesService;
     public final NoticeServiceImpl noticeService;
+    public final KnowledgeServiceImpl knowledgeService;
 
     public final LibraryPostController libraryPostController;
     public final TagController tagController;
     public final MainActivitiesController mainActivitiesController;
     public final NoticeController noticeController;
+    public final KnowledgeController knowledgeController;
 
     public final AwsS3Service awsS3Service;
 
@@ -45,6 +48,7 @@ public class TestContainer {
         this.tagRepository = new FakeTagRepository();
         this.mainActivitiesRepository = new FakeMainActivitiesRepository();
         this.noticeRepository = new FakeNoticeRepository();
+        this.knowledgeRepository = new FakeKnowledgeRepository();
 
         this.awsS3Service = Mockito.mock(AwsS3Service.class);
 
@@ -57,6 +61,7 @@ public class TestContainer {
                 .build();
         this.mainActivitiesService = new MainActivitiesServiceImpl(this.mainActivitiesRepository, this.awsS3Service);
         this.noticeService = new NoticeServiceImpl(this.noticeRepository, this.awsS3Service);
+        this.knowledgeService = new KnowledgeServiceImpl(this.knowledgeRepository, this.awsS3Service);
 
         this.libraryPostController = LibraryPostController.builder()
                 .libraryPostService(this.libraryPostService)
@@ -70,6 +75,9 @@ public class TestContainer {
                 .build();
         this.noticeController = NoticeController.builder()
                 .noticeService(this.noticeService)
+                .build();
+        this.knowledgeController = KnowledgeController.builder()
+                .knowledgeService(this.knowledgeService)
                 .build();
     }
 }

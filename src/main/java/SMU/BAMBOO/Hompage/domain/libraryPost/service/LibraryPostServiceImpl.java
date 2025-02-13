@@ -10,6 +10,7 @@ import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import SMU.BAMBOO.Hompage.global.jwt.util.SecurityUtil;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -119,8 +120,14 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Override
     @Transactional
     public void update(Long id, LibraryPostRequestDTO.Update request) {
-
         LibraryPost libraryPost = getLibraryPostById(id);
+        validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
+
+        String currentStudentId = SecurityUtil.getCurrentStudentId();
+        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
+        }
+
         List<String> tagNames = request.tagNames() != null ? request.tagNames() : List.of();
 
         // 이미 존재하는 태그 조회
@@ -151,7 +158,9 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Override
     @Transactional
     public void delete(Long id) {
-        getLibraryPostById(id);
+        LibraryPost libraryPost = getLibraryPostById(id);
+        validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_DELETE);
+
         libraryPostRepository.deleteById(id);
     }
 
@@ -162,6 +171,13 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag request) {
         LibraryPost libraryPost = getLibraryPostById(libraryPostId);
+        validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
+
+        // 본인의 글인지 검증
+        String currentStudentId = SecurityUtil.getCurrentStudentId();
+        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
+        }
 
         // 태그 조회
         List<Tag> tags = request.tagNames().stream()
@@ -179,6 +195,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     @Transactional
     public LibraryPostResponseDTO.GetOne resetTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag request) {
         LibraryPost libraryPost = getLibraryPostById(libraryPostId);
+        validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
 
         // 태그 조회
         List<Tag> tags = request.tagNames().stream()
@@ -190,5 +207,16 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         libraryPost.setTags(tags);
 
         return LibraryPostResponseDTO.GetOne.from(libraryPost);
+    }
+
+    /**
+     * 현재 사용자가 알렉산드리아 게시글의 작성자인지 검증하는 메서드
+     */
+    private void validateOwner(LibraryPost libraryPost, ErrorCode errorCode) {
+        String currentStudentId = SecurityUtil.getCurrentStudentId();
+
+        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
+            throw new CustomException(errorCode);
+        }
     }
 }

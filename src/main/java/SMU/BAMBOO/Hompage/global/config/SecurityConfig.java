@@ -41,15 +41,20 @@ public class SecurityConfig {
 
     // 운영진 이상의 권한 필요 (ADMIN, OPS)
     private final String[] adminUrls = {
-            "/api/subjects/**",
+            "/api/awards/**",
+            "/api/main-activities/**",
+            "/api/notices/**",
             "/api/studies/**",
-            "/api/notices/**"
+            "/api/subjects/**",
+            "/api/tags/**",
     };
 
     // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
     private final String[] memberUrls = {
             "/api/inventories/**",
-            "/api/knowledges/**"
+            "/api/knowledges/**",
+            "/api/knowledge-comments/**",
+            "/api/library-posts/**"
     };
 
     @Bean

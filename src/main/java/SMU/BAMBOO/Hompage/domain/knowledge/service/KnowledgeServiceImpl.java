@@ -5,9 +5,11 @@ import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeRequestDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeResponseDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
 import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
+import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import SMU.BAMBOO.Hompage.global.jwt.util.SecurityUtil;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +108,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                                               List<String> imageUrls, List<MultipartFile> newImages,
                                               List<String> fileUrls, List<MultipartFile> newFiles) {
         Knowledge knowledge = getKnowledgeById(id);
+        validateOwner(knowledge, ErrorCode.UNAUTHORIZED_UPDATE);
 
         List<String> finalImageUrls = new ArrayList<>(imageUrls != null ? imageUrls : new ArrayList<>());
         List<String> finalFileUrls = new ArrayList<>(fileUrls != null ? fileUrls : new ArrayList<>());
@@ -132,6 +135,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Transactional
     public void delete(Long id) {
         Knowledge knowledge = getKnowledgeById(id);
+        validateOwner(knowledge, ErrorCode.UNAUTHORIZED_DELETE);
 
         List<String> imageUrls = knowledge.getImages();
         List<String> fileUrls = knowledge.getFiles();
@@ -140,5 +144,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         fileUrls.forEach(fileUrl -> awsS3Service.deleteFile(awsS3Service.extractS3Key(fileUrl)));
 
         knowledgeRepository.deleteById(id);
+    }
+
+    /**
+     * 현재 사용자가 정보공유 게시글의 작성자인지 검증하는 메서드
+     */
+    private void validateOwner(Knowledge knowledge, ErrorCode errorCode) {
+        String currentStudentId = SecurityUtil.getCurrentStudentId();
+
+        if (!knowledge.getMember().getStudentId().equals(currentStudentId)) {
+            throw new CustomException(errorCode);
+        }
     }
 }

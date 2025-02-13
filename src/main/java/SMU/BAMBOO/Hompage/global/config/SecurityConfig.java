@@ -49,7 +49,8 @@ public class SecurityConfig {
     // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
     private final String[] memberUrls = {
             "/api/inventories/**",
-            "/api/knowledges/**"
+            "/api/knowledges/**",
+            "/api/library-posts/**"
     };
 
     @Bean

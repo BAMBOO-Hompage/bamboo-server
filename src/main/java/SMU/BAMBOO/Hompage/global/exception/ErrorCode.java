@@ -41,6 +41,8 @@ public enum ErrorCode {
 
     // Auth
     AUTH_FAIL("AUTH401", "이메일 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_UPDATE("AUTH400", "본인 리소스만 수정할 수 있습니다.", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_DELETE("AUTH400", "본인 리소스만 삭제할 수 있습니다..", HttpStatus.UNAUTHORIZED),
 
     // Token
     TOKEN_INVALID("TOKEN401", "유효하지 않은 Token 입니다.", HttpStatus.UNAUTHORIZED),
@@ -64,6 +66,7 @@ public enum ErrorCode {
     // User (회원)
     USER_ALREADY_EXIST("USER400", "이미 회원가입된 유저입니다.", HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST("USER404", "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND),
+    USER_NOT_VALID("USER404", "유효한 사용자 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     USER_WRONG_PASSWORD("USER401", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
     USER_SAME_PASSWORD("USER400", "동일한 비밀번호로 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),

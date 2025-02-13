@@ -21,4 +21,12 @@ public class SecurityUtil {
 
         throw new CustomException(ErrorCode.USER_NOT_VALID);
     }
+
+    /**
+     * 현재 로그인 중인 회원의 등급을 조회
+     */
+    public static boolean hasRole(String role) {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(role));
+    }
 }

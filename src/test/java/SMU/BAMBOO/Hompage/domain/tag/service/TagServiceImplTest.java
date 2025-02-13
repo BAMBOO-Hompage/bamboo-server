@@ -5,7 +5,7 @@ import SMU.BAMBOO.Hompage.domain.tag.dto.TagResponseDTO;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.mock.FakeTagRepository;
+import SMU.BAMBOO.Hompage.mock.repository.FakeTagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

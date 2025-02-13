@@ -10,19 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Builder
 @Tag(name = "지식 공유 게시판 API")
 @RequestMapping("/api/knowledges")
 public class KnowledgeController {
@@ -60,6 +62,9 @@ public class KnowledgeController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        type = (type == null || type.trim().isEmpty()) ? null : type.trim();
+        keyword = (keyword == null || keyword.trim().isEmpty()) ? null : keyword.trim();
 
         Page<KnowledgeResponseDTO.GetOne> knowledgeList = knowledgeService.getKnowledges(type, keyword, page - 1, size);
         return SuccessResponse.ok(knowledgeList);

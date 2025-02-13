@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.mock;
+package SMU.BAMBOO.Hompage.mock.repository;
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
 import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesRepository;

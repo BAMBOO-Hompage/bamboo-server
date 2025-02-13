@@ -1,12 +1,17 @@
 package SMU.BAMBOO.Hompage.domain.enums;
 
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Arrays;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NoticeType {
     EVENTS("대회 및 세미나"),
-    NOTICE("공지사항");
+    NOTICE("동아리 공지");
 
     private final String description;
 
@@ -17,5 +22,17 @@ public enum NoticeType {
     @JsonValue
     public String getDescription() {
         return description;
+    }
+
+    @JsonCreator
+    public static NoticeType from(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        return Arrays.stream(NoticeType.values())
+                .filter(type -> type.name().equalsIgnoreCase(value) || type.description.equals(value))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOTICE_INVALID_TYPE));
     }
 }

@@ -47,10 +47,10 @@ public class LibraryPostController {
     public SuccessResponse<Page<LibraryPostResponseDTO.GetOne>> getLibraryPosts(
             @RequestParam(value = "tab", required = false) String tab,
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<LibraryPostResponseDTO.GetOne> result = libraryPostService.getLibraryPosts(tab, keyword, page, size);
+        Page<LibraryPostResponseDTO.GetOne> result = libraryPostService.getLibraryPosts(tab, keyword, page-1, size);
         return SuccessResponse.ok(result);
     }
 

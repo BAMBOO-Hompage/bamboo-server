@@ -7,7 +7,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.mock.TestContainer;
+import SMU.BAMBOO.Hompage.mock.container.TestContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.subject.controller;
 
+import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.service.SubjectService;
@@ -43,6 +44,14 @@ public class SubjectController {
     @Operation(summary = "과목 리스트 조회")
     public SuccessResponse<List<SubjectResponseDTO.GetOne>> findAll() {
         List<SubjectResponseDTO.GetOne> result = subjectService.findAll();
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping("/{subjectId}/studies")
+    @Operation(summary = "과목별 스터디 조회")
+    public SuccessResponse<List<StudyResponseDTO.GetOne>> getStudiesBySubject(
+            @PathVariable("subjectId") Long subjectId) {
+        List<StudyResponseDTO.GetOne> result = subjectService.getStudiesBySubject(subjectId);
         return SuccessResponse.ok(result);
     }
 

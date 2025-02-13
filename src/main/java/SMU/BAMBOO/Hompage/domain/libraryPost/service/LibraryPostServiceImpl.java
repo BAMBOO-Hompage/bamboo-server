@@ -4,7 +4,7 @@ import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostRequestDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostResponseDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
-import SMU.BAMBOO.Hompage.domain.mapping.LibraryPostTag;
+import SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.LibraryPostTag;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;

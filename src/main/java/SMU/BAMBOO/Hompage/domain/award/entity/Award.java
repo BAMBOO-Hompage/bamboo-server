@@ -5,8 +5,6 @@ import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "award")
 @Builder
@@ -24,22 +22,10 @@ public class Award extends BaseEntity {
     @JoinColumn(name = "inventory_id", nullable = false, unique = true)
     private Inventory inventory;
 
-    @Column(nullable = false)
-    private int year;
-
-    @Column(nullable = false, length = 100)
-    private String chapter;
-
-    @Column(nullable = false)
-    private int session;
-
     @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false)
     private int week;
-
-    @Column(nullable = false)
-    private LocalDate date;
 
 }

@@ -1,6 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.study.service;
 
-import SMU.BAMBOO.Hompage.domain.mapping.MemberStudy;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyRequestDTO;

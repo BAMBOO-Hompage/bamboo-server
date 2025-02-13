@@ -1,4 +1,4 @@
-package SMU.BAMBOO.Hompage.domain.mapping;
+package SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity;
 
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
@@ -34,6 +34,14 @@ public class MemberStudy extends BaseEntity {
     @Builder.Default
     @Column(name = "x_count", nullable = false)
     private int xCount = 0;
+
+    public void increaseOCount() {
+        this.oCount++;
+    }
+
+    public void increaseXCount() {
+        this.xCount++;
+    }
 
     /**
      * Study 연관 관계 편의 메서드

@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.libraryPost.repository;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.QLibraryPost;
-import SMU.BAMBOO.Hompage.domain.mapping.QLibraryPostTag;
+import SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.QLibraryPostTag;
 import SMU.BAMBOO.Hompage.domain.tag.entity.QTag;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;

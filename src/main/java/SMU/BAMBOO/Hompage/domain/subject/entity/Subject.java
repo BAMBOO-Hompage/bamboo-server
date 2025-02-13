@@ -26,6 +26,9 @@ public class Subject extends BaseEntity {
     @Column(nullable = false, length = 15)
     private String name;
 
+    @Column(name = "is_book", nullable = false)
+    private Boolean isBook;
+
     @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Study> studies = new ArrayList<>();
@@ -34,8 +37,9 @@ public class Subject extends BaseEntity {
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<WeeklyContent> weeklyContents = new ArrayList<>();
 
-    public void updateName(SubjectRequestDTO.Update request) {
+    public void update(SubjectRequestDTO.Update request) {
         this.name = request.name();
+        this.isBook = request.isBook();
     }
 
     /** 연관관계 편의 메서드 */

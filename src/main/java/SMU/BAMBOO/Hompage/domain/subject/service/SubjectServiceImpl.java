@@ -35,6 +35,7 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = Subject.builder()
                 .name(dto.name())
+                .isBook(dto.isBook())
                 .build();
 
         subjectRepository.save(subject);
@@ -47,10 +48,13 @@ public class SubjectServiceImpl implements SubjectService {
         return SubjectResponseDTO.GetOne.from(subject);
     }
 
-    @Override
-    public List<SubjectResponseDTO.GetOne> findAll() {
-        List<Subject> subjects = subjectRepository.findAll();
-        return subjects.stream()
+    public List<SubjectResponseDTO.GetOne> findAll(Boolean isBook) {
+        if (isBook == null) {
+            return subjectRepository.findAll().stream()
+                    .map(SubjectResponseDTO.GetOne::from)
+                    .toList();
+        }
+        return subjectRepository.findByIsBook(isBook).stream()
                 .map(SubjectResponseDTO.GetOne::from)
                 .toList();
     }
@@ -69,7 +73,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional
     public SubjectResponseDTO.Update update(Long id, SubjectRequestDTO.Update dto) {
         Subject subject = getSubjectById(id);
-        subject.updateName(dto);
+        subject.update(dto);
         return SubjectResponseDTO.Update.from(subject);
     }
 

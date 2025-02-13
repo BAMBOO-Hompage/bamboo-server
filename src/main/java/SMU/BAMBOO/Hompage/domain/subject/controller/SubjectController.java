@@ -40,10 +40,18 @@ public class SubjectController {
         return SuccessResponse.ok(result);
     }
 
+    /**
+     * 과목 리스트 조회
+     * isBook = null > 전체 과목 조회
+     * isBook = true > 커리큘럼 과목 조회
+     * isBook = false > 자율 과목 조회
+     */
     @GetMapping
-    @Operation(summary = "과목 리스트 조회")
-    public SuccessResponse<List<SubjectResponseDTO.GetOne>> findAll() {
-        List<SubjectResponseDTO.GetOne> result = subjectService.findAll();
+    @Operation(summary = "과목 리스트 조회 (isBook이 true면 커러큘럼 조회/ false면 자율 조회/ null로 보내면 전체 조회)")
+    public SuccessResponse<List<SubjectResponseDTO.GetOne>> findAll(
+            @RequestParam(value = "isBook", required = false) Boolean isBook) {
+
+        List<SubjectResponseDTO.GetOne> result = subjectService.findAll(isBook);
         return SuccessResponse.ok(result);
     }
 

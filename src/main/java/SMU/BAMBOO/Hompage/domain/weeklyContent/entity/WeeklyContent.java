@@ -6,6 +6,8 @@ import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "weekly_content")
 @Builder
@@ -28,6 +30,12 @@ public class WeeklyContent extends BaseEntity {
 
     @Column(nullable = false)
     private int week;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
 
     public void update(WeeklyContentRequestDTO.Update request) {
         this.content = request.content();

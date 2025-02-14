@@ -39,6 +39,11 @@ public class SecurityConfig {
             "/health"
     };
 
+    // 임원진 이상의 권한 필요 (OPS)
+    private final String[] opsUrls = {
+            "/api/cohorts/**"
+    };
+
     // 운영진 이상의 권한 필요 (ADMIN, OPS)
     private final String[] adminUrls = {
             "/api/awards/**",
@@ -89,6 +94,9 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(allowedUrls).permitAll()
+                .requestMatchers(HttpMethod.GET, opsUrls).permitAll()
+                .requestMatchers(HttpMethod.POST, opsUrls).hasAnyAuthority("ROLE_OPS")
+                .requestMatchers(HttpMethod.DELETE, opsUrls).hasAnyAuthority("ROLE_OPS")
                 .requestMatchers(HttpMethod.GET, adminUrls).permitAll()
                 .requestMatchers(HttpMethod.POST, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
                 .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")

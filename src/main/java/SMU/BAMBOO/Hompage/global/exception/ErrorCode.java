@@ -72,6 +72,12 @@ public enum ErrorCode {
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
     USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
 
+    // Cohort (기수 관련)
+    COHORT_ALREADY_EXIST("COHORT400", "이미 존재하는 기수입니다.", HttpStatus.BAD_REQUEST),
+    COHORT_NOT_EXIST("COHORT404", "존재하지 않는 기수입니다.", HttpStatus.NOT_FOUND),
+    COHORT_INVALID_YEAR("COHORT400", "잘못된 연도 값입니다.", HttpStatus.BAD_REQUEST),
+    COHORT_INVALID_SEMESTER("COHORT400", "잘못된 학기 값입니다.", HttpStatus.BAD_REQUEST),
+
     // MemberStudy (회원, 스터디 매핑 테이블)
     MEMBER_STUDY_NOT_FOUND("MEMBER_STUDY404", "해당 멤버 스터디 (매핑) 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 

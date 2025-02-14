@@ -51,6 +51,16 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
+    public List<Subject> findByIsBookAndCohort_Batch(Boolean isBook, int batch) {
+        return subjectJpaRepository.findByIsBookAndCohort_Batch(isBook, batch);
+    }
+
+    @Override
+    public List<Subject> findByCohort_Batch(int batch) {
+        return subjectJpaRepository.findByCohort_Batch(batch);
+    }
+
+    @Override
     public Subject save(Subject subject) {
         return subjectJpaRepository.save(subject);
     }

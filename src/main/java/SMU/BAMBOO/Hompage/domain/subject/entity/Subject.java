@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.subject.entity;
 
+import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.weeklyContent.entity.WeeklyContent;
@@ -29,6 +30,10 @@ public class Subject extends BaseEntity {
     @Column(name = "is_book", nullable = false)
     private Boolean isBook;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cohort_id", nullable = false)
+    private Cohort cohort;
+
     @Builder.Default
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Study> studies = new ArrayList<>();
@@ -37,14 +42,20 @@ public class Subject extends BaseEntity {
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<WeeklyContent> weeklyContents = new ArrayList<>();
 
-    public void update(SubjectRequestDTO.Update request) {
+    public void update(SubjectRequestDTO.Update request, Cohort cohort) {
         this.name = request.name();
         this.isBook = request.isBook();
+        this.cohort = cohort;
     }
 
     /** 연관관계 편의 메서드 */
     public void addWeeklyContent(WeeklyContent weeklyContent) {
         this.weeklyContents.add(weeklyContent);
         weeklyContent.associateSubject(this);
+    }
+
+    /** 기수 설정 메서드 */
+    public void associateCohort(Cohort cohort) {
+        this.cohort = cohort;
     }
 }

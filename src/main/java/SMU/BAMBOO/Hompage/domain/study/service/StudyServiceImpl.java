@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.study.service;
 
+import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
+import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
@@ -25,6 +27,7 @@ public class StudyServiceImpl implements StudyService {
     private final StudyRepository studyRepository;
     private final SubjectRepository subjectRepository;
     private final MemberRepository memberRepository;
+    private final CohortRepository cohortRepository;
 
     private Study getStudyById(Long id) {
         return studyRepository.findById(id)
@@ -45,10 +48,13 @@ public class StudyServiceImpl implements StudyService {
         Member studyMaster = memberRepository.findByStudentId(dto.studyMaster())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
+        Cohort cohort = cohortRepository.findByBatch(dto.cohort())
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
+
         // 객체 생성
         Study study = Study.builder()
                 .subject(subject)
-                .cohort(dto.cohort())
+                .cohort(cohort)
                 .isBook(dto.isBook())
                 .section(dto.section())
                 .studyMaster(dto.studyMaster())
@@ -100,6 +106,9 @@ public class StudyServiceImpl implements StudyService {
         Member studyMaster = memberRepository.findByStudentId(dto.studyMaster())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
+        Cohort cohort = cohortRepository.findByBatch(dto.cohort())
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
+
         // 기존 MemberStudy 데이터 제거 (NPE 방지)
         study.getMemberStudies().clear();
 
@@ -115,7 +124,7 @@ public class StudyServiceImpl implements StudyService {
                         .build())
                 .toList();
 
-        study.updateStudy(subject, dto.cohort(), dto.isBook(), dto.section(), dto.studyMaster(), updatedMemberStudies);
+        study.updateStudy(subject, cohort, dto.isBook(), dto.section(), dto.studyMaster(), updatedMemberStudies);
         return StudyResponseDTO.Update.from(study);
     }
 

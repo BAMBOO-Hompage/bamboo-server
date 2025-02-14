@@ -24,7 +24,6 @@ public class SubjectController {
 
     @PostMapping
     @Operation(summary = "과목 생성")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<SubjectResponseDTO.Create> create(
             @Valid @RequestBody SubjectRequestDTO.Create request) {
         SubjectResponseDTO.Create result = subjectService.create(request);
@@ -49,9 +48,10 @@ public class SubjectController {
     @GetMapping
     @Operation(summary = "과목 리스트 조회 (isBook이 true면 커러큘럼 조회/ false면 자율 조회/ null로 보내면 전체 조회)")
     public SuccessResponse<List<SubjectResponseDTO.GetOne>> findAll(
-            @RequestParam(value = "isBook", required = false) Boolean isBook) {
+            @RequestParam(value = "커리큘럼 유무", required = false) Boolean isBook,
+            @RequestParam(value = "기수", required = false) int batch) {
 
-        List<SubjectResponseDTO.GetOne> result = subjectService.findAll(isBook);
+        List<SubjectResponseDTO.GetOne> result = subjectService.findAll(isBook, batch);
         return SuccessResponse.ok(result);
     }
 
@@ -65,7 +65,6 @@ public class SubjectController {
 
     @PutMapping("/{subjectId}")
     @Operation(summary = "과목 수정")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<SubjectResponseDTO.Update> update(
             @PathVariable("subjectId") Long id,
             @Valid @RequestBody SubjectRequestDTO.Update request
@@ -76,7 +75,6 @@ public class SubjectController {
 
     @DeleteMapping("/{subjectId}")
     @Operation(summary = "과목 삭제")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPS')")
     public SuccessResponse<String> delete(
             @PathVariable("subjectId") Long id
     ) {

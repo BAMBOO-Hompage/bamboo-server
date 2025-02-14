@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.weeklyContent.service;
 
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.domain.subject.repository.SubjectRepository;
@@ -47,6 +46,8 @@ public class WeeklyContentServiceImpl implements WeeklyContentService {
                 .subject(subject)
                 .content(request.content())
                 .week(request.week())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
                 .build();
 
         // 연관관계 설정

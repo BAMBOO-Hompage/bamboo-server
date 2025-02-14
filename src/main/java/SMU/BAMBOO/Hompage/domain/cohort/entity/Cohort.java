@@ -1,8 +1,12 @@
 package SMU.BAMBOO.Hompage.domain.cohort.entity;
 
+import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cohort")
@@ -26,4 +30,26 @@ public class Cohort extends BaseEntity {
     @Column(name = "is_first_semester", nullable = false)
     private boolean isFirstSemester;
 
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
+    private boolean isActive = true;
+
+    @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Subject> subjects = new ArrayList<>();
+
+    /**
+     * 활동 상태 변경 메서드 (활동 종료)
+     */
+    public void deactivate() {
+        this.isActive = false;
+    }
+
+    /**
+     * 과목 추가 연관 관계 편의 메서드
+     */
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
+        subject.associateCohort(this);
+    }
 }

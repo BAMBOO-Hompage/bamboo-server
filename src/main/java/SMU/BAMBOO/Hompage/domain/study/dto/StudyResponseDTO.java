@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.study.dto;
 
+import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -12,7 +13,7 @@ public class StudyResponseDTO {
     public record Create(
             Long studyId,
             String subjectName,
-            int cohort,
+            CohortResponseDTO.GetOne cohort,
             Boolean isBook,
             int section,
             String studyMaster,
@@ -22,7 +23,7 @@ public class StudyResponseDTO {
             return new Create(
                     study.getStudyId(),
                     study.getSubject().getName(),
-                    study.getCohort(),
+                    CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
                     study.getStudyMaster(),
@@ -36,7 +37,7 @@ public class StudyResponseDTO {
     @Schema(description = "스터디 수정 응답 DTO")
     public record Update(
             String subjectName,
-            int cohort,
+            CohortResponseDTO.GetOne cohort,
             Boolean isBook,
             int section,
             String studyMaster,
@@ -45,7 +46,7 @@ public class StudyResponseDTO {
         public static Update from(Study study) {
             return new Update(
                     study.getSubject().getName(),
-                    study.getCohort(),
+                    CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
                     study.getStudyMaster(),
@@ -60,7 +61,7 @@ public class StudyResponseDTO {
     public record GetOne(
             Long studyId,
             String subjectName,
-            int cohort,
+            CohortResponseDTO.GetOne cohort,
             Boolean isBook,
             int section,
             String studyMaster,
@@ -70,7 +71,7 @@ public class StudyResponseDTO {
             return new GetOne(
                     study.getStudyId(),
                     study.getSubject().getName(),
-                    study.getCohort(),
+                    CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
                     study.getStudyMaster(),

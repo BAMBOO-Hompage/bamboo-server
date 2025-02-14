@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.study.entity;
 
+import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
@@ -27,8 +28,9 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
-    @Column(nullable = false)
-    private int cohort;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cohort_id", nullable = false)
+    private Cohort cohort;
 
     @Builder.Default
     @Column(name = "is_book", nullable = false)
@@ -48,7 +50,7 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
 
-    public void updateStudy(Subject subject, int cohort, Boolean isBook, int section, String studyMaster, List<MemberStudy> updatedMemberStudies) {
+    public void updateStudy(Subject subject, Cohort cohort, Boolean isBook, int section, String studyMaster, List<MemberStudy> updatedMemberStudies) {
         this.subject = subject;
         this.cohort = cohort;
         this.isBook = isBook;

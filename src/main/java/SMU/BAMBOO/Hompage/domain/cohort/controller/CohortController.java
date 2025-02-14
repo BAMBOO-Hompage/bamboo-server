@@ -34,20 +34,10 @@ public class CohortController {
         return SuccessResponse.ok(result);
     }
 
-    @GetMapping()
-    @Operation(summary = "연도와 학기로 기수 조회")
-    public SuccessResponse<CohortResponseDTO.GetOne> getOneByYearAndSemester(
-            @RequestParam("year") int year,
-            @RequestParam("isFirstSemester") boolean isFirstSemester
-    ) {
-        CohortResponseDTO.GetOne result = cohortService.getByYearAndSemester(year, isFirstSemester);
-        return SuccessResponse.ok(result);
-    }
-
     @GetMapping("/batch/{batch}")
     @Operation(summary = "기수(batch)로 조회")
-    public SuccessResponse<List<CohortResponseDTO.GetOne>> getByBatch(@PathVariable("batch") int batch) {
-        List<CohortResponseDTO.GetOne> result = cohortService.getByBatch(batch);
+    public SuccessResponse<CohortResponseDTO.GetOne> getByBatch(@PathVariable("batch") int batch) {
+        CohortResponseDTO.GetOne result = cohortService.getByBatch(batch);
         return SuccessResponse.ok(result);
     }
 

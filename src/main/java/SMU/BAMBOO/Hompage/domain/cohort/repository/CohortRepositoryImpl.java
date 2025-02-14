@@ -24,17 +24,7 @@ public class CohortRepositoryImpl implements CohortRepository {
     }
 
     @Override
-    public Optional<Cohort> findByYearAndIsFirstSemester(int year, boolean isFirstSemester) {
-        return cohortJpaRepository.findByYearAndIsFirstSemester(year, isFirstSemester);
-    }
-
-    @Override
-    public boolean existsByYearAndSemester(int year, boolean isFirstSemester) {
-        return cohortJpaRepository.existsByYearAndIsFirstSemester(year, isFirstSemester);
-    }
-
-    @Override
-    public List<Cohort> findByBatch(int batch) {
+    public Optional<Cohort> findByBatch(int batch) {
         return cohortJpaRepository.findByBatch(batch);
     }
 

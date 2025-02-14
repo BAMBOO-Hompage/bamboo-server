@@ -25,19 +25,13 @@ public class CohortServiceImpl implements CohortService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
     }
 
-    /** 연도 + 학기로 기수 조회 */
-    private Cohort getCohortByYearAndSemester(int year, boolean isFirstSemester) {
-        return cohortRepository.findByYearAndIsFirstSemester(year, isFirstSemester)
-                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
-    }
-
     /**
      * 기수 정보 생성
      */
     @Override
     @Transactional
     public CohortResponseDTO.Create create(CohortRequestDTO.Create dto) {
-        if (cohortRepository.existsByYearAndSemester(dto.year(), dto.isFirstSemester())) {
+        if (cohortRepository.findByBatch(dto.batch()).isPresent()) {
             throw new CustomException(ErrorCode.COHORT_ALREADY_EXIST);
         }
 
@@ -61,24 +55,13 @@ public class CohortServiceImpl implements CohortService {
     }
 
     /**
-     * 연도와 학기로 기수 조회
-     */
-    @Override
-    public CohortResponseDTO.GetOne getByYearAndSemester(int year, boolean isFirstSemester) {
-        Cohort cohort = getCohortByYearAndSemester(year, isFirstSemester);
-        return CohortResponseDTO.GetOne.from(cohort);
-    }
-
-    /**
      * 기수로 해당 기수 정보 조회
      */
     @Override
-    public List<CohortResponseDTO.GetOne> getByBatch(int batch) {
-        List<Cohort> cohorts = cohortRepository.findByBatch(batch);
-        if (cohorts.isEmpty()) {
-            throw new CustomException(ErrorCode.COHORT_NOT_EXIST);
-        }
-        return cohorts.stream().map(CohortResponseDTO.GetOne::from).toList();
+    public CohortResponseDTO.GetOne getByBatch(int batch) {
+        Cohort cohort = cohortRepository.findByBatch(batch)
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
+        return CohortResponseDTO.GetOne.from(cohort);
     }
 
     /**

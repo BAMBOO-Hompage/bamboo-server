@@ -9,6 +9,7 @@ import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.mock.container.TestContainer;
+import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,8 @@ class KnowledgeControllerTest {
                 .major("휴먼지능정보공학과")
                 .role(Role.ROLE_ADMIN)
                 .build();
+
+        SecurityTestUtil.setAuthentication(testMember);
     }
 
     @Test

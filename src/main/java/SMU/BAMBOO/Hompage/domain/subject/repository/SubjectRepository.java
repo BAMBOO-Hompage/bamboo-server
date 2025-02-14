@@ -10,6 +10,8 @@ public interface SubjectRepository {
     Optional<Subject> findById(Long id);
     Optional<Subject> findByName(String name);
     List<Subject> findByIsBook(Boolean isBook);
+    List<Subject> findByIsBookAndCohort_Batch(Boolean isBook, int batch);
+    List<Subject> findByCohort_Batch(int batch);
     List<Subject> findAll();
     List<StudyResponseDTO.GetOne> findStudiesBySubjectId(Long subjectId);
     Subject save(Subject subject);

@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.subject.service;
 
+import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
+import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectRequestDTO;
 import SMU.BAMBOO.Hompage.domain.subject.dto.SubjectResponseDTO;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class SubjectServiceImpl implements SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final CohortRepository cohortRepository;
 
     private Subject getSubjectById(Long id) {
         return subjectRepository.findById(id)
@@ -29,6 +32,8 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public SubjectResponseDTO.Create create(SubjectRequestDTO.Create dto) {
+        Cohort cohort = cohortRepository.getByBatch(dto.batch());
+
         if (subjectRepository.findByName(dto.name()).isPresent()) {
             throw new CustomException(ErrorCode.SUBJECT_ALREADY_EXIST);
         }
@@ -36,6 +41,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = Subject.builder()
                 .name(dto.name())
                 .isBook(dto.isBook())
+                .cohort(cohort)
                 .build();
 
         subjectRepository.save(subject);
@@ -48,13 +54,14 @@ public class SubjectServiceImpl implements SubjectService {
         return SubjectResponseDTO.GetOne.from(subject);
     }
 
-    public List<SubjectResponseDTO.GetOne> findAll(Boolean isBook) {
+    @Override
+    public List<SubjectResponseDTO.GetOne> findAll(Boolean isBook, int batch) {
         if (isBook == null) {
-            return subjectRepository.findAll().stream()
+            return subjectRepository.findByCohort_Batch(batch).stream()
                     .map(SubjectResponseDTO.GetOne::from)
                     .toList();
         }
-        return subjectRepository.findByIsBook(isBook).stream()
+        return subjectRepository.findByIsBookAndCohort_Batch(isBook, batch).stream()
                 .map(SubjectResponseDTO.GetOne::from)
                 .toList();
     }
@@ -72,8 +79,9 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public SubjectResponseDTO.Update update(Long id, SubjectRequestDTO.Update dto) {
+        Cohort cohort = cohortRepository.getByBatch(dto.batch());
         Subject subject = getSubjectById(id);
-        subject.update(dto);
+        subject.update(dto, cohort);
         return SubjectResponseDTO.Update.from(subject);
     }
 

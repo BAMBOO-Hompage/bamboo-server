@@ -1,6 +1,8 @@
 package SMU.BAMBOO.Hompage.domain.cohort.repository;
 
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +18,11 @@ public class CohortRepositoryImpl implements CohortRepository {
     @Override
     public Cohort save(Cohort cohort) {
         return cohortJpaRepository.save(cohort);
+    }
+
+    @Override
+    public Cohort getByBatch(int batch) {
+        return findByBatch(batch).orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
     }
 
     @Override

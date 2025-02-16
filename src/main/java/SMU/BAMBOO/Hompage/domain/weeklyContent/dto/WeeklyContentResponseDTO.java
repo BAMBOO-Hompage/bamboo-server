@@ -15,7 +15,9 @@ public class WeeklyContentResponseDTO {
             @Schema(description = "내용") String content,
             @Schema(description = "주차") int week,
             @Schema(description = "시작일") LocalDate startDate,
-            @Schema(description = "종료일") LocalDate endDate
+            @Schema(description = "종료일") LocalDate endDate,
+            @Schema(description = "시작 페이지") int startPage,
+            @Schema(description = "끝 페이지") int endPage
     ) {
         public static Create from(WeeklyContent weeklyContent) {
             return new Create(
@@ -24,7 +26,9 @@ public class WeeklyContentResponseDTO {
                     weeklyContent.getContent(),
                     weeklyContent.getWeek(),
                     weeklyContent.getStartDate(),
-                    weeklyContent.getEndDate()
+                    weeklyContent.getEndDate(),
+                    weeklyContent.getStartPage(),
+                    weeklyContent.getEndPage()
             );
         }
     }
@@ -35,7 +39,9 @@ public class WeeklyContentResponseDTO {
             @Schema(description = "내용") String content,
             @Schema(description = "주차") int week,
             @Schema(description = "시작일") LocalDate startDate,
-            @Schema(description = "종료일") LocalDate endDate
+            @Schema(description = "종료일") LocalDate endDate,
+            @Schema(description = "시작 페이지") int startPage,
+            @Schema(description = "끝 페이지") int endPage
     ) {
         public static Update from(WeeklyContent weeklyContent) {
             return new Update(
@@ -43,7 +49,9 @@ public class WeeklyContentResponseDTO {
                     weeklyContent.getContent(),
                     weeklyContent.getWeek(),
                     weeklyContent.getStartDate(),
-                    weeklyContent.getEndDate()
+                    weeklyContent.getEndDate(),
+                    weeklyContent.getStartPage(),
+                    weeklyContent.getEndPage()
             );
         }
     }
@@ -55,7 +63,9 @@ public class WeeklyContentResponseDTO {
             @Schema(description = "내용") String content,
             @Schema(description = "주차") int week,
             @Schema(description = "시작일") LocalDate startDate,
-            @Schema(description = "종료일") LocalDate endDate
+            @Schema(description = "종료일") LocalDate endDate,
+            @Schema(description = "시작 페이지") int startPage,
+            @Schema(description = "끝 페이지") int endPage
     ) {
         public static GetOne from(WeeklyContent weeklyContent) {
             return new GetOne(
@@ -64,7 +74,9 @@ public class WeeklyContentResponseDTO {
                     weeklyContent.getContent(),
                     weeklyContent.getWeek(),
                     weeklyContent.getStartDate(),
-                    weeklyContent.getEndDate()
+                    weeklyContent.getEndDate(),
+                    weeklyContent.getStartPage(),
+                    weeklyContent.getEndPage()
             );
         }
     }

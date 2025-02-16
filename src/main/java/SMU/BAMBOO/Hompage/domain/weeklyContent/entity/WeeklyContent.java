@@ -37,9 +37,17 @@ public class WeeklyContent extends BaseEntity {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "start_page")
+    private Integer startPage;
+
+    @Column(name = "end_page")
+    private Integer endPage;
+
     public void update(WeeklyContentRequestDTO.Update request) {
         this.content = request.content();
         this.week = request.week();
+        this.startPage = request.startPage();
+        this.endPage = request.endPage();
     }
 
     public void associateSubject(Subject subject) {

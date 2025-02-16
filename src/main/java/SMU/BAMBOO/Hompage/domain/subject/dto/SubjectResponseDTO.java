@@ -13,6 +13,7 @@ public class SubjectResponseDTO {
     public record Create(
             @Schema(description = "과목 ID") Long subjectId,
             @Schema(description = "과목 이름") String name,
+            @Schema(description = "책이름") String bookName,
             @Schema(description = "커리큘럼 유뮤") Boolean isBook,
             @Schema(description = "기수", example = "true") int batch
     ) {
@@ -20,6 +21,7 @@ public class SubjectResponseDTO {
             return new Create(
                     subject.getSubjectId(),
                     subject.getName(),
+                    subject.getBookName(),
                     subject.getIsBook(),
                     subject.getCohort().getBatch()
             );
@@ -30,6 +32,7 @@ public class SubjectResponseDTO {
     public record Update(
             @Schema(description = "과목 ID") Long subjectId,
             @Schema(description = "과목 이름") String name,
+            @Schema(description = "책이름") String bookName,
             @Schema(description = "커리큘럼 유뮤") Boolean isBook,
             @Schema(description = "기수", example = "true") int batch
     ) {
@@ -37,6 +40,7 @@ public class SubjectResponseDTO {
             return new Update(
                     subject.getSubjectId(),
                     subject.getName(),
+                    subject.getBookName(),
                     subject.getIsBook(),
                     subject.getCohort().getBatch()
             );
@@ -47,6 +51,7 @@ public class SubjectResponseDTO {
     public record GetOne(
             @Schema(description = "과목 ID") Long subjectId,
             @Schema(description = "과목 이름") String name,
+            @Schema(description = "책이름") String bookName,
             @Schema(description = "커리큘럼 유뮤") Boolean isBook,
             @Schema(description = "기수", example = "true") int batch,
             @Schema(description = "주차별 내용") List<WeeklyContentResponseDTO.GetOne> weeklyContents
@@ -55,6 +60,7 @@ public class SubjectResponseDTO {
             return new GetOne(
                     subject.getSubjectId(),
                     subject.getName(),
+                    subject.getBookName(),
                     subject.getIsBook(),
                     subject.getCohort().getBatch(),
                     subject.getWeeklyContents().stream()

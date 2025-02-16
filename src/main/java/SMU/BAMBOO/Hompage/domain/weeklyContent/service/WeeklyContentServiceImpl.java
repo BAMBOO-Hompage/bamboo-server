@@ -48,6 +48,8 @@ public class WeeklyContentServiceImpl implements WeeklyContentService {
                 .week(request.week())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
+                .startPage(request.startPage())
+                .endPage(request.endPage())
                 .build();
 
         // 연관관계 설정

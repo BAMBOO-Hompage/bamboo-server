@@ -75,6 +75,7 @@ public enum ErrorCode {
     // Cohort (기수 관련)
     COHORT_ALREADY_EXIST("COHORT400", "이미 존재하는 기수입니다.", HttpStatus.BAD_REQUEST),
     COHORT_NOT_EXIST("COHORT404", "존재하지 않는 기수입니다.", HttpStatus.NOT_FOUND),
+    COHORT_NOT_FOUND_CURRENT("COHORT404", "최신 기수를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     COHORT_INVALID_YEAR("COHORT400", "잘못된 연도 값입니다.", HttpStatus.BAD_REQUEST),
     COHORT_INVALID_SEMESTER("COHORT400", "잘못된 학기 값입니다.", HttpStatus.BAD_REQUEST),
 

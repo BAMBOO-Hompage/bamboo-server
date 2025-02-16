@@ -26,6 +26,16 @@ public class CohortServiceImpl implements CohortService {
     }
 
     /**
+     * 가장 최신 기수를 조회
+     */
+    @Override
+    public CohortResponseDTO.GetOne getLatestCohort() {
+        Cohort latestCohort = cohortRepository.findTopByOrderByBatchDesc()
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_FOUND_CURRENT));
+        return CohortResponseDTO.GetOne.from(latestCohort);
+    }
+
+    /**
      * 기수 정보 생성
      */
     @Override

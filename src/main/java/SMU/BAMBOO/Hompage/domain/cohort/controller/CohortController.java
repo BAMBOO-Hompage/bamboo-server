@@ -20,6 +20,13 @@ public class CohortController {
 
     private final CohortService cohortService;
 
+    @GetMapping("/latest-by-batch")
+    @Operation(summary = "가장 최근 기수 조회")
+    public SuccessResponse<CohortResponseDTO.GetOne> getLatestByBatch() {
+        CohortResponseDTO.GetOne result = cohortService.getLatestCohort();
+        return SuccessResponse.ok(result);
+    }
+
     @PostMapping
     @Operation(summary = "기수 등록")
     public SuccessResponse<CohortResponseDTO.Create> create(@Valid @RequestBody CohortRequestDTO.Create request) {

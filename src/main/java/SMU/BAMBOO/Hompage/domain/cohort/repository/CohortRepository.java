@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CohortRepository {
+    Optional<Cohort> findTopByOrderByBatchDesc();
     Cohort save(Cohort cohort);
     Optional<Cohort> findById(Long id);
     Cohort getByBatch(int batch);

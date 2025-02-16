@@ -27,6 +27,9 @@ public class Subject extends BaseEntity {
     @Column(nullable = false, length = 15)
     private String name;
 
+    @Column(name = "book_name", length = 50)
+    private String bookName;
+
     @Column(name = "is_book", nullable = false)
     private Boolean isBook;
 
@@ -44,6 +47,7 @@ public class Subject extends BaseEntity {
 
     public void update(SubjectRequestDTO.Update request, Cohort cohort) {
         this.name = request.name();
+        this.bookName = request.bookName();
         this.isBook = request.isBook();
         this.cohort = cohort;
     }

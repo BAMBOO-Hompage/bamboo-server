@@ -40,6 +40,7 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = Subject.builder()
                 .name(dto.name())
+                .bookName(dto.bookName())
                 .isBook(dto.isBook())
                 .cohort(cohort)
                 .build();

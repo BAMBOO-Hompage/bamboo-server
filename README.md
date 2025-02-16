@@ -14,8 +14,11 @@
 
 | 김재관 | 김희재 |
 | --- | --- |
-| <div align="center" style="display: flex; align-items: center; justify-content: center; height: 100px;"> <img src="https://github.com/user-attachments/assets/c52f929c-878d-404c-b6dc-c2e656d9e5e4" width="100" height="100"> </div> |
+| <div align="center" style="display: flex; align-items: center; justify-content: center; height: 100px;"> <img src="https://github.com/user-attachments/assets/c52f929c-878d-404c-b6dc-c2e656d9e5e4" width="100" height="100"> </div> | <img src="https://github.com/user-attachments/assets/49a9d6d0-2896-4696-8025-bf10e31f8e22" width="100" height="100"> </div>
+
 [![KJaeKwan](https://img.shields.io/badge/KJaeKwan-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/KJaeKwan)
+[![1026hz](https://img.shields.io/badge/1026hz-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/1026hz)
+
 
 </br>
 

@@ -33,10 +33,10 @@ public class StudyController {
 
     @GetMapping("/{studyId}")
     @Operation(summary = "스터디 ID로 단건 조회")
-    public SuccessResponse<StudyResponseDTO.GetOne> getOne(
+    public SuccessResponse<StudyResponseDTO.GetOneWithAttendance> getOne(
             @PathVariable("studyId") Long id
     ) {
-        StudyResponseDTO.GetOne result = studyService.getById(id);
+        StudyResponseDTO.GetOneWithAttendance result = studyService.getById(id);
         return SuccessResponse.ok(result);
     }
 

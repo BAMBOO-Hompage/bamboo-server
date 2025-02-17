@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.study.service;
 
+import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
+import SMU.BAMBOO.Hompage.domain.attendance.repository.AttendanceRepository;
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
@@ -28,6 +30,7 @@ public class StudyServiceImpl implements StudyService {
     private final SubjectRepository subjectRepository;
     private final MemberRepository memberRepository;
     private final CohortRepository cohortRepository;
+    private final AttendanceRepository attendanceRepository;
 
     private Study getStudyById(Long id) {
         return studyRepository.findById(id)
@@ -81,9 +84,10 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    public StudyResponseDTO.GetOne getById(Long id) {
+    public StudyResponseDTO.GetOneWithAttendance getById(Long id) {
         Study study = getStudyById(id);
-        return StudyResponseDTO.GetOne.from(study);
+        List<Attendance> attendances = attendanceRepository.findByStudyId(study.getStudyId());
+        return StudyResponseDTO.GetOneWithAttendance.from(study, attendances);
     }
 
     @Override

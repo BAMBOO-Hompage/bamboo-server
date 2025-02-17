@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.study.dto;
 
+import SMU.BAMBOO.Hompage.domain.attendance.dto.AttendanceResponseDTO;
+import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
 import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,13 +13,13 @@ public class StudyResponseDTO {
 
     @Schema(description = "스터디 생성 응답 DTO")
     public record Create(
-            Long studyId,
-            String subjectName,
-            CohortResponseDTO.GetOne cohort,
-            Boolean isBook,
-            int section,
-            String studyMaster,
-            List<String> studyMembers
+            @Schema(description = "스터디 ID") Long studyId,
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "커리큘럼 유무") Boolean isBook,
+            @Schema(description = "분반") int section,
+            @Schema(description = "스터디장") String studyMaster,
+            @Schema(description = "스터디원") List<String> studyMembers
     ) {
         public static Create from(Study study) {
             return new Create(
@@ -36,12 +38,12 @@ public class StudyResponseDTO {
 
     @Schema(description = "스터디 수정 응답 DTO")
     public record Update(
-            String subjectName,
-            CohortResponseDTO.GetOne cohort,
-            Boolean isBook,
-            int section,
-            String studyMaster,
-            List<String> studyMembers
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "커리큘럼 유무") Boolean isBook,
+            @Schema(description = "분반") int section,
+            @Schema(description = "스터디장") String studyMaster,
+            @Schema(description = "스터디원") List<String> studyMembers
     ) {
         public static Update from(Study study) {
             return new Update(
@@ -59,13 +61,13 @@ public class StudyResponseDTO {
 
     @Schema(description = "스터디 단건 조회 응답 DTO")
     public record GetOne(
-            Long studyId,
-            String subjectName,
-            CohortResponseDTO.GetOne cohort,
-            Boolean isBook,
-            int section,
-            String studyMaster,
-            List<String> studyMembers
+            @Schema(description = "스터디 ID") Long studyId,
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "커리큘럼 유무") Boolean isBook,
+            @Schema(description = "분반") int section,
+            @Schema(description = "스터디장") String studyMaster,
+            @Schema(description = "스터디원") List<String> studyMembers
     ) {
         public static GetOne from(Study study) {
             return new GetOne(
@@ -78,6 +80,34 @@ public class StudyResponseDTO {
                     study.getMemberStudies().stream()
                             .map(memberStudy -> memberStudy.getMember().getStudentId())
                             .toList()
+            );
+        }
+    }
+
+    @Schema(description = "스터디 단건 조회 응답 DTO")
+    public record GetOneWithAttendance(
+            @Schema(description = "스터디 ID") Long studyId,
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "커리큘럼 유무") Boolean isBook,
+            @Schema(description = "분반") int section,
+            @Schema(description = "스터디장") String studyMaster,
+            @Schema(description = "스터디원") List<String> studyMembers,
+            @Schema(description = "출석 정보") List<AttendanceResponseDTO.GetOne> attendances
+    ) {
+        public static GetOneWithAttendance from(Study study, List<Attendance> attendances) {
+            return new GetOneWithAttendance(
+                    study.getStudyId(),
+                    study.getSubject().getName(),
+                    CohortResponseDTO.GetOne.from(study.getCohort()),
+                    study.getIsBook(),
+                    study.getSection(),
+                    study.getStudyMaster(),
+                    study.getMemberStudies().stream()
+                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .toList(),
+                    attendances.stream()
+                            .map(AttendanceResponseDTO.GetOne::from).toList()
             );
         }
     }

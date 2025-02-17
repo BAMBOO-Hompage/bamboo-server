@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.study.entity;
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
+import SMU.BAMBOO.Hompage.domain.studyWeek.entity.StudyWeek;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -49,6 +50,10 @@ public class Study extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<Inventory> inventories = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudyWeek> studyWeeks = new ArrayList<>();
 
     public void updateStudy(Subject subject, Cohort cohort, Boolean isBook, int section, String studyMaster, List<MemberStudy> updatedMemberStudies) {
         this.subject = subject;

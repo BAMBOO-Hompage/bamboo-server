@@ -38,11 +38,11 @@ public class Subject extends BaseEntity {
     private Cohort cohort;
 
     @Builder.Default
-    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Study> studies = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WeeklyContent> weeklyContents = new ArrayList<>();
 
     public void update(SubjectRequestDTO.Update request, Cohort cohort) {

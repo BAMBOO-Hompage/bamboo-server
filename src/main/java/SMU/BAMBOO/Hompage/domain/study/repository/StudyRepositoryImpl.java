@@ -1,6 +1,8 @@
 package SMU.BAMBOO.Hompage.domain.study.repository;
 
+import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
+import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,11 @@ public class StudyRepositoryImpl implements StudyRepository {
     @Override
     public List<Study> findAll() {
         return studyJpaRepository.findAll();
+    }
+
+    @Override
+    public List<Study> findByCohortAndSubject(Cohort cohort, Subject subject) {
+        return studyJpaRepository.findByCohortAndSubject(cohort, subject);
     }
 
     @Override

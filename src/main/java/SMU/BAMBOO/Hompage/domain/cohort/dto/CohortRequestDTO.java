@@ -16,6 +16,7 @@ public class CohortRequestDTO {
     public record Update(
             @Schema(description = "몇 기인지", example = "6") int batch,
             @Schema(description = "연도", example = "2025") int year,
-            @Schema(description = "학기", example = "1학기") Boolean isFirstSemester
+            @Schema(description = "학기", example = "1학기") Boolean isFirstSemester,
+            @Schema(description = "상태", example = "활동 중") String status
     ) {}
 }

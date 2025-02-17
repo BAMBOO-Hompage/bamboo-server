@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CohortJpaRepository extends JpaRepository<Cohort, Long> {
     Optional<Cohort> findByBatch(int batch);
+    Optional<Cohort> findTopByOrderByBatchDesc();
 }

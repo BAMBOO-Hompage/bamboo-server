@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortRequestDTO;
 import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
+import SMU.BAMBOO.Hompage.domain.enums.CohortStatus;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,16 @@ public class CohortServiceImpl implements CohortService {
     }
 
     /**
+     * 가장 최신 기수를 조회
+     */
+    @Override
+    public CohortResponseDTO.GetOne getLatestCohort() {
+        Cohort latestCohort = cohortRepository.findTopByOrderByBatchDesc()
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_FOUND_CURRENT));
+        return CohortResponseDTO.GetOne.from(latestCohort);
+    }
+
+    /**
      * 기수 정보 생성
      */
     @Override
@@ -39,6 +50,7 @@ public class CohortServiceImpl implements CohortService {
                 .batch(dto.batch())
                 .year(dto.year())
                 .isFirstSemester(dto.isFirstSemester())
+                .status(CohortStatus.PREPARING)
                 .build();
 
         Cohort savedCohort = cohortRepository.save(cohort);
@@ -73,6 +85,19 @@ public class CohortServiceImpl implements CohortService {
         return cohorts.stream()
                 .map(CohortResponseDTO.GetOne::from)
                 .toList();
+    }
+
+    /**
+     * 기수 상태 수정
+     */
+    @Override
+    @Transactional
+    public void updateCohortStatus(Long cohortId, CohortRequestDTO.Update request) {
+        Cohort cohort = getCohortById(cohortId);
+
+        CohortStatus newStatus = CohortStatus.from(request.status());
+        cohort.changeStatus(newStatus);
+        cohortRepository.save(cohort);
     }
 
     /**

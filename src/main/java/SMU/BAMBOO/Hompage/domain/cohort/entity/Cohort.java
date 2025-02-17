@@ -1,5 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.cohort.entity;
 
+import SMU.BAMBOO.Hompage.domain.enums.CohortStatus;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -30,19 +31,20 @@ public class Cohort extends BaseEntity {
     @Column(name = "is_first_semester", nullable = false)
     private boolean isFirstSemester;
 
-    @Column(name = "is_active", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     @Builder.Default
-    private boolean isActive = true;
+    private CohortStatus status = CohortStatus.PREPARING;
 
     @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Subject> subjects = new ArrayList<>();
 
     /**
-     * 활동 상태 변경 메서드 (활동 종료)
+     * 활동 상태 변경 메서드
      */
-    public void deactivate() {
-        this.isActive = false;
+    public void changeStatus(CohortStatus status) {
+        this.status = status;
     }
 
     /**

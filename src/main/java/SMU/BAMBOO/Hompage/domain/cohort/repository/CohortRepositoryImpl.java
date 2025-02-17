@@ -16,6 +16,11 @@ public class CohortRepositoryImpl implements CohortRepository {
     private final CohortJpaRepository cohortJpaRepository;
 
     @Override
+    public Optional<Cohort> findTopByOrderByBatchDesc() {
+        return cohortJpaRepository.findTopByOrderByBatchDesc();
+    }
+
+    @Override
     public Cohort save(Cohort cohort) {
         return cohortJpaRepository.save(cohort);
     }

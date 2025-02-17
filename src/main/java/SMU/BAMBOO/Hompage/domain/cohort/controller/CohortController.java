@@ -20,6 +20,13 @@ public class CohortController {
 
     private final CohortService cohortService;
 
+    @GetMapping("/latest-by-batch")
+    @Operation(summary = "가장 최근 기수 조회")
+    public SuccessResponse<CohortResponseDTO.GetOne> getLatestByBatch() {
+        CohortResponseDTO.GetOne result = cohortService.getLatestCohort();
+        return SuccessResponse.ok(result);
+    }
+
     @PostMapping
     @Operation(summary = "기수 등록")
     public SuccessResponse<CohortResponseDTO.Create> create(@Valid @RequestBody CohortRequestDTO.Create request) {
@@ -46,6 +53,15 @@ public class CohortController {
     public SuccessResponse<List<CohortResponseDTO.GetOne>> findAll() {
         List<CohortResponseDTO.GetOne> result = cohortService.findAll();
         return SuccessResponse.ok(result);
+    }
+
+    @PatchMapping("/{cohortId}")
+    @Operation(summary = "기수 상태 수정")
+    public SuccessResponse<String> updateCohortStatus(
+            @PathVariable("cohortId") Long id,
+            @RequestBody @Valid CohortRequestDTO.Update request) {
+        cohortService.updateCohortStatus(id, request);
+        return SuccessResponse.ok("기수 상태 변경에 성공했습니다.");
     }
 
     @DeleteMapping("/{cohortId}")

@@ -1,10 +1,13 @@
 package SMU.BAMBOO.Hompage.domain.attendance.repository;
 
 import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
+import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.studyWeek.entity.StudyWeek;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,5 +33,10 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     @Override
     public void saveAll(List<Attendance> attendances) {
         attendanceJpaRepository.saveAll(attendances);
+    }
+
+    @Override
+    public Optional<Attendance> findByStudyWeekAndMember(StudyWeek studyWeek, Member member) {
+        return attendanceJpaRepository.findByStudyWeekAndMember(studyWeek, member);
     }
 }

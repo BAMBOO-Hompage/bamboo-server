@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 @Service
@@ -48,12 +49,23 @@ public class AttendanceServiceImpl implements AttendanceService {
                                 .build()
                 ));
 
-        // 회원 출석 정보 저장
+        // 회원 출석 정보 저장 / 수정
         List<Attendance> attendances = request.attendances().stream().map(att -> {
             Member member = memberRepository.findById(att.memberId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
             AttendanceStatus status = AttendanceStatus.from(att.status());
-            return Attendance.create(studyWeek, member, status);
+
+            // 기존 출석 정보가 있는지 확인
+            Optional<Attendance> existingAttendance = attendanceRepository.findByStudyWeekAndMember(studyWeek, member);
+
+            // 출석 정보가 이미 존재하면 수정, 없으면 새로 생성
+            if (existingAttendance.isPresent()) {
+                Attendance attendance = existingAttendance.get();
+                attendance.updateStatus(status);
+                return attendance;
+            } else {
+                return Attendance.create(studyWeek, member, status);
+            }
         }).toList();
         attendanceRepository.saveAll(attendances);
     }

@@ -38,4 +38,8 @@ public class Attendance {
                 .status(status)
                 .build();
     }
+
+    public void updateStatus(AttendanceStatus newStatus) {
+        this.status = newStatus;
+    }
 }

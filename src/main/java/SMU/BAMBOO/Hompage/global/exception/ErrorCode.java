@@ -78,6 +78,7 @@ public enum ErrorCode {
     COHORT_NOT_FOUND_CURRENT("COHORT404", "최신 기수를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     COHORT_INVALID_YEAR("COHORT400", "잘못된 연도 값입니다.", HttpStatus.BAD_REQUEST),
     COHORT_INVALID_SEMESTER("COHORT400", "잘못된 학기 값입니다.", HttpStatus.BAD_REQUEST),
+    COHORT_INVALID_TYPE("COHORT400", "잘못된 기수 상태 유형입니다. '활동 종료', '활동 중', '활동 준비' 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
 
     // MemberStudy (회원, 스터디 매핑 테이블)
     MEMBER_STUDY_NOT_FOUND("MEMBER_STUDY404", "해당 멤버 스터디 (매핑) 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

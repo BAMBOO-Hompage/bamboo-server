@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortRequestDTO;
 import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
+import SMU.BAMBOO.Hompage.domain.enums.CohortStatus;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,7 @@ public class CohortServiceImpl implements CohortService {
                 .batch(dto.batch())
                 .year(dto.year())
                 .isFirstSemester(dto.isFirstSemester())
+                .status(CohortStatus.PREPARING)
                 .build();
 
         Cohort savedCohort = cohortRepository.save(cohort);

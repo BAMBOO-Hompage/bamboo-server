@@ -14,14 +14,16 @@ public class CohortResponseDTO {
             @Schema(description = "기수 ID") Long cohortId,
             @Schema(description = "몇 기인지") int batch,
             @Schema(description = "연도") int year,
-            @Schema(description = "학기") Boolean isFirstSemester
+            @Schema(description = "학기") Boolean isFirstSemester,
+            @Schema(description = "상태") String status
     ) {
         public static Create from(Cohort cohort) {
             return new Create(
                     cohort.getCohortId(),
                     cohort.getBatch(),
                     cohort.getYear(),
-                    cohort.isFirstSemester()
+                    cohort.isFirstSemester(),
+                    cohort.getStatus().getDescription()
             );
         }
     }
@@ -32,7 +34,7 @@ public class CohortResponseDTO {
             @Schema(description = "몇 기인지") int batch,
             @Schema(description = "연도") int year,
             @Schema(description = "학기") Boolean isFirstSemester,
-            @Schema(description = "활동 상태") Boolean isActive,
+            @Schema(description = "활동 상태") String status,
             @Schema(description = "과목 리스트") List<SubjectResponseDTO.GetOne> subjects
     ) {
         public static GetOne from(Cohort cohort) {
@@ -41,7 +43,7 @@ public class CohortResponseDTO {
                     cohort.getBatch(),
                     cohort.getYear(),
                     cohort.isFirstSemester(),
-                    cohort.isActive(),
+                    cohort.getStatus().getDescription(),
                     cohort.getSubjects().stream()
                             .map(SubjectResponseDTO.GetOne::from)
                             .toList()

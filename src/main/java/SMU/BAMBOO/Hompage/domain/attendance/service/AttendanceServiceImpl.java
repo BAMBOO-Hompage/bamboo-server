@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,17 +31,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final StudyWeekRepository studyWeekRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 출석 정보 등록
+     */
     @Transactional
     public void markAttendance(AttendanceRequestDTO.MarkAttendance request) {
         Study study = studyRepository.findById(request.studyId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));
 
         // StudyWeek 찾기 or 생성
-        StudyWeek studyWeek = studyWeekRepository.findByStudyAndWeekNumber(study, request.week())
+        StudyWeek studyWeek = studyWeekRepository.findByStudyAndWeek(study, request.week())
                 .orElseGet(() -> studyWeekRepository.save(
                         StudyWeek.builder()
                                 .study(study)
-                                .weekNumber(request.week())
+                                .week(request.week())
                                 .build()
                 ));
 
@@ -47,12 +52,42 @@ public class AttendanceServiceImpl implements AttendanceService {
         List<Attendance> attendances = request.attendances().stream().map(att -> {
             Member member = memberRepository.findById(att.memberId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
-
             AttendanceStatus status = AttendanceStatus.from(att.status());
             return Attendance.create(studyWeek, member, status);
         }).toList();
-
         attendanceRepository.saveAll(attendances);
+    }
+
+    /**
+     * 특정 스터디의 출석부 조회
+     */
+    @Transactional
+    public AttendanceResponseDTO.GetAttendanceBoard getAttendanceBoard(AttendanceRequestDTO.MarkAttendance request) {
+        Study study = studyRepository.findById(request.studyId())
+                .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));
+
+        // 해당 스터디의 모든 주차 조회
+        List<StudyWeek> studyWeeks = studyWeekRepository.findByStudyOrderByWeekAsc(study);
+
+        // 모든 출석 정보 조회
+        List<Long> studyWeekIds = studyWeeks.stream().map(StudyWeek::getId).toList();
+        List<Attendance> allAttendances = attendanceRepository.findByStudyWeekIdIn(studyWeekIds);
+
+        // 주차별로 출석 정보 매핑
+        Map<Integer, List<Attendance>> weekAttendanceMap = new TreeMap<>();
+        for (StudyWeek week : studyWeeks) {
+            List<Attendance> attendances = allAttendances.stream()
+                    .filter(att -> att.getStudyWeek().getId().equals(week.getId()))
+                    .toList();
+            weekAttendanceMap.put(week.getWeek(), attendances);
+        }
+
+        // DTO 변환
+        List<AttendanceResponseDTO.GetWeekAttendance> weekAttendanceList = weekAttendanceMap.entrySet().stream()
+                .map(entry -> AttendanceResponseDTO.GetWeekAttendance.from(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return AttendanceResponseDTO.GetAttendanceBoard.from(request.studyId(), weekAttendanceList);
     }
 
     public List<AttendanceResponseDTO.GetOne> getAttendanceByWeek(Long studyWeekId) {

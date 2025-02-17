@@ -87,6 +87,12 @@ public enum ErrorCode {
     STUDY_ALREADY_EXIST("STUDY400", "이미 존재하는 스터디입니다.", HttpStatus.BAD_REQUEST),
     STUDY_NOT_EXIST("STUDY404", "존재하지 않는 스터디입니다.", HttpStatus.NOT_FOUND),
 
+    // StudyWeek (스터디 주차)
+    STUDY_WEEK_NOT_EXIST("STUDY_WEEK_404", "해당 주차가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+
+    // ATTENDANCE (출석부)
+    ATTENDANCE_INVALID_TYPE("ATTENDANCE400", "잘못된 출석 유형입니다.", HttpStatus.BAD_REQUEST),
+
     // Inventory (스터디 정리본)
     INVENTORY_ALREADY_EXIST("INVENTORY400", "이미 스터디 정리본이 존재합니다.", HttpStatus.BAD_REQUEST),
     INVENTORY_NOT_EXIST("INVENTORY404", "존재하지 않는 스터디 정리본입니다.", HttpStatus.NOT_FOUND),

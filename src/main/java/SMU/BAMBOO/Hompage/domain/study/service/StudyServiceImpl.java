@@ -86,7 +86,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public StudyResponseDTO.GetOneWithAttendance getById(Long id) {
         Study study = getStudyById(id);
-        List<Attendance> attendances = attendanceRepository.findByStudyWeek_Study(study);
+        List<Attendance> attendances = attendanceRepository.findByStudyId(study.getStudyId());
         return StudyResponseDTO.GetOneWithAttendance.from(study, attendances);
     }
 

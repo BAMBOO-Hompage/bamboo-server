@@ -71,6 +71,7 @@ public enum ErrorCode {
     USER_SAME_PASSWORD("USER400", "동일한 비밀번호로 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
     USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
+    USER_NOT_IN_STUDY("USER404", "스터디에 속해있지 않은 회원입니다.", HttpStatus.NOT_FOUND),
 
     // Cohort (기수 관련)
     COHORT_ALREADY_EXIST("COHORT400", "이미 존재하는 기수입니다.", HttpStatus.BAD_REQUEST),

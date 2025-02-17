@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.domain.attendance.dto.AttendanceResponseDTO;
 import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
 import SMU.BAMBOO.Hompage.domain.attendance.repository.AttendanceRepository;
 import SMU.BAMBOO.Hompage.domain.enums.AttendanceStatus;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.repository.MemberStudyRepository;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
@@ -31,6 +32,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final StudyRepository studyRepository;
     private final StudyWeekRepository studyWeekRepository;
     private final MemberRepository memberRepository;
+    private final MemberStudyRepository memberStudyRepository;
 
     /**
      * 출석 정보 등록
@@ -54,6 +56,12 @@ public class AttendanceServiceImpl implements AttendanceService {
             Member member = memberRepository.findById(att.memberId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
             AttendanceStatus status = AttendanceStatus.from(att.status());
+
+            // 해당 회원이 스터디에 속해 있는지 검증
+            boolean isMemberInStudy = memberStudyRepository.existsByStudyAndMember(study, member);
+            if (!isMemberInStudy) {
+                throw new CustomException(ErrorCode.USER_NOT_IN_STUDY);
+            }
 
             // 기존 출석 정보가 있는지 확인
             Optional<Attendance> existingAttendance = attendanceRepository.findByStudyWeekAndMember(studyWeek, member);

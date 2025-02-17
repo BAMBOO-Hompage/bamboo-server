@@ -96,6 +96,21 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    public List<StudyResponseDTO.GetOne> getStudiesByCohortAndSubject(int batchId, Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
+
+        Cohort cohort = cohortRepository.findByBatch(batchId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
+
+        List<Study> studies = studyRepository.findByCohortAndSubject(cohort, subject);
+
+        return studies.stream()
+                .map(StudyResponseDTO.GetOne::from)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public StudyResponseDTO.Update update(Long studyId, StudyRequestDTO.Update dto) {
         Study study = getStudyById(studyId);

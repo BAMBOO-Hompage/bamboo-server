@@ -40,10 +40,20 @@ public class StudyController {
         return SuccessResponse.ok(result);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(summary = "스터디 목록 조회")
     public SuccessResponse<List<StudyResponseDTO.GetOne>> findAll() {
         List<StudyResponseDTO.GetOne> result = studyService.findAll();
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping
+    @Operation(summary = "기수 및 과목으로 스터디 목록 조회")
+    public SuccessResponse<List<StudyResponseDTO.GetOne>> getStudiesByCohortAndSubject(
+            @RequestParam("batchId") int batchId,
+            @RequestParam("subjectId") Long subjectId
+    ) {
+        List<StudyResponseDTO.GetOne> result = studyService.getStudiesByCohortAndSubject(batchId, subjectId);
         return SuccessResponse.ok(result);
     }
 

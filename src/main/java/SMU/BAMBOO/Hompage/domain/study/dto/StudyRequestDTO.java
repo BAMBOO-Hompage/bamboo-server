@@ -26,5 +26,11 @@ public class StudyRequestDTO {
             @Schema(description = "스터디장", example = "202510777") String studyMaster,
             @Schema(description = "스터디원", example = "[\"202510770\", \"202510771\"]") List<String> studyMembers
     ) {}
+
+    @Schema(description = "스터디 조회 요청 DTO")
+    public record Get(
+            @Schema(description = "기수 ID", example = "6") int batchId,
+            @Schema(description = "과목 ID", example = "1") Long subjectId
+    ) {}
 }
 

@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.domain.studyWeek.entity.StudyWeek;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,13 +15,18 @@ public class StudyWeekRepositoryImpl implements StudyWeekRepository {
     private final StudyWeekJpaRepository studyWeekJpaRepository;
 
     @Override
-    public Optional<StudyWeek> findByStudyAndWeekNumber(Study study, int week) {
-        return studyWeekJpaRepository.findByStudyAndWeekNumber(study, week);
+    public Optional<StudyWeek> findByStudyAndWeek(Study study, int week) {
+        return studyWeekJpaRepository.findByStudyAndWeek(study, week);
     }
 
     @Override
     public Optional<StudyWeek> findById(Long id) {
         return studyWeekJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<StudyWeek> findByStudyOrderByWeekAsc(Study study) {
+        return studyWeekJpaRepository.findByStudyOrderByWeekAsc(study);
     }
 
     @Override

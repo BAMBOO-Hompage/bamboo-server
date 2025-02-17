@@ -26,16 +26,16 @@ public class StudyWeek {
     private Study study;
 
     @Column(nullable = false)
-    private int weekNumber;
+    private int week;
 
     @OneToMany(mappedBy = "studyWeek", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Attendance> attendances = new ArrayList<>();
 
-    public static StudyWeek create(Study study, int weekNumber) {
+    public static StudyWeek create(Study study, int week) {
         return StudyWeek.builder()
                 .study(study)
-                .weekNumber(weekNumber)
+                .week(week)
                 .build();
     }
 }

@@ -55,6 +55,15 @@ public class CohortController {
         return SuccessResponse.ok(result);
     }
 
+    @PatchMapping("/{cohortId}")
+    @Operation(summary = "기수 상태 수정")
+    public SuccessResponse<String> updateCohortStatus(
+            @PathVariable("cohortId") Long id,
+            @RequestBody @Valid CohortRequestDTO.Update request) {
+        cohortService.updateCohortStatus(id, request);
+        return SuccessResponse.ok("기수 상태 변경에 성공했습니다.");
+    }
+
     @DeleteMapping("/{cohortId}")
     @Operation(summary = "기수 삭제")
     public SuccessResponse<String> delete(@PathVariable("cohortId") Long id) {

@@ -88,6 +88,19 @@ public class CohortServiceImpl implements CohortService {
     }
 
     /**
+     * 기수 상태 수정
+     */
+    @Override
+    @Transactional
+    public void updateCohortStatus(Long cohortId, CohortRequestDTO.Update request) {
+        Cohort cohort = getCohortById(cohortId);
+
+        CohortStatus newStatus = CohortStatus.from(request.status());
+        cohort.changeStatus(newStatus);
+        cohortRepository.save(cohort);
+    }
+
+    /**
      * 기수 정보 삭제
      */
     @Override

@@ -84,7 +84,7 @@ public class StudyResponseDTO {
         }
     }
 
-    @Schema(description = "스터디 단건 조회 응답 DTO")
+    @Schema(description = "출석 관련 스터디 단건 조회 응답 DTO")
     public record GetOneWithAttendance(
             @Schema(description = "스터디 ID") Long studyId,
             @Schema(description = "과목 이름") String subjectName,
@@ -108,6 +108,29 @@ public class StudyResponseDTO {
                             .toList(),
                     attendances.stream()
                             .map(AttendanceResponseDTO.GetOne::from).toList()
+            );
+        }
+    }
+
+    @Schema(description = "명예의 전당 관련 스터디 단건 조회 응답 DTO")
+    public record GetForAward(
+            @Schema(description = "스터디 ID") Long studyId,
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "분반") int section,
+            @Schema(description = "스터디장") String studyMaster,
+            @Schema(description = "스터디원") List<String> studyMembers
+    ) {
+        public static GetForAward from(Study study) {
+            return new GetForAward(
+                    study.getStudyId(),
+                    study.getSubject().getName(),
+                    CohortResponseDTO.GetOne.from(study.getCohort()),
+                    study.getSection(),
+                    study.getStudyMaster(),
+                    study.getMemberStudies().stream()
+                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .toList()
             );
         }
     }

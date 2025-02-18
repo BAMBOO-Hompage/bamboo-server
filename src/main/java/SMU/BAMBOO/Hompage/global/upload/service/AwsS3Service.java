@@ -39,6 +39,7 @@ public class AwsS3Service {
 
     // 공통 - 여러개의 파일 업로드
     private List<String> uploadFilesToFolder(String folderName, List<MultipartFile> files, boolean isImage) {
+        long startTime = System.currentTimeMillis(); // 업로드 시작 시간
         List<String> fileUrlList = new ArrayList<>();
 
         files.forEach(file -> {
@@ -59,6 +60,11 @@ public class AwsS3Service {
             String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
             fileUrlList.add(fileUrl);
         });
+
+        long endTime = System.currentTimeMillis(); // 전체 업로드 완료 시간
+        long totalDuration = endTime - startTime; // 전체 업로드 소요 시간
+
+        System.out.println("전체 파일 업로드 소요 시간: " + totalDuration + "ms");
 
         return fileUrlList;
     }

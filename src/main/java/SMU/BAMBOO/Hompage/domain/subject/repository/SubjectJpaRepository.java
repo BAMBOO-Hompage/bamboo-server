@@ -10,6 +10,5 @@ public interface SubjectJpaRepository extends JpaRepository<Subject, Long> {
 
     Optional<Subject> findByName(String name);
     List<Subject> findByIsBook(Boolean isBook);
-    List<Subject> findByIsBookAndCohort_Batch(Boolean isBook, int batch);
     List<Subject> findByCohort_Batch(int batch);
 }

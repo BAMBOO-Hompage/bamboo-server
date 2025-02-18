@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.subject.repository;
 
-import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
-import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
+import SMU.BAMBOO.Hompage.domain.subject.entity.QSubject;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -33,31 +32,17 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public List<StudyResponseDTO.GetOne> findStudiesBySubjectId(Long subjectId) {
-        QStudy study = QStudy.study;
+    public List<Subject> findByIsBookAndBatch(Boolean isBook, int batch) {
+        QSubject subject = QSubject.subject;
 
         return queryFactory
-                .selectFrom(study)
-                .where(study.subject.subjectId.eq(subjectId))
-                .fetch()
-                .stream()
-                .map(StudyResponseDTO.GetOne::from)
-                .toList();
-    }
-
-    @Override
-    public List<Subject> findByIsBook(Boolean isBook) {
-        return subjectJpaRepository.findByIsBook(isBook);
-    }
-
-    @Override
-    public List<Subject> findByIsBookAndCohort_Batch(Boolean isBook, int batch) {
-        return subjectJpaRepository.findByIsBookAndCohort_Batch(isBook, batch);
-    }
-
-    @Override
-    public List<Subject> findByCohort_Batch(int batch) {
-        return subjectJpaRepository.findByCohort_Batch(batch);
+                .selectFrom(subject)
+                .where(
+                        subject.cohort.batch.eq(batch),
+                        isBook != null ? subject.isBook.eq(isBook) : null
+                )
+                .orderBy(subject.isBook.desc())
+                .fetch();
     }
 
     @Override

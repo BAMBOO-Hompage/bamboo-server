@@ -10,18 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InventoryRepository {
-
+    Inventory getById(Long id);
     Optional<Inventory> findById(Long id);
-
     Page<Inventory> findByStudy(Long studyId, Pageable pageable);
-
     List<Inventory> findAll();
-
     Page<Inventory> findByPage(Pageable pageable);
-
     Inventory save(Inventory inventory);
-
     void deleteById(Long id);
-
     Boolean existsByMemberAndStudyAndWeek(Member member, Study study, int week);
 }

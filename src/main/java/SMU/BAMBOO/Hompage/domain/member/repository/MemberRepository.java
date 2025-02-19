@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
+    Member getById(Long id);
     Member getByStudentId(String studentId);
     Optional<Member> findById(long id);
     Optional<Member> findByStudentId(String studentId);

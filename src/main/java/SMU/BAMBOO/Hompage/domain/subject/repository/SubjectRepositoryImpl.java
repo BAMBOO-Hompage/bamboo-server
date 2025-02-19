@@ -2,6 +2,8 @@ package SMU.BAMBOO.Hompage.domain.subject.repository;
 
 import SMU.BAMBOO.Hompage.domain.subject.entity.QSubject;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,12 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
     private final SubjectJpaRepository subjectJpaRepository;
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Subject getById(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
+    }
 
     @Override
     public Optional<Subject> findById(Long id) {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubjectRepository {
+    Subject getById(Long id);
     Optional<Subject> findById(Long id);
     Optional<Subject> findByName(String name);
     List<Subject> findByIsBookAndBatch(Boolean isBook, int batch);

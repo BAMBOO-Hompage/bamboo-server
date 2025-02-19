@@ -5,6 +5,8 @@ import SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,12 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     private final InventoryJpaRepository inventoryJpaRepository;
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Inventory getById(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
+    }
 
     @Override
     public Optional<Inventory> findById(Long id) {

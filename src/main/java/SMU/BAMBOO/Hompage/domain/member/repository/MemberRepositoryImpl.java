@@ -25,6 +25,12 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public Member getById(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+    }
+
+    @Override
     public Member getByStudentId(String studentId) {
         return findByStudentId(studentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));

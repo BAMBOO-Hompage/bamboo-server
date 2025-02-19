@@ -4,8 +4,11 @@ import SMU.BAMBOO.Hompage.domain.award.dto.AwardRequestDTO;
 import SMU.BAMBOO.Hompage.domain.award.dto.AwardResponseDTO;
 import SMU.BAMBOO.Hompage.domain.award.entity.Award;
 import SMU.BAMBOO.Hompage.domain.award.repository.AwardRepository;
+import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.repository.InventoryRepository;
+import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
+import SMU.BAMBOO.Hompage.domain.subject.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,9 @@ public class AwardServiceImpl implements AwardService {
 
     private final AwardRepository awardRepository;
     private final InventoryRepository inventoryRepository;
+    private final CohortRepository cohortRepository;
+    private final SubjectRepository subjectRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 명예의 전당 (Award) 생성
@@ -27,6 +33,9 @@ public class AwardServiceImpl implements AwardService {
     @Transactional
     public AwardResponseDTO.Create create(AwardRequestDTO.Create request) {
         Inventory inventory = inventoryRepository.getById(request.inventoryId());
+        cohortRepository.getByBatch(request.batch());
+        subjectRepository.getById(request.subjectId());
+        memberRepository.getById(request.memberId());
 
         Award award = Award.builder()
                 .inventory(inventory)
@@ -91,7 +100,12 @@ public class AwardServiceImpl implements AwardService {
     @Override
     @Transactional
     public void delete(Long awardId) {
-        getById(awardId);
+        Award award = awardRepository.getById(awardId);
+
+        // Inventory와의 관계 해제
+        award.setInventory(null);
+        awardRepository.save(award);
+
         awardRepository.delete(awardId);
     }
 }

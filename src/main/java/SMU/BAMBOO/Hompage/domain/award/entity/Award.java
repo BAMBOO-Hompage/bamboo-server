@@ -50,4 +50,9 @@ public class Award extends BaseEntity {
         this.startDate = request.startDate();
         this.endDate = request.endDate();
     }
+
+    /** 연관 관계 삭제를 위한 메서드 */
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
 }

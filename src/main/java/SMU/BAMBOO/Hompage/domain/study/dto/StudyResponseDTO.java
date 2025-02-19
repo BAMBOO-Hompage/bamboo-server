@@ -116,7 +116,7 @@ public class StudyResponseDTO {
     public record GetForAward(
             @Schema(description = "스터디 ID") Long studyId,
             @Schema(description = "과목 이름") String subjectName,
-            @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
+            @Schema(description = "기수") int batch,
             @Schema(description = "분반") int section,
             @Schema(description = "스터디장") String studyMaster,
             @Schema(description = "스터디원") List<String> studyMembers
@@ -125,7 +125,7 @@ public class StudyResponseDTO {
             return new GetForAward(
                     study.getStudyId(),
                     study.getSubject().getName(),
-                    CohortResponseDTO.GetOne.from(study.getCohort()),
+                    study.getCohort().getBatch(),
                     study.getSection(),
                     study.getStudyMaster(),
                     study.getMemberStudies().stream()

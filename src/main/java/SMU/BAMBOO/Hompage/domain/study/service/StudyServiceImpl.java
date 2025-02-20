@@ -57,6 +57,7 @@ public class StudyServiceImpl implements StudyService {
         // 객체 생성
         Study study = Study.builder()
                 .subject(subject)
+                .teamName(dto.teamName())
                 .cohort(cohort)
                 .isBook(dto.isBook())
                 .section(dto.section())
@@ -143,7 +144,7 @@ public class StudyServiceImpl implements StudyService {
                         .build())
                 .toList();
 
-        study.updateStudy(subject, cohort, dto.isBook(), dto.section(), dto.studyMaster(), updatedMemberStudies);
+        study.updateStudy(subject, dto.teamName(), cohort, dto.isBook(), dto.section(), dto.studyMaster(), updatedMemberStudies);
         return StudyResponseDTO.Update.from(study);
     }
 

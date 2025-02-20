@@ -25,6 +25,9 @@ public class Study extends BaseEntity {
     @Column(name = "study_id")
     private Long studyId;
 
+    @Column(name = "team_name", nullable = false)
+    private String teamName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
@@ -55,8 +58,9 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyWeek> studyWeeks = new ArrayList<>();
 
-    public void updateStudy(Subject subject, Cohort cohort, Boolean isBook, int section, String studyMaster, List<MemberStudy> updatedMemberStudies) {
+    public void updateStudy(Subject subject, String teamName, Cohort cohort, Boolean isBook, int section, String studyMaster, List<MemberStudy> updatedMemberStudies) {
         this.subject = subject;
+        this.teamName = teamName;
         this.cohort = cohort;
         this.isBook = isBook;
         this.section = section;

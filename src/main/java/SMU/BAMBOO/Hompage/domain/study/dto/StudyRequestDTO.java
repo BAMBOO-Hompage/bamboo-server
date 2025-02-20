@@ -10,6 +10,7 @@ public class StudyRequestDTO {
     @Schema(description = "스터디 생성 요청 DTO")
     public record Create(
             @Schema(description = "과목 ID", example = "1") Long subjectId,
+            @Schema(description = "팀명", example = "에그타르트") String teamName,
             @Schema(description = "기수", example = "6") int cohort,
             @Schema(description = "커리큘럼 유무", example = "true") Boolean isBook,
             @Schema(description = "분반", example = "1") int section,
@@ -20,6 +21,7 @@ public class StudyRequestDTO {
     @Schema(description = "스터디 수정 요청 DTO")
     public record Update(
             @Schema(description = "과목 ID", example = "1") Long subjectId,
+            @Schema(description = "팀명", example = "에그타르트") String teamName,
             @Schema(description = "기수", example = "6") int cohort,
             @Schema(description = "커리큘럼 유무", example = "true") Boolean isBook,
             @Schema(description = "분반", example = "1") int section,

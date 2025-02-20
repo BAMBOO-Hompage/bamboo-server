@@ -35,7 +35,7 @@ public class CohortResponseDTO {
             @Schema(description = "연도") int year,
             @Schema(description = "학기") Boolean isFirstSemester,
             @Schema(description = "활동 상태") String status,
-            @Schema(description = "과목 리스트") List<SubjectResponseDTO.GetOne> subjects
+            @Schema(description = "과목 리스트") List<SubjectResponseDTO.GetBasic> subjects
     ) {
         public static GetOne from(Cohort cohort) {
             return new GetOne(
@@ -45,7 +45,7 @@ public class CohortResponseDTO {
                     cohort.isFirstSemester(),
                     cohort.getStatus().getDescription(),
                     cohort.getSubjects().stream()
-                            .map(SubjectResponseDTO.GetOne::from)
+                            .map(SubjectResponseDTO.GetBasic::from)
                             .toList()
             );
         }

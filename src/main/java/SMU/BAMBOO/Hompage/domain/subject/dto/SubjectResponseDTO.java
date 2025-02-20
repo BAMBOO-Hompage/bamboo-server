@@ -69,4 +69,21 @@ public class SubjectResponseDTO {
             );
         }
     }
+
+    @Schema(description = "간소한 단일 과목 조회 응답 DTO")
+    public record GetBasic(
+            @Schema(description = "과목 ID") Long subjectId,
+            @Schema(description = "과목 이름") String name,
+            @Schema(description = "책이름") String bookName,
+            @Schema(description = "커리큘럼 유뮤") Boolean isBook
+    ) {
+        public static GetBasic from(Subject subject) {
+            return new GetBasic(
+                    subject.getSubjectId(),
+                    subject.getName(),
+                    subject.getBookName(),
+                    subject.getIsBook()
+            );
+        }
+    }
 }

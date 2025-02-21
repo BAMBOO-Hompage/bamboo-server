@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.study.dto;
 import SMU.BAMBOO.Hompage.domain.attendance.dto.AttendanceResponseDTO;
 import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
 import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
+import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberInStudyResponse;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,8 +20,8 @@ public class StudyResponseDTO {
             @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
             @Schema(description = "커리큘럼 유무") Boolean isBook,
             @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") String studyMaster,
-            @Schema(description = "스터디원") List<String> studyMembers
+            @Schema(description = "스터디장") MemberInStudyResponse studyMaster,
+            @Schema(description = "스터디원") List<MemberInStudyResponse> studyMembers
     ) {
         public static Create from(Study study) {
             return new Create(
@@ -30,9 +31,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    study.getStudyMaster(),
+                    MemberInStudyResponse.from(study.getStudyMaster()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .map(memberStudy -> MemberInStudyResponse.from(memberStudy.getMember()))
                             .toList()
             );
         }
@@ -45,8 +46,8 @@ public class StudyResponseDTO {
             @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
             @Schema(description = "커리큘럼 유무") Boolean isBook,
             @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") String studyMaster,
-            @Schema(description = "스터디원") List<String> studyMembers
+            @Schema(description = "스터디장") MemberInStudyResponse studyMaster,
+            @Schema(description = "스터디원") List<MemberInStudyResponse> studyMembers
     ) {
         public static Update from(Study study) {
             return new Update(
@@ -55,9 +56,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    study.getStudyMaster(),
+                    MemberInStudyResponse.from(study.getStudyMaster()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .map(memberStudy -> MemberInStudyResponse.from(memberStudy.getMember()))
                             .toList()
             );
         }
@@ -71,8 +72,8 @@ public class StudyResponseDTO {
             @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
             @Schema(description = "커리큘럼 유무") Boolean isBook,
             @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") String studyMaster,
-            @Schema(description = "스터디원") List<String> studyMembers
+            @Schema(description = "스터디장") MemberInStudyResponse studyMaster,
+            @Schema(description = "스터디원") List<MemberInStudyResponse> studyMembers
     ) {
         public static GetOne from(Study study) {
             return new GetOne(
@@ -82,9 +83,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    study.getStudyMaster(),
+                    MemberInStudyResponse.from(study.getStudyMaster()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .map(memberStudy -> MemberInStudyResponse.from(memberStudy.getMember()))
                             .toList()
             );
         }
@@ -98,8 +99,8 @@ public class StudyResponseDTO {
             @Schema(description = "기수 정보") CohortResponseDTO.GetOne cohort,
             @Schema(description = "커리큘럼 유무") Boolean isBook,
             @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") String studyMaster,
-            @Schema(description = "스터디원") List<String> studyMembers,
+            @Schema(description = "스터디장") MemberInStudyResponse studyMaster,
+            @Schema(description = "스터디원") List<MemberInStudyResponse> studyMembers,
             @Schema(description = "출석 정보") List<AttendanceResponseDTO.GetOne> attendances
     ) {
         public static GetOneWithAttendance from(Study study, List<Attendance> attendances) {
@@ -110,9 +111,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    study.getStudyMaster(),
+                    MemberInStudyResponse.from(study.getStudyMaster()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .map(memberStudy -> MemberInStudyResponse.from(memberStudy.getMember()))
                             .toList(),
                     attendances.stream()
                             .map(AttendanceResponseDTO.GetOne::from).toList()
@@ -127,8 +128,8 @@ public class StudyResponseDTO {
             @Schema(description = "과목 이름") String subjectName,
             @Schema(description = "기수") int batch,
             @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") String studyMaster,
-            @Schema(description = "스터디원") List<String> studyMembers
+            @Schema(description = "스터디장") MemberInStudyResponse studyMaster,
+            @Schema(description = "스터디원") List<MemberInStudyResponse> studyMembers
     ) {
         public static GetForAward from(Study study) {
             return new GetForAward(
@@ -137,9 +138,9 @@ public class StudyResponseDTO {
                     study.getSubject().getName(),
                     study.getCohort().getBatch(),
                     study.getSection(),
-                    study.getStudyMaster(),
+                    MemberInStudyResponse.from(study.getStudyMaster()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> memberStudy.getMember().getStudentId())
+                            .map(memberStudy -> MemberInStudyResponse.from(memberStudy.getMember()))
                             .toList()
             );
         }

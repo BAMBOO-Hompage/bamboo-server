@@ -61,7 +61,7 @@ public class StudyServiceImpl implements StudyService {
                 .cohort(cohort)
                 .isBook(dto.isBook())
                 .section(dto.section())
-                .studyMaster(dto.studyMaster())
+                .studyMaster(studyMaster)
                 .build();
 
         // 스터디에 속한 회원들 조회/저장
@@ -144,7 +144,7 @@ public class StudyServiceImpl implements StudyService {
                         .build())
                 .toList();
 
-        study.updateStudy(subject, dto.teamName(), cohort, dto.isBook(), dto.section(), dto.studyMaster(), updatedMemberStudies);
+        study.updateStudy(subject, dto.teamName(), cohort, dto.isBook(), dto.section(), studyMaster, updatedMemberStudies);
         return StudyResponseDTO.Update.from(study);
     }
 

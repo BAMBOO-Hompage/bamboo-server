@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,5 +133,12 @@ public class InventoryServiceImpl implements InventoryService {
     public void delete(Long id) {
         getInventoryById(id);
         inventoryRepository.deleteById(id);
+    }
+
+    @Override
+    public InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week) {
+        Inventory inventory = inventoryRepository.findByMemberIdAndWeek(memberId, week)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
+        return InventoryResponseDTO.GetOne.from(inventory);
     }
 }

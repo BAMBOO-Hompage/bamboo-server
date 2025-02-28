@@ -1,6 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.inventory.dto;
 
-import SMU.BAMBOO.Hompage.domain.award.entity.Award;
+import SMU.BAMBOO.Hompage.domain.award.dto.AwardResponseDTO;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
@@ -78,7 +78,7 @@ public class InventoryResponseDTO {
             int week,
 
             @Schema(description = "수상 내역")
-            Award award
+            AwardResponseDTO.GetOne award
     ) {
         public static GetOne from(Inventory inventory) {
             return new GetOne(
@@ -88,7 +88,7 @@ public class InventoryResponseDTO {
                     inventory.getTitle(),
                     inventory.getContent(),
                     inventory.getWeek(),
-                    inventory.getAward() // FIXME 나중에 DTO 로 변경 가능성
+                    AwardResponseDTO.GetOne.from(inventory.getAward())
             );
         }
     }
@@ -99,12 +99,12 @@ public class InventoryResponseDTO {
             Long inventoryId,
 
             @Schema(description = "수상 내역")
-            Award award
+            AwardResponseDTO.GetOne award
     ) {
         public static AddAward from(Inventory inventory) {
             return new AddAward(
                     inventory.getInventoryId(),
-                    inventory.getAward() // FIXME 나중에 DTO 로 변경 가능성
+                    AwardResponseDTO.GetOne.from(inventory.getAward())
             );
         }
     }

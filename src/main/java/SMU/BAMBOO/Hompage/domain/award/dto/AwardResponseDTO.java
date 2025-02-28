@@ -62,6 +62,10 @@ public class AwardResponseDTO {
             @Schema(description = "마감 기간") LocalDate endDate
     ) {
         public static GetOne from(Award award) {
+            if (award == null) {
+                return null;
+            }
+
             return new GetOne(
                     award.getAwardId(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),

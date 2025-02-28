@@ -38,7 +38,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Override
     public Page<Inventory> findByStudy(Long studyId, Pageable pageable) {
         QInventory inventory = QInventory.inventory;
-        QStudy study = QStudy.study;
 
         // 전체 개수 조회 (NPE 방지 위해 Optional 사용)
         Long totalCount = Optional.ofNullable(
@@ -99,5 +98,18 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Override
     public Boolean existsByMemberAndStudyAndWeek(Member member, Study study, int week) {
         return inventoryJpaRepository.existsByMemberAndStudyAndWeek(member, study, week);
+    }
+
+    @Override
+    public Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week) {
+        QInventory inventory = QInventory.inventory;
+
+        return Optional.ofNullable(queryFactory
+                .selectFrom(inventory)
+                .where(
+                        inventory.member.memberId.eq(memberId),
+                        inventory.week.eq(week)
+                )
+                .fetchOne());
     }
 }

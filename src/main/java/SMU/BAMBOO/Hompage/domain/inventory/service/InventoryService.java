@@ -16,4 +16,5 @@ public interface InventoryService {
     InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request);
     // 어워드 추가 메서드 추가 예정
     void delete(Long id);
+    InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week);
 }

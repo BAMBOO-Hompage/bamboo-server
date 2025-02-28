@@ -137,6 +137,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week) {
+        memberRepository.getById(memberId);
         Inventory inventory = inventoryRepository.findByMemberIdAndWeek(memberId, week)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
         return InventoryResponseDTO.GetOne.from(inventory);

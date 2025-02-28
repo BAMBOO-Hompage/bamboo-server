@@ -1,8 +1,10 @@
 package SMU.BAMBOO.Hompage.domain.study.repository;
 
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
+import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 public class StudyRepositoryImpl implements StudyRepository {
 
     private final StudyJpaRepository studyJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Optional<Study> findById(Long id) {
@@ -27,7 +30,16 @@ public class StudyRepositoryImpl implements StudyRepository {
 
     @Override
     public List<Study> findByCohortAndSubject(Cohort cohort, Subject subject) {
-        return studyJpaRepository.findByCohortAndSubject(cohort, subject);
+        QStudy study = QStudy.study;
+
+        return queryFactory
+                .selectFrom(study)
+                .where(
+                        study.cohort.eq(cohort),
+                        study.subject.eq(subject)
+                )
+                .orderBy(study.section.asc())
+                .fetch();
     }
 
     @Override

@@ -3,7 +3,6 @@ package SMU.BAMBOO.Hompage.domain.inventory.repository;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
-import SMU.BAMBOO.Hompage.domain.study.entity.QStudy;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
@@ -101,13 +100,13 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
-    public Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week) {
+    public Optional<Inventory> findByMemberIdAndWeek(String studentId, int week) {
         QInventory inventory = QInventory.inventory;
 
         return Optional.ofNullable(queryFactory
                 .selectFrom(inventory)
                 .where(
-                        inventory.member.memberId.eq(memberId),
+                        inventory.member.studentId.eq(studentId),
                         inventory.week.eq(week)
                 )
                 .fetchOne());

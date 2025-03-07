@@ -53,7 +53,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         // 회원 출석 정보 저장 / 수정
         List<Attendance> attendances = request.attendances().stream().map(att -> {
-            Member member = memberRepository.findById(att.memberId())
+            Member member = memberRepository.findByStudentId(att.studentId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
             AttendanceStatus status = AttendanceStatus.from(att.status());
 

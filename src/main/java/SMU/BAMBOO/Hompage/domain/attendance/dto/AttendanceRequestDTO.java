@@ -11,13 +11,13 @@ public class AttendanceRequestDTO {
     public record MarkAttendance(
             @Schema(description = "스터디 ID", example = "1") Long studyId,
             @Schema(description = "주차 (Week)", example = "2") int week,
-            @Schema(description = "출석 정보 리스트", example = "[{\"memberId\": 1, \"status\": \"출석\"}, {\"memberId\": 2, \"status\": \"결석\"}]")
+            @Schema(description = "출석 정보 리스트", example = "[{\"studentId\": \"202510777\", \"status\": \"출석\"}, {\"studentId\": \"202510770\", \"status\": \"결석\"}]")
             List<MemberAttendance> attendances
     ) {}
 
     @Schema(description = "개별 회원 출석 정보")
     public record MemberAttendance(
-            @Schema(description = "회원 ID", example = "3") Long memberId,
+            @Schema(description = "학번", example = "202510777") String studentId,
             @Schema(description = "출석 상태 (출석, 결석)", example = "출석") String status
     ) {}
 

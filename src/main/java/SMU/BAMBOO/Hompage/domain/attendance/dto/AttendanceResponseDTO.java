@@ -12,7 +12,7 @@ public class AttendanceResponseDTO {
     public record GetOne(
             @Schema(description = "출석 ID") Long attendanceId,
             @Schema(description = "주차") int week,
-            @Schema(description = "회원 학번") String memberId,
+            @Schema(description = "회원 학번") String studentId,
             @Schema(description = "출석 상태 (출석, 결석)") String status
     ) {
         public static GetOne from(Attendance attendance) {

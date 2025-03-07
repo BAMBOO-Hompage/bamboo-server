@@ -66,7 +66,7 @@ public class InventoryResponseDTO {
             MemberResponse member,
 
             @Schema(description = "관련된 스터디 정보")
-            StudyResponseDTO.GetOne study,
+            StudyResponseDTO.GetForInventory study,
 
             @Schema(description = "정리본 제목")
             String title,
@@ -84,7 +84,7 @@ public class InventoryResponseDTO {
             return new GetOne(
                     inventory.getInventoryId(),
                     MemberResponse.from(inventory.getMember()),
-                    StudyResponseDTO.GetOne.from(inventory.getStudy()),
+                    StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getContent(),
                     inventory.getWeek(),

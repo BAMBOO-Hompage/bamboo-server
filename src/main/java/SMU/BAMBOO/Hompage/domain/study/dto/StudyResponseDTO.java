@@ -145,4 +145,21 @@ public class StudyResponseDTO {
             );
         }
     }
+
+    @Schema(description = "명예의 전당 관련 스터디 단건 조회 응답 DTO")
+    public record GetForInventory(
+            @Schema(description = "팀명") String teamName,
+            @Schema(description = "과목 이름") String subjectName,
+            @Schema(description = "기수") int batch,
+            @Schema(description = "분반") int section
+    ) {
+        public static GetForInventory from(Study study) {
+            return new GetForInventory(
+                    study.getTeamName(),
+                    study.getSubject().getName(),
+                    study.getCohort().getBatch(),
+                    study.getSection()
+            );
+        }
+    }
 }

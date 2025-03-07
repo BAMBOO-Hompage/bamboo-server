@@ -127,7 +127,7 @@ class KnowledgeServiceImplTest {
         Long knowledgeId = createdResponse.knowledgeId();
 
         // When
-        testContainer.knowledgeService.delete(knowledgeId);
+        testContainer.knowledgeService.delete(testMember, knowledgeId);
 
         // Then
         assertThatThrownBy(() -> testContainer.knowledgeService.getById(knowledgeId))
@@ -171,7 +171,7 @@ class KnowledgeServiceImplTest {
 
         // When
         KnowledgeResponseDTO.Update response =
-                testContainer.knowledgeService.update(knowledgeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
+                testContainer.knowledgeService.update(testMember, knowledgeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
 
         // Then
         assertThat(response).isNotNull();

@@ -130,7 +130,7 @@ class KnowledgeControllerTest {
         Long knowledgeId = createdResponse.getResult().knowledgeId();
 
         // When
-        testContainer.knowledgeController.deleteKnowledge(knowledgeId);
+        testContainer.knowledgeController.deleteKnowledge(testMember, knowledgeId);
 
         // Then
         assertThatThrownBy(() -> testContainer.knowledgeController.getKnowledge(knowledgeId))
@@ -178,7 +178,7 @@ class KnowledgeControllerTest {
 
         // When
         SuccessResponse<KnowledgeResponseDTO.Update> response =
-                testContainer.knowledgeController.updateKnowledge(knowledgeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
+                testContainer.knowledgeController.updateKnowledge(testMember, knowledgeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
 
         // Then
         assertThat(response).isNotNull();

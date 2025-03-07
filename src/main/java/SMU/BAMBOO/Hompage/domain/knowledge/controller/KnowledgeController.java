@@ -83,6 +83,7 @@ public class KnowledgeController {
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "지식 공유 게시물 수정 (기존 URL은 JSON 배열, 새 파일은 Multipart로 전송)")
     public SuccessResponse<KnowledgeResponseDTO.Update> updateKnowledge(
+            @CurrentMember Member member,
             @PathVariable Long id,
             @Valid @RequestPart(value = "request") KnowledgeRequestDTO.Update request,
             @RequestParam(required = false) List<String> imageUrls,  // 기존 이미지 URL을 JSON 배열로 받음
@@ -98,15 +99,18 @@ public class KnowledgeController {
             newFiles = null;
         }
 
-        KnowledgeResponseDTO.Update result = knowledgeService.update(id, request, imageUrls, newImages, fileUrls, newFiles);
+        KnowledgeResponseDTO.Update result = knowledgeService.update(member, id, request, imageUrls, newImages, fileUrls, newFiles);
         return SuccessResponse.ok(result);
     }
 
 
     @DeleteMapping("/{id}")
     @Operation(summary = "지식 공유 게시물 삭제")
-    public SuccessResponse<String> deleteKnowledge(@PathVariable Long id) {
-        knowledgeService.delete(id);
+    public SuccessResponse<String> deleteKnowledge(
+            @CurrentMember Member member,
+            @PathVariable Long id
+    ) {
+        knowledgeService.delete(member, id);
         return SuccessResponse.ok("지식 공유 게시판 게시물이 삭제되었습니다.");
     }
 }

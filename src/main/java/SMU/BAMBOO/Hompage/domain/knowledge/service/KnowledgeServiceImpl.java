@@ -5,11 +5,9 @@ import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeRequestDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeResponseDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
 import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
-import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.jwt.util.SecurityUtil;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -104,11 +102,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     /** 지식공유 글 수정 */
     @Override
     @Transactional
-    public KnowledgeResponseDTO.Update update(Long id, KnowledgeRequestDTO.Update request,
+    public KnowledgeResponseDTO.Update update(Member member, Long id, KnowledgeRequestDTO.Update request,
                                               List<String> imageUrls, List<MultipartFile> newImages,
                                               List<String> fileUrls, List<MultipartFile> newFiles) {
         Knowledge knowledge = getKnowledgeById(id);
-        validateOwner(knowledge, ErrorCode.UNAUTHORIZED_UPDATE);
+        validateOwnerOrAdmin(member, knowledge, ErrorCode.UNAUTHORIZED_UPDATE);
 
         List<String> finalImageUrls = new ArrayList<>(imageUrls != null ? imageUrls : new ArrayList<>());
         List<String> finalFileUrls = new ArrayList<>(fileUrls != null ? fileUrls : new ArrayList<>());
@@ -133,9 +131,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     /** 지식공유 글 삭제 */
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Member member, Long id) {
         Knowledge knowledge = getKnowledgeById(id);
-        validateOwner(knowledge, ErrorCode.UNAUTHORIZED_DELETE);
+        validateOwnerOrAdmin(member, knowledge, ErrorCode.UNAUTHORIZED_DELETE);
 
         List<String> imageUrls = knowledge.getImages();
         List<String> fileUrls = knowledge.getFiles();
@@ -147,12 +145,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     /**
-     * 현재 사용자가 정보공유 게시글의 작성자인지 검증하는 메서드
+     * 현재 사용자가 게시글의 작성자이거나 관리자/운영진인지 검증하는 메서드
      */
-    private void validateOwner(Knowledge knowledge, ErrorCode errorCode) {
-        String currentStudentId = SecurityUtil.getCurrentStudentId();
+    private void validateOwnerOrAdmin(Member member, Knowledge knowledge, ErrorCode errorCode) {
+        String currentStudentId = member.getStudentId();
+        String currentRole = member.getRole().name();
 
-        if (!knowledge.getMember().getStudentId().equals(currentStudentId)) {
+        boolean isAdmin = currentRole.equals("ROLE_ADMIN") || currentRole.equals("ROLE_OPS");
+        boolean isOwner = knowledge.getMember().getStudentId().equals(currentStudentId);
+
+        if (!isOwner && !isAdmin) {
             throw new CustomException(errorCode);
         }
     }

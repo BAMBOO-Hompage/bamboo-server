@@ -13,8 +13,8 @@ public interface KnowledgeService {
     KnowledgeResponseDTO.Create create(KnowledgeRequestDTO.Create request, Member member, List<MultipartFile> images, List<MultipartFile> files);
     KnowledgeResponseDTO.GetOne getById(Long id);
     Page<KnowledgeResponseDTO.GetOne> getKnowledges(String type, String keyword, int page, int size);
-    KnowledgeResponseDTO.Update update(Long id, KnowledgeRequestDTO.Update request,
+    KnowledgeResponseDTO.Update update(Member member, Long id, KnowledgeRequestDTO.Update request,
                                        List<String> imageUrls, List<MultipartFile> newImages,
                                        List<String> fileUrls, List<MultipartFile> newFiles);
-    void delete(Long id);
+    void delete(Member member, Long id);
 }

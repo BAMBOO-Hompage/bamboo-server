@@ -100,13 +100,13 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
-    public Optional<Inventory> findByMemberIdAndWeek(String studentId, int week) {
+    public Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week) {
         QInventory inventory = QInventory.inventory;
 
         return Optional.ofNullable(queryFactory
                 .selectFrom(inventory)
                 .where(
-                        inventory.member.studentId.eq(studentId),
+                        inventory.member.memberId.eq(memberId),
                         inventory.week.eq(week)
                 )
                 .fetchOne());

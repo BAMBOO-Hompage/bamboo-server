@@ -91,13 +91,13 @@ public class InventoryController {
         return SuccessResponse.ok("스터디 정리본 삭제에 성공했습니다.");
     }
 
-    @GetMapping("/members/{studentId}/week/{week}")
+    @GetMapping("/members/{memberId}/week/{week}")
     @Operation(summary = "회원 ID와 주차 정보로 스터디 정리본 조회")
     public SuccessResponse<InventoryResponseDTO.GetOne> getInventoriesByMemberAndWeek(
-            @PathVariable("studentId") String studentId,
+            @PathVariable("memberId") Long memberId,
             @PathVariable("week") int week
     ) {
-        InventoryResponseDTO.GetOne result = inventoryService.getInventoriesByMemberAndWeek(studentId, week);
+        InventoryResponseDTO.GetOne result = inventoryService.getInventoriesByMemberAndWeek(memberId, week);
         return SuccessResponse.ok(result);
     }
 }

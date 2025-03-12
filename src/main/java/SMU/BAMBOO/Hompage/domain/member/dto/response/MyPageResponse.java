@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class MyPageResponse {
 
+    private Long memberId;
     private String studentId;
     private String email;
     private String name;
@@ -19,6 +20,7 @@ public class MyPageResponse {
 
     public static MyPageResponse from(Member member) {
         return MyPageResponse.builder()
+                .memberId(member.getMemberId())
                 .studentId(member.getStudentId())
                 .email(member.getEmail())
                 .name(member.getName())

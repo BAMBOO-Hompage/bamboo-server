@@ -9,11 +9,13 @@ import lombok.Getter;
 @Builder
 public class LoginResponse {
 
+    private Long memberId;
     private String studentId;
     private Role role;
 
     public static LoginResponse from(Member member) {
         return LoginResponse.builder()
+                .memberId(member.getMemberId())
                 .studentId(member.getStudentId())
                 .role(member.getRole())
                 .build();

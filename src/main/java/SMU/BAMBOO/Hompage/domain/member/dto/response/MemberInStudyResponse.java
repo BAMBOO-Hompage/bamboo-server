@@ -8,11 +8,13 @@ import lombok.Getter;
 @Builder
 public class MemberInStudyResponse {
 
+    private Long memberId;
     private String studentId;
     private String name;
 
     public static MemberInStudyResponse from(Member member) {
         return MemberInStudyResponse.builder()
+                .memberId(member.getMemberId())
                 .studentId(member.getStudentId())
                 .name(member.getName())
                 .build();

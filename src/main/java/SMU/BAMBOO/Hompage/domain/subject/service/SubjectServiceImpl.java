@@ -37,7 +37,7 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectResponseDTO.Create create(SubjectRequestDTO.Create dto) {
         Cohort cohort = cohortRepository.getByBatch(dto.batch());
 
-        if (subjectRepository.findByName(dto.name()).isPresent()) {
+        if (subjectRepository.findByNameAndBatch(dto.name(), dto.batch()).isPresent()) {
             throw new CustomException(ErrorCode.SUBJECT_ALREADY_EXIST);
         }
 

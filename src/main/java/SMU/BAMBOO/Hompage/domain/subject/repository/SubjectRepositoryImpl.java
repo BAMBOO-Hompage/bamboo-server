@@ -30,8 +30,18 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public Optional<Subject> findByName(String name) {
-        return subjectJpaRepository.findByName(name);
+    public Optional<Subject> findByNameAndBatch(String name, int batch) {
+        QSubject subject = QSubject.subject;
+
+        Subject foundSubject = queryFactory
+                .selectFrom(subject)
+                .where(
+                        subject.name.eq(name),
+                        subject.cohort.batch.eq(batch)
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(foundSubject);
     }
 
     @Override

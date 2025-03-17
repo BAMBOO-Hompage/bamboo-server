@@ -17,6 +17,7 @@ public class CorsConfig {
         config.addAllowedOriginPattern("http://localhost:3000");
         config.addAllowedOriginPattern("http://localhost:8080");
         config.addAllowedOriginPattern("https://smu-bamboo.com");
+        config.addAllowedOriginPattern("https://www.smu-bamboo.com");
         config.addAllowedOriginPattern("https://api.smu-bamboo.com");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");

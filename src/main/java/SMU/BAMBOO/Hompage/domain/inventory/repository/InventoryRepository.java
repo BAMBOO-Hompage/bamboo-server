@@ -21,4 +21,5 @@ public interface InventoryRepository {
     Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week);
     Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId);
     void resetWeeklyBest(Long studyId, int week);
+    Optional<Inventory> findWeeklyBestByStudyIdAndWeek(Long studyId, int week);
 }

@@ -144,7 +144,9 @@ public class InventoryServiceImpl implements InventoryService {
         return InventoryResponseDTO.GetOne.from(inventory);
     }
 
-    /** weekly-best 선정 */
+    /**
+     * weekly-best 선정
+     */
     @Override
     @Transactional
     public void setWeeklyBest(Long studyId, int week, Long memberId) {
@@ -157,5 +159,15 @@ public class InventoryServiceImpl implements InventoryService {
         // 해당 정리본을 주간 베스트로 설정
         inventory.markAsWeeklyBest();
         inventoryRepository.save(inventory);
+    }
+
+    /**
+     * 특정 스터디의 특정 주차의 weekly best 정리본 조회
+     */
+    @Override
+    public InventoryResponseDTO.GetOne getWeeklyBestInventory(Long studyId, int week) {
+        return inventoryRepository.findWeeklyBestByStudyIdAndWeek(studyId, week)
+                .map(InventoryResponseDTO.GetOne::from)
+                .orElse(null);
     }
 }

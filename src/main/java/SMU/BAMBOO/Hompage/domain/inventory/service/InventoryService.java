@@ -17,4 +17,5 @@ public interface InventoryService {
     void delete(Long id);
     InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week);
     void setWeeklyBest(Long studyId, int week, Long memberId);
+    InventoryResponseDTO.GetOne getWeeklyBestInventory(Long studyId, int week);
 }

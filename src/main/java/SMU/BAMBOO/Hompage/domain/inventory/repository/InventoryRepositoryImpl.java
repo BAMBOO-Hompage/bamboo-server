@@ -142,4 +142,20 @@ public class InventoryRepositoryImpl implements InventoryRepository {
                 .execute();
     }
 
+    @Override
+    public Optional<Inventory> findWeeklyBestByStudyIdAndWeek(Long studyId, int week) {
+        QInventory inventory = QInventory.inventory;
+
+        Inventory result = queryFactory
+                .selectFrom(inventory)
+                .where(
+                        inventory.study.studyId.eq(studyId)
+                                .and(inventory.week.eq(week))
+                                .and(inventory.isWeeklyBest.isTrue())
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
 }

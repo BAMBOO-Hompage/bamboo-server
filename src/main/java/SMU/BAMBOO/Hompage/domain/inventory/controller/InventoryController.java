@@ -112,4 +112,13 @@ public class InventoryController {
         return SuccessResponse.ok("주간 베스트 선정에 성공하였습니다.");
     }
 
+    @GetMapping("/weekly-best/{studyId}/{week}")
+    @Operation(summary = "주차별 주간 베스트 정리본 조회")
+    public SuccessResponse<InventoryResponseDTO.GetOne> getWeeklyBestInventory(
+            @PathVariable("studyId") Long studyId,
+            @PathVariable("week") int week
+    ) {
+        InventoryResponseDTO.GetOne result = inventoryService.getWeeklyBestInventory(studyId, week);
+        return SuccessResponse.ok(result);
+    }
 }

@@ -111,4 +111,35 @@ public class InventoryRepositoryImpl implements InventoryRepository {
                 )
                 .fetchOne());
     }
+
+    @Override
+    public Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId) {
+        QInventory inventory = QInventory.inventory;
+
+        Inventory result = queryFactory
+                .selectFrom(inventory)
+                .where(
+                        inventory.study.studyId.eq(studyId)
+                                .and(inventory.week.eq(week))
+                                .and(inventory.member.memberId.eq(memberId))
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public void resetWeeklyBest(Long studyId, int week) {
+        QInventory inventory = QInventory.inventory;
+
+        queryFactory.update(inventory)
+                .set(inventory.isWeeklyBest, false)
+                .where(
+                        inventory.study.studyId.eq(studyId)
+                                .and(inventory.week.eq(week))
+                                .and(inventory.isWeeklyBest.isTrue())
+                )
+                .execute();
+    }
+
 }

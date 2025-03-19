@@ -60,6 +60,7 @@ public class InventoryServiceImpl implements InventoryService {
                 .title(request.title())
                 .content(request.content())
                 .week(request.week())
+                .isWeeklyBest(false)
                 .build();
 
         // 저장
@@ -141,5 +142,20 @@ public class InventoryServiceImpl implements InventoryService {
         Inventory inventory = inventoryRepository.findByMemberIdAndWeek(memberId, week)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
         return InventoryResponseDTO.GetOne.from(inventory);
+    }
+
+    /** weekly-best 선정 */
+    @Override
+    @Transactional
+    public void setWeeklyBest(Long studyId, int week, Long memberId) {
+        Inventory inventory = inventoryRepository.findByStudyIdAndWeekAndMemberId(studyId, week, memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
+
+        // 기존 주간 베스트 해제
+        inventoryRepository.resetWeeklyBest(studyId, week);
+
+        // 해당 정리본을 주간 베스트로 설정
+        inventory.markAsWeeklyBest();
+        inventoryRepository.save(inventory);
     }
 }

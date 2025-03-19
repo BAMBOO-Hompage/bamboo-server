@@ -14,7 +14,7 @@ public interface InventoryService {
     Page<InventoryResponseDTO.GetOne> getInventories(int page, int size);
     List<InventoryResponseDTO.GetOne> findAll();
     InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request);
-    // 어워드 추가 메서드 추가 예정
     void delete(Long id);
     InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week);
+    void setWeeklyBest(Long studyId, int week, Long memberId);
 }

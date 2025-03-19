@@ -100,4 +100,16 @@ public class InventoryController {
         InventoryResponseDTO.GetOne result = inventoryService.getInventoriesByMemberAndWeek(memberId, week);
         return SuccessResponse.ok(result);
     }
+
+    @PostMapping("/weekly-best")
+    @Operation(summary = "주간 베스트 선정")
+    public SuccessResponse<String> selectWeeklyBest(
+            @RequestParam("studyId") Long studyId,
+            @RequestParam("week") int week,
+            @RequestParam("memberId") Long memberId
+    ) {
+        inventoryService.setWeeklyBest(studyId, week, memberId);
+        return SuccessResponse.ok("주간 베스트 선정에 성공하였습니다.");
+    }
+
 }

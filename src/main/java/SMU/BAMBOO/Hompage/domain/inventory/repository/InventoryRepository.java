@@ -19,4 +19,6 @@ public interface InventoryRepository {
     void deleteById(Long id);
     Boolean existsByMemberAndStudyAndWeek(Member member, Study study, int week);
     Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week);
+    Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId);
+    void resetWeeklyBest(Long studyId, int week);
 }

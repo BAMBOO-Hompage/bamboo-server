@@ -10,12 +10,14 @@ import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.domain.study.repository.StudyRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
+    private final AwsS3Service awsS3Service;
 
     /** ID로 스터디 정리본 조회 */
     private Inventory getInventoryById(Long id) {
@@ -39,7 +42,7 @@ public class InventoryServiceImpl implements InventoryService {
      */
     @Override
     @Transactional
-    public InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request) {
+    public InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request, MultipartFile file) {
 
         // 객체 조회 - 스터디, 회원
         Study study = studyRepository.findById(request.studyId())
@@ -53,6 +56,15 @@ public class InventoryServiceImpl implements InventoryService {
             throw new CustomException(ErrorCode.INVENTORY_ALREADY_EXIST);
         }
 
+        String fileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            try {
+                fileUrl = awsS3Service.uploadFile("inventory/pdf", file, false);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
+        }
+
         // 스터디 정리본 객체 생성
         Inventory inventory = Inventory.builder()
                 .study(study)
@@ -61,6 +73,7 @@ public class InventoryServiceImpl implements InventoryService {
                 .content(request.content())
                 .week(request.week())
                 .isWeeklyBest(false)
+                .fileUrl(fileUrl)
                 .build();
 
         // 저장
@@ -118,10 +131,26 @@ public class InventoryServiceImpl implements InventoryService {
      */
     @Override
     @Transactional
-    public InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request) {
+    public InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request, MultipartFile file) {
         // 객체 조회 및 수정
         Inventory inventory = getInventoryById(id);
-        inventory.updateInventory(request);
+
+        String fileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            // 기존 파일 삭제
+            if (inventory.getFileUrl() != null) {
+                awsS3Service.deleteFile(awsS3Service.extractS3Key(inventory.getFileUrl()));
+            }
+
+            // 새로운 파일 업로드
+            try {
+                fileUrl = awsS3Service.uploadFile("inventory/pdf", file, false);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
+        }
+
+        inventory.updateInventory(request, fileUrl);
 
         return InventoryResponseDTO.Update.from(inventory);
     }

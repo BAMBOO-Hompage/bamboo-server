@@ -3,17 +3,18 @@ package SMU.BAMBOO.Hompage.domain.inventory.service;
 import SMU.BAMBOO.Hompage.domain.inventory.dto.InventoryRequestDTO;
 import SMU.BAMBOO.Hompage.domain.inventory.dto.InventoryResponseDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface InventoryService {
 
-    InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request);
+    InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request, MultipartFile file);
     InventoryResponseDTO.GetOne getById(Long id);
     Page<InventoryResponseDTO.GetOne> getInventoriesByStudy(Long studyId, int page, int size);
     Page<InventoryResponseDTO.GetOne> getInventories(int page, int size);
     List<InventoryResponseDTO.GetOne> findAll();
-    InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request);
+    InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request, MultipartFile file);
     void delete(Long id);
     InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week);
     void setWeeklyBest(Long studyId, int week, Long memberId);

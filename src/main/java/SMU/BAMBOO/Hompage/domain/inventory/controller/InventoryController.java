@@ -7,12 +7,17 @@ import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,13 +30,16 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @PostMapping
+    @RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE))) // request 내부에 Content Type 이 없으면 오류남. 그래서 application/json 설정
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "스터디 정리본 생성")
     public SuccessResponse<InventoryResponseDTO.Create> create(
             @CurrentMember Member member,
-            @Valid @RequestBody InventoryRequestDTO.Create request
+            @RequestPart(value = "request") InventoryRequestDTO.Create request,
+            @RequestPart(required = false) MultipartFile file
     ) {
-        InventoryResponseDTO.Create result = inventoryService.create(member.getMemberId(), request);
+        InventoryResponseDTO.Create result = inventoryService.create(member.getMemberId(), request, file);
         return SuccessResponse.ok(result);
     }
 

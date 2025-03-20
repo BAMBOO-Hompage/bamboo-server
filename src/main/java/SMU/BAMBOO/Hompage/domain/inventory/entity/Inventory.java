@@ -22,11 +22,11 @@ public class Inventory extends BaseEntity {
     private Long inventoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_id", nullable = true)
+    @JoinColumn(name = "study_id")
     private Study study;
 
     @Column(nullable = false, length = 200)
@@ -40,6 +40,9 @@ public class Inventory extends BaseEntity {
 
     @Column(name = "is_weekly_best")
     private Boolean isWeeklyBest;
+
+    @Column(name = "file_url")
+    private String fileUrl;
 
     @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
     private Award award;

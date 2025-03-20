@@ -21,14 +21,18 @@ public class InventoryResponseDTO {
             String title,
 
             @Schema(description = "몇 주차 정리본인지")
-            int week
+            int week,
+
+            @Schema(description = "PDF 파일의 URL")
+            String fileUrl
     ) {
         public static Create from(Inventory inventory) {
             return new Create(
                     MemberResponse.from(inventory.getMember()),
                     StudyResponseDTO.GetOne.from(inventory.getStudy()),
                     inventory.getTitle(),
-                    inventory.getWeek()
+                    inventory.getWeek(),
+                    inventory.getFileUrl()
             );
         }
     }

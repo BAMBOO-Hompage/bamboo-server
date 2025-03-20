@@ -38,6 +38,9 @@ public class Inventory extends BaseEntity {
     @Column(nullable = false)
     private int week;
 
+    @Column(name = "is_weekly_best")
+    private Boolean isWeeklyBest;
+
     @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
     private Award award;
 
@@ -53,7 +56,7 @@ public class Inventory extends BaseEntity {
         }
     }
 
-    public void addAward(Award award) {
-        this.award = award;
+    public void markAsWeeklyBest() {
+        this.isWeeklyBest = true;
     }
 }

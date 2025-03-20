@@ -77,6 +77,9 @@ public class InventoryResponseDTO {
             @Schema(description = "몇 주차 정리본인지")
             int week,
 
+            @Schema(description = "weekly best 여부")
+            Boolean isWeeklyBest,
+
             @Schema(description = "수상 내역")
             AwardResponseDTO.GetOne award
     ) {
@@ -88,22 +91,7 @@ public class InventoryResponseDTO {
                     inventory.getTitle(),
                     inventory.getContent(),
                     inventory.getWeek(),
-                    AwardResponseDTO.GetOne.from(inventory.getAward())
-            );
-        }
-    }
-
-    @Schema(description = "스터디 정리본 어워드 추가 응답 DTO")
-    public record AddAward(
-            @Schema(description = "정리본 ID")
-            Long inventoryId,
-
-            @Schema(description = "수상 내역")
-            AwardResponseDTO.GetOne award
-    ) {
-        public static AddAward from(Inventory inventory) {
-            return new AddAward(
-                    inventory.getInventoryId(),
+                    inventory.getIsWeeklyBest(),
                     AwardResponseDTO.GetOne.from(inventory.getAward())
             );
         }

@@ -55,10 +55,10 @@ public class InventoryController {
     @Operation(summary = "스터디별 스터디 정리본 페이지 조회")
     public SuccessResponse<Page<InventoryResponseDTO.GetOne>> getInventoriesByStudy(
             @PathVariable("studyId") Long studyId,
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<InventoryResponseDTO.GetOne> result = inventoryService.getInventoriesByStudy(studyId, page, size);
+        Page<InventoryResponseDTO.GetOne> result = inventoryService.getInventoriesByStudy(studyId, page-1, size);
         return SuccessResponse.ok(result);
     }
 
@@ -72,10 +72,10 @@ public class InventoryController {
     @GetMapping
     @Operation(summary = "스터디 정리본 페이지 조회")
     public SuccessResponse<Page<InventoryResponseDTO.GetOne>> getInventories(
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<InventoryResponseDTO.GetOne> result = inventoryService.getInventories(page, size);
+        Page<InventoryResponseDTO.GetOne> result = inventoryService.getInventories(page-1, size);
         return SuccessResponse.ok(result);
     }
 

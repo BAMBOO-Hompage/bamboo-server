@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.libraryPost.dto;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class LibraryPostResponseDTO {
             Long libraryPostId,
 
             @Schema(description = "멤버 정보")
-            MemberResponse member,
+            MemberResponseDTO.MemberInfo member,
 
             @Schema(description = "논문 이름")
             String paperName,
@@ -40,7 +40,7 @@ public class LibraryPostResponseDTO {
             return new Create(
                     libraryPost.getLibraryPostId(),
                     Optional.ofNullable(libraryPost.getMember())
-                            .map(MemberResponse::from)
+                            .map(MemberResponseDTO.MemberInfo::from)
                             .orElse(null),
                     libraryPost.getPaperName(),
                     libraryPost.getYear(),
@@ -62,7 +62,7 @@ public class LibraryPostResponseDTO {
             Long libraryPostId,
 
             @Schema(description = "멤버 정보")
-            MemberResponse member,
+            MemberResponseDTO.MemberInfo member,
 
             @Schema(description = "논문 이름")
             String paperName,
@@ -86,7 +86,7 @@ public class LibraryPostResponseDTO {
             return new GetOne(
                     libraryPost.getLibraryPostId(),
                     Optional.ofNullable(libraryPost.getMember())
-                            .map(MemberResponse::from)
+                            .map(MemberResponseDTO.MemberInfo::from)
                             .orElse(null),
                     libraryPost.getPaperName(),
                     libraryPost.getYear(),

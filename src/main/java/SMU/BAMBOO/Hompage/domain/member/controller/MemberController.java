@@ -2,9 +2,7 @@ package SMU.BAMBOO.Hompage.domain.member.controller;
 
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.service.MemberService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
@@ -30,15 +28,15 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
-    public SuccessResponse<MemberResponse> signUp(@RequestBody MemberRequestDTO.SignUp request) {
-        MemberResponse result = memberService.signUp(request, encoder);
+    public SuccessResponse<MemberResponseDTO.MemberInfo> signUp(@RequestBody MemberRequestDTO.SignUp request) {
+        MemberResponseDTO.MemberInfo result = memberService.signUp(request, encoder);
         return SuccessResponse.ok(result);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public SuccessResponse<LoginResponse> login(@RequestBody MemberRequestDTO.Login request, HttpServletResponse response) {
-        LoginResponse result = memberService.login(request, response);
+    public SuccessResponse<MemberResponseDTO.Login> login(@RequestBody MemberRequestDTO.Login request, HttpServletResponse response) {
+        MemberResponseDTO.Login result = memberService.login(request, response);
         return SuccessResponse.ok(result);
     }
 
@@ -52,35 +50,35 @@ public class MemberController {
 
     @GetMapping
     @Operation(summary = "회원 목록 조회 - 페이지네이션")
-    public SuccessResponse<Page<MemberResponse>> getMembers(
+    public SuccessResponse<Page<MemberResponseDTO.MemberInfo>> getMembers(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<MemberResponse> result = memberService.getMembers(page-1, size);
+        Page<MemberResponseDTO.MemberInfo> result = memberService.getMembers(page-1, size);
         return SuccessResponse.ok(result);
     }
 
     @GetMapping("/myPage")
     @Operation(summary = "마이페이지")
-    public SuccessResponse<MyPageResponse> myPage(@CurrentMember Member member) {
+    public SuccessResponse<MemberResponseDTO.MyPage> myPage(@CurrentMember Member member) {
         Member my = memberService.getMember(member.getStudentId());
-        return SuccessResponse.ok(MyPageResponse.from(my));
+        return SuccessResponse.ok(MemberResponseDTO.MyPage.from(my));
     }
 
     @PatchMapping("/myPage")
     @Operation(summary = "프로필 변경")
-    public SuccessResponse<MyPageResponse> updateProfile(
+    public SuccessResponse<MemberResponseDTO.MyPage> updateProfile(
             @CurrentMember Member member,
             @ModelAttribute MemberRequestDTO.UpdateProfile request
     ) {
-        MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
+        MemberResponseDTO.MyPage result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
     @PatchMapping("/myPage/profileImage")
     @Operation(summary = "기본 프로필 이미지로 변경")
-    public SuccessResponse<MyPageResponse> deleteProfileImage(@CurrentMember Member member) {
-        MyPageResponse result = memberService.deleteProfileImage(member.getMemberId());
+    public SuccessResponse<MemberResponseDTO.MyPage> deleteProfileImage(@CurrentMember Member member) {
+        MemberResponseDTO.MyPage result = memberService.deleteProfileImage(member.getMemberId());
         return SuccessResponse.ok(result);
     }
 
@@ -103,10 +101,10 @@ public class MemberController {
 
     @PatchMapping("/{memberId}/role")
     @Operation(summary = "권한 변경")
-    public SuccessResponse<MemberResponse> updateRole(
+    public SuccessResponse<MemberResponseDTO.MemberInfo> updateRole(
             @CurrentMember Member member,
             @RequestBody MemberRequestDTO.UpdateRole request) {
-        MemberResponse result = memberService.updateRole(member.getMemberId(), request);
+        MemberResponseDTO.MemberInfo result = memberService.updateRole(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 

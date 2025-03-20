@@ -2,9 +2,7 @@ package SMU.BAMBOO.Hompage.domain.member.service;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
@@ -65,10 +63,10 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MemberResponse signUp(MemberRequestDTO.SignUp request, BCryptPasswordEncoder encoder) {
+    public MemberResponseDTO.MemberInfo signUp(MemberRequestDTO.SignUp request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
         Member member = memberRepository.save(Member.from(request, encoder));
-        return MemberResponse.from(member);
+        return MemberResponseDTO.MemberInfo.from(member);
     }
 
     /**
@@ -76,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public LoginResponse login(MemberRequestDTO.Login request, HttpServletResponse response) {
+    public MemberResponseDTO.Login login(MemberRequestDTO.Login request, HttpServletResponse response) {
         Member member = getMemberByStudentId(request.studentId());
 
         if (!passwordEncoder.matches(request.password(), member.getPw())) {
@@ -89,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh-Token", refreshToken);
 
-        return LoginResponse.from(member);
+        return MemberResponseDTO.Login.from(member);
     }
 
     /**
@@ -105,10 +103,10 @@ public class MemberServiceImpl implements MemberService {
      * 회원 정보 목록
      */
     @Override
-    public Page<MemberResponse> getMembers(int page, int size) {
+    public Page<MemberResponseDTO.MemberInfo> getMembers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("role"));
         return memberRepository.findAllSortByRole(pageable)
-                .map(MemberResponse::from);
+                .map(MemberResponseDTO.MemberInfo::from);
     }
 
     /**
@@ -144,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MyPageResponse updateProfile(Long memberId, MemberRequestDTO.UpdateProfile request) {
+    public MemberResponseDTO.MyPage updateProfile(Long memberId, MemberRequestDTO.UpdateProfile request) {
         Member member = getMemberById(memberId);
 
         String profileImageUrl = null;
@@ -165,7 +163,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.updateProfile(request.phoneNumber(), profileImageUrl);
 
-        return MyPageResponse.from(member);
+        return MemberResponseDTO.MyPage.from(member);
     }
 
     /**
@@ -173,7 +171,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MyPageResponse deleteProfileImage(Long memberId) {
+    public MemberResponseDTO.MyPage deleteProfileImage(Long memberId) {
         Member member = getMemberById(memberId);
 
         String oldImageUrl = member.getProfileImageUrl();
@@ -184,7 +182,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.setBasicProfileImage();
 
-        return MyPageResponse.from(member);
+        return MemberResponseDTO.MyPage.from(member);
     }
 
     /**
@@ -230,7 +228,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MemberResponse updateRole(Long currentMemberId, MemberRequestDTO.UpdateRole request) {
+    public MemberResponseDTO.MemberInfo updateRole(Long currentMemberId, MemberRequestDTO.UpdateRole request) {
         Member currentMember = getMemberById(currentMemberId);
 
         // 임원진 권한 확인
@@ -249,7 +247,7 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.INVALID_ROLE);
         }
 
-        return MemberResponse.from(member);
+        return MemberResponseDTO.MemberInfo.from(member);
     }
 
     /**

@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.inventory.dto;
 
 import SMU.BAMBOO.Hompage.domain.award.dto.AwardResponseDTO;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -12,7 +12,7 @@ public class InventoryResponseDTO {
     @Schema(description = "스터디 정리본 생성 응답 DTO")
     public record Create(
             @Schema(description = "작성한 멤버 정보")
-            MemberResponse member,
+            MemberResponseDTO.MemberInfo member,
 
             @Schema(description = "관련된 스터디 정보")
             StudyResponseDTO.GetForInventory study,
@@ -28,7 +28,7 @@ public class InventoryResponseDTO {
     ) {
         public static Create from(Inventory inventory) {
             return new Create(
-                    MemberResponse.from(inventory.getMember()),
+                    MemberResponseDTO.MemberInfo.from(inventory.getMember()),
                     StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getWeek(),
@@ -40,7 +40,7 @@ public class InventoryResponseDTO {
     @Schema(description = "스터디 정리본 수정 응답 DTO")
     public record Update(
             @Schema(description = "작성한 멤버 정보")
-            MemberResponse member,
+            MemberResponseDTO.MemberInfo member,
 
             @Schema(description = "관련된 스터디 정보")
             StudyResponseDTO.GetForInventory study,
@@ -56,7 +56,7 @@ public class InventoryResponseDTO {
     ) {
         public static Update from(Inventory inventory) {
             return new Update(
-                    MemberResponse.from(inventory.getMember()),
+                    MemberResponseDTO.MemberInfo.from(inventory.getMember()),
                     StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getFileUrl(),
@@ -71,7 +71,7 @@ public class InventoryResponseDTO {
             Long inventoryId,
 
             @Schema(description = "작성한 멤버 정보")
-            MemberResponse member,
+            MemberResponseDTO.MemberInfo member,
 
             @Schema(description = "관련된 스터디 정보")
             StudyResponseDTO.GetForInventory study,
@@ -97,7 +97,7 @@ public class InventoryResponseDTO {
         public static GetOne from(Inventory inventory) {
             return new GetOne(
                     inventory.getInventoryId(),
-                    MemberResponse.from(inventory.getMember()),
+                    MemberResponseDTO.MemberInfo.from(inventory.getMember()),
                     StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getContent(),

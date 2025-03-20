@@ -15,7 +15,7 @@ public class InventoryResponseDTO {
             MemberResponse member,
 
             @Schema(description = "관련된 스터디 정보")
-            StudyResponseDTO.GetOne study,
+            StudyResponseDTO.GetForInventory study,
 
             @Schema(description = "정리본 제목")
             String title,
@@ -29,7 +29,7 @@ public class InventoryResponseDTO {
         public static Create from(Inventory inventory) {
             return new Create(
                     MemberResponse.from(inventory.getMember()),
-                    StudyResponseDTO.GetOne.from(inventory.getStudy()),
+                    StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getWeek(),
                     inventory.getFileUrl()
@@ -43,7 +43,7 @@ public class InventoryResponseDTO {
             MemberResponse member,
 
             @Schema(description = "관련된 스터디 정보")
-            StudyResponseDTO.GetOne study,
+            StudyResponseDTO.GetForInventory study,
 
             @Schema(description = "정리본 제목")
             String title,
@@ -54,7 +54,7 @@ public class InventoryResponseDTO {
         public static Update from(Inventory inventory) {
             return new Update(
                     MemberResponse.from(inventory.getMember()),
-                    StudyResponseDTO.GetOne.from(inventory.getStudy()),
+                    StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
                     inventory.getWeek()
             );

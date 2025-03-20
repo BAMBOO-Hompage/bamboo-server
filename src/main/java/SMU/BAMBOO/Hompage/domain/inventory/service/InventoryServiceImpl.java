@@ -131,10 +131,26 @@ public class InventoryServiceImpl implements InventoryService {
      */
     @Override
     @Transactional
-    public InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request) {
+    public InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request, MultipartFile file) {
         // 객체 조회 및 수정
         Inventory inventory = getInventoryById(id);
-        inventory.updateInventory(request);
+
+        String fileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            // 기존 파일 삭제
+            if (inventory.getFileUrl() != null) {
+                awsS3Service.deleteFile(awsS3Service.extractS3Key(inventory.getFileUrl()));
+            }
+
+            // 새로운 파일 업로드
+            try {
+                fileUrl = awsS3Service.uploadFile("inventory/pdf", file, false);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
+        }
+
+        inventory.updateInventory(request, fileUrl);
 
         return InventoryResponseDTO.Update.from(inventory);
     }

@@ -47,7 +47,7 @@ public class Inventory extends BaseEntity {
     @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
     private Award award;
 
-    public void updateInventory(InventoryRequestDTO.Update updateRequest) {
+    public void updateInventory(InventoryRequestDTO.Update updateRequest, String fileUrl) {
         if (updateRequest.title() != null) {
             this.title = updateRequest.title();
         }
@@ -57,6 +57,7 @@ public class Inventory extends BaseEntity {
         if (updateRequest.week() > 0) {
             this.week = updateRequest.week();
         }
+        this.fileUrl = fileUrl;
     }
 
     public void markAsWeeklyBest() {

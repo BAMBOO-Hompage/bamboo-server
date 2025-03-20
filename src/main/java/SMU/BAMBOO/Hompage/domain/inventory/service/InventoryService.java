@@ -14,7 +14,7 @@ public interface InventoryService {
     Page<InventoryResponseDTO.GetOne> getInventoriesByStudy(Long studyId, int page, int size);
     Page<InventoryResponseDTO.GetOne> getInventories(int page, int size);
     List<InventoryResponseDTO.GetOne> findAll();
-    InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request);
+    InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request, MultipartFile file);
     void delete(Long id);
     InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week);
     void setWeeklyBest(Long studyId, int week, Long memberId);

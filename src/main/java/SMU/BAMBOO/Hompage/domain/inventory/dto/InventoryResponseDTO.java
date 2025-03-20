@@ -48,6 +48,9 @@ public class InventoryResponseDTO {
             @Schema(description = "정리본 제목")
             String title,
 
+            @Schema(description = "PDF 파일의 URL")
+            String fileUrl,
+
             @Schema(description = "몇 주차 정리본인지")
             int week
     ) {
@@ -56,6 +59,7 @@ public class InventoryResponseDTO {
                     MemberResponse.from(inventory.getMember()),
                     StudyResponseDTO.GetForInventory.from(inventory.getStudy()),
                     inventory.getTitle(),
+                    inventory.getFileUrl(),
                     inventory.getWeek()
             );
         }
@@ -84,6 +88,9 @@ public class InventoryResponseDTO {
             @Schema(description = "weekly best 여부")
             Boolean isWeeklyBest,
 
+            @Schema(description = "PDF 파일의 URL")
+            String fileUrl,
+
             @Schema(description = "수상 내역")
             AwardResponseDTO.GetOne award
     ) {
@@ -96,6 +103,7 @@ public class InventoryResponseDTO {
                     inventory.getContent(),
                     inventory.getWeek(),
                     inventory.getIsWeeklyBest(),
+                    inventory.getFileUrl(),
                     AwardResponseDTO.GetOne.from(inventory.getAward())
             );
         }

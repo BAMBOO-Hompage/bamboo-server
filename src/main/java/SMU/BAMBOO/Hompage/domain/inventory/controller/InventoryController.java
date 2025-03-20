@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -80,13 +79,16 @@ public class InventoryController {
         return SuccessResponse.ok(result);
     }
 
-    @PatchMapping("/{inventoriesId}")
+    @RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
+    @PatchMapping(value = "/{inventoriesId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "스터디 정리본 수정")
     public SuccessResponse<InventoryResponseDTO.Update> update(
             @PathVariable("inventoriesId") Long id,
-            @Valid @RequestBody InventoryRequestDTO.Update request
+            @RequestPart(value = "request") InventoryRequestDTO.Update request,
+            @RequestPart(required = false) MultipartFile file
     ) {
-        InventoryResponseDTO.Update result = inventoryService.update(id, request);
+        InventoryResponseDTO.Update result = inventoryService.update(id, request, file);
         return SuccessResponse.ok(result);
     }
 

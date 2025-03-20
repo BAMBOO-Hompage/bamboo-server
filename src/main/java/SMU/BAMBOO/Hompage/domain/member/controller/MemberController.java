@@ -1,10 +1,8 @@
 package SMU.BAMBOO.Hompage.domain.member.controller;
 
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.*;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
-import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.service.MemberService;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
@@ -13,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,15 +28,15 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
-    public SuccessResponse<MemberResponse> signUp(@RequestBody MemberSignUpDto request) {
-        MemberResponse result = memberService.signUp(request, encoder);
+    public SuccessResponse<MemberResponseDTO.MemberInfo> signUp(@RequestBody MemberRequestDTO.SignUp request) {
+        MemberResponseDTO.MemberInfo result = memberService.signUp(request, encoder);
         return SuccessResponse.ok(result);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public SuccessResponse<LoginResponse> login(@RequestBody MemberLoginDto request, HttpServletResponse response) {
-        LoginResponse result = memberService.login(request, response);
+    public SuccessResponse<MemberResponseDTO.Login> login(@RequestBody MemberRequestDTO.Login request, HttpServletResponse response) {
+        MemberResponseDTO.Login result = memberService.login(request, response);
         return SuccessResponse.ok(result);
     }
 
@@ -53,35 +50,35 @@ public class MemberController {
 
     @GetMapping
     @Operation(summary = "회원 목록 조회 - 페이지네이션")
-    public SuccessResponse<Page<MemberResponse>> getMembers(
+    public SuccessResponse<Page<MemberResponseDTO.MemberInfo>> getMembers(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<MemberResponse> result = memberService.getMembers(page-1, size);
+        Page<MemberResponseDTO.MemberInfo> result = memberService.getMembers(page-1, size);
         return SuccessResponse.ok(result);
     }
 
     @GetMapping("/myPage")
     @Operation(summary = "마이페이지")
-    public SuccessResponse<MyPageResponse> myPage(@CurrentMember Member member) {
+    public SuccessResponse<MemberResponseDTO.MyPage> myPage(@CurrentMember Member member) {
         Member my = memberService.getMember(member.getStudentId());
-        return SuccessResponse.ok(MyPageResponse.from(my));
+        return SuccessResponse.ok(MemberResponseDTO.MyPage.from(my));
     }
 
     @PatchMapping("/myPage")
     @Operation(summary = "프로필 변경")
-    public SuccessResponse<MyPageResponse> updateProfile(
+    public SuccessResponse<MemberResponseDTO.MyPage> updateProfile(
             @CurrentMember Member member,
-            @Valid @ModelAttribute UpdateProfileDto request
+            @ModelAttribute MemberRequestDTO.UpdateProfile request
     ) {
-        MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
+        MemberResponseDTO.MyPage result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
     @PatchMapping("/myPage/profileImage")
     @Operation(summary = "기본 프로필 이미지로 변경")
-    public SuccessResponse<MyPageResponse> deleteProfileImage(@CurrentMember Member member) {
-        MyPageResponse result = memberService.deleteProfileImage(member.getMemberId());
+    public SuccessResponse<MemberResponseDTO.MyPage> deleteProfileImage(@CurrentMember Member member) {
+        MemberResponseDTO.MyPage result = memberService.deleteProfileImage(member.getMemberId());
         return SuccessResponse.ok(result);
     }
 
@@ -89,27 +86,36 @@ public class MemberController {
     @Operation(summary = "비밀번호 변경")
     public SuccessResponse<String> updatePassword(
             @CurrentMember Member member,
-            @Valid @RequestBody UpdatePwDto request) {
+            @RequestBody MemberRequestDTO.UpdatePw request) {
         memberService.updatePw(member.getMemberId(), request);
         return SuccessResponse.ok("비밀번호를 변경했습니다.");
     }
 
+    @PatchMapping("/password")
+    @Operation(summary = "비밀번호 초기화 - 비로그인")
+    public SuccessResponse<String> resetPassword(
+            @RequestBody MemberRequestDTO.ResetPw request) {
+        memberService.resetPw(request);
+        return SuccessResponse.ok("비밀번호를 초기화했습니다.");
+    }
+
     @PatchMapping("/{memberId}/role")
     @Operation(summary = "권한 변경")
-    public SuccessResponse<MemberResponse> updateRole(
+    public SuccessResponse<MemberResponseDTO.MemberInfo> updateRole(
             @CurrentMember Member member,
-            @Valid @RequestBody UpdateRoleDto request) {
-        MemberResponse result = memberService.updateRole(member.getMemberId(), request);
+            @RequestBody MemberRequestDTO.UpdateRole request) {
+        MemberResponseDTO.MemberInfo result = memberService.updateRole(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
-    @PatchMapping("/{memberId}/role/test")
-    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
-    public SuccessResponse<MemberResponse> testUpdateRole(
-            @Valid @RequestBody TestUpdateRoleDto request) {
-        MemberResponse result = memberService.testUpdateRole(request);
-        return SuccessResponse.ok(result);
-    }
+    /** DB 초기화하는 경우를 대비하여 냅둡니다 */
+//    @PatchMapping("/{memberId}/role/test")
+//    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
+//    public SuccessResponse<MemberResponse> testUpdateRole(
+//            @RequestBody TestUpdateRoleDto request) {
+//        MemberResponse result = memberService.testUpdateRole(request);
+//        return SuccessResponse.ok(result);
+//    }
 
     @PostMapping("/deactivate")
     @Operation(summary = "회원 탈퇴 - 7일 후 자동 삭제")

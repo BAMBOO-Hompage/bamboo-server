@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.member.service;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.*;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -48,13 +48,6 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // 메일로 중복 회원 검증
-    private void validateDuplicateMemberByMail(String email) {
-        if (memberRepository.findByEmail(email).isPresent()) {
-            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
-        }
-    }
-
     // ID로 회원 반환
     private Member getMemberById(Long id){
         return memberRepository.findById(id)
@@ -72,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MemberResponse signUp(MemberSignUpDto request, BCryptPasswordEncoder encoder) {
+    public MemberResponse signUp(MemberRequestDTO.SignUp request, BCryptPasswordEncoder encoder) {
         validateDuplicateMember(request.studentId());
         Member member = memberRepository.save(Member.from(request, encoder));
         return MemberResponse.from(member);
@@ -83,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public LoginResponse login(MemberLoginDto request, HttpServletResponse response) {
+    public LoginResponse login(MemberRequestDTO.Login request, HttpServletResponse response) {
         Member member = getMemberByStudentId(request.studentId());
 
         if (!passwordEncoder.matches(request.password(), member.getPw())) {
@@ -151,11 +144,11 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MyPageResponse updateProfile(Long memberId, UpdateProfileDto request) {
+    public MyPageResponse updateProfile(Long memberId, MemberRequestDTO.UpdateProfile request) {
         Member member = getMemberById(memberId);
 
         String profileImageUrl = null;
-        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+        if (request.profileImage() != null && !request.profileImage().isEmpty()) {
             // 기존 프로필 이미지 삭제
             String oldImageUrl = member.getProfileImageUrl();
             if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
@@ -164,13 +157,13 @@ public class MemberServiceImpl implements MemberService {
             }
 
             // 새 프로필 이미지 업로드
-            MultipartFile file = request.getProfileImage();
+            MultipartFile file = request.profileImage();
             profileImageUrl = awsS3Service.uploadFile("profile-images", file, true);
         } else {
             profileImageUrl = member.getProfileImageUrl();
         }
 
-        member.updateProfile(request.getPhoneNumber(), profileImageUrl);
+        member.updateProfile(request.phoneNumber(), profileImageUrl);
 
         return MyPageResponse.from(member);
     }
@@ -199,7 +192,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public void updatePw(Long memberId, UpdatePwDto request) {
+    public void updatePw(Long memberId, MemberRequestDTO.UpdatePw request) {
         Member member = getMemberById(memberId);
 
         // 회원의 비밀번호와 요청의 비밀번호를 비교
@@ -221,7 +214,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public void resetPw(ResetPwDto request) {
+    public void resetPw(MemberRequestDTO.ResetPw request) {
         if (!request.newPassword1().equals(request.newPassword2())) {
             throw new CustomException(ErrorCode.USER_PASSWORD_MISMATCH);
         }
@@ -237,7 +230,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request) {
+    public MemberResponse updateRole(Long currentMemberId, MemberRequestDTO.UpdateRole request) {
         Member currentMember = getMemberById(currentMemberId);
 
         // 임원진 권한 확인
@@ -245,26 +238,6 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.USER_FORBIDDEN);
         }
 
-        // 변경 대상 회원 조회
-        Member member = getMemberById(request.memberId());
-
-        // 권한 변경
-        try {
-            Role role = Role.valueOf(request.role());
-            member.updateRole(role);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(ErrorCode.INVALID_ROLE);
-        }
-
-        return MemberResponse.from(member);
-    }
-
-    /**
-     * 임시 - 임원 권한이 필요 없는 권한 변경
-     */
-    @Transactional
-    @Override
-    public MemberResponse testUpdateRole(TestUpdateRoleDto request) {
         // 변경 대상 회원 조회
         Member member = getMemberById(request.memberId());
 

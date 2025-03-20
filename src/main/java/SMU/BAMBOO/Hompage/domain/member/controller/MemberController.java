@@ -1,7 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.member.controller;
 
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
-import SMU.BAMBOO.Hompage.domain.member.dto.request.*;
+import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.LoginResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MemberResponse;
 import SMU.BAMBOO.Hompage.domain.member.dto.response.MyPageResponse;
@@ -30,14 +30,14 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
-    public SuccessResponse<MemberResponse> signUp(@RequestBody MemberSignUpDto request) {
+    public SuccessResponse<MemberResponse> signUp(@RequestBody MemberRequestDTO.SignUp request) {
         MemberResponse result = memberService.signUp(request, encoder);
         return SuccessResponse.ok(result);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public SuccessResponse<LoginResponse> login(@RequestBody MemberLoginDto request, HttpServletResponse response) {
+    public SuccessResponse<LoginResponse> login(@RequestBody MemberRequestDTO.Login request, HttpServletResponse response) {
         LoginResponse result = memberService.login(request, response);
         return SuccessResponse.ok(result);
     }
@@ -71,7 +71,7 @@ public class MemberController {
     @Operation(summary = "프로필 변경")
     public SuccessResponse<MyPageResponse> updateProfile(
             @CurrentMember Member member,
-            @ModelAttribute UpdateProfileDto request
+            @ModelAttribute MemberRequestDTO.UpdateProfile request
     ) {
         MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
@@ -88,7 +88,7 @@ public class MemberController {
     @Operation(summary = "비밀번호 변경")
     public SuccessResponse<String> updatePassword(
             @CurrentMember Member member,
-            @RequestBody UpdatePwDto request) {
+            @RequestBody MemberRequestDTO.UpdatePw request) {
         memberService.updatePw(member.getMemberId(), request);
         return SuccessResponse.ok("비밀번호를 변경했습니다.");
     }
@@ -96,7 +96,7 @@ public class MemberController {
     @PatchMapping("/password")
     @Operation(summary = "비밀번호 초기화 - 비로그인")
     public SuccessResponse<String> resetPassword(
-            @RequestBody ResetPwDto request) {
+            @RequestBody MemberRequestDTO.ResetPw request) {
         memberService.resetPw(request);
         return SuccessResponse.ok("비밀번호를 초기화했습니다.");
     }
@@ -105,18 +105,19 @@ public class MemberController {
     @Operation(summary = "권한 변경")
     public SuccessResponse<MemberResponse> updateRole(
             @CurrentMember Member member,
-            @RequestBody UpdateRoleDto request) {
+            @RequestBody MemberRequestDTO.UpdateRole request) {
         MemberResponse result = memberService.updateRole(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
-    @PatchMapping("/{memberId}/role/test")
-    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
-    public SuccessResponse<MemberResponse> testUpdateRole(
-            @RequestBody TestUpdateRoleDto request) {
-        MemberResponse result = memberService.testUpdateRole(request);
-        return SuccessResponse.ok(result);
-    }
+    /** DB 초기화하는 경우를 대비하여 냅둡니다 */
+//    @PatchMapping("/{memberId}/role/test")
+//    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
+//    public SuccessResponse<MemberResponse> testUpdateRole(
+//            @RequestBody TestUpdateRoleDto request) {
+//        MemberResponse result = memberService.testUpdateRole(request);
+//        return SuccessResponse.ok(result);
+//    }
 
     @PostMapping("/deactivate")
     @Operation(summary = "회원 탈퇴 - 7일 후 자동 삭제")

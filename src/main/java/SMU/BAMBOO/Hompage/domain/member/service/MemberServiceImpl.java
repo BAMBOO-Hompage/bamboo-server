@@ -217,6 +217,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
+     * 비밀번호 초기화
+     */
+    @Transactional
+    @Override
+    public void resetPw(ResetPwDto request) {
+        if (!request.newPassword1().equals(request.newPassword2())) {
+            throw new CustomException(ErrorCode.USER_PASSWORD_MISMATCH);
+        }
+
+        Member member = memberRepository.getByStudentId(request.studentId());
+
+        String newPassword = passwordEncoder.encode(request.newPassword1());
+        member.updatePw(newPassword);
+    }
+
+    /**
      * 권한 변경
      */
     @Transactional

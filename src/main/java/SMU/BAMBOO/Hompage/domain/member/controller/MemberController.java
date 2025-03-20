@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -72,7 +71,7 @@ public class MemberController {
     @Operation(summary = "프로필 변경")
     public SuccessResponse<MyPageResponse> updateProfile(
             @CurrentMember Member member,
-            @Valid @ModelAttribute UpdateProfileDto request
+            @ModelAttribute UpdateProfileDto request
     ) {
         MyPageResponse result = memberService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
@@ -89,16 +88,24 @@ public class MemberController {
     @Operation(summary = "비밀번호 변경")
     public SuccessResponse<String> updatePassword(
             @CurrentMember Member member,
-            @Valid @RequestBody UpdatePwDto request) {
+            @RequestBody UpdatePwDto request) {
         memberService.updatePw(member.getMemberId(), request);
         return SuccessResponse.ok("비밀번호를 변경했습니다.");
+    }
+
+    @PatchMapping("/password")
+    @Operation(summary = "비밀번호 초기화 - 비로그인")
+    public SuccessResponse<String> resetPassword(
+            @RequestBody ResetPwDto request) {
+        memberService.resetPw(request);
+        return SuccessResponse.ok("비밀번호를 초기화했습니다.");
     }
 
     @PatchMapping("/{memberId}/role")
     @Operation(summary = "권한 변경")
     public SuccessResponse<MemberResponse> updateRole(
             @CurrentMember Member member,
-            @Valid @RequestBody UpdateRoleDto request) {
+            @RequestBody UpdateRoleDto request) {
         MemberResponse result = memberService.updateRole(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
@@ -106,7 +113,7 @@ public class MemberController {
     @PatchMapping("/{memberId}/role/test")
     @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
     public SuccessResponse<MemberResponse> testUpdateRole(
-            @Valid @RequestBody TestUpdateRoleDto request) {
+            @RequestBody TestUpdateRoleDto request) {
         MemberResponse result = memberService.testUpdateRole(request);
         return SuccessResponse.ok(result);
     }

@@ -19,6 +19,7 @@ public interface MemberService {
     MyPageResponse updateProfile(Long memberId, UpdateProfileDto request);
     MyPageResponse deleteProfileImage(Long memberId);
     void updatePw(Long memberId, UpdatePwDto request);
+    void resetPw(ResetPwDto request);
     MemberResponse updateRole(Long currentMemberId, UpdateRoleDto request);
     MemberResponse testUpdateRole(TestUpdateRoleDto request);
     void deactivateMember(Long memberId);

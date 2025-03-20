@@ -69,6 +69,7 @@ public enum ErrorCode {
     USER_NOT_VALID("USER404", "유효한 사용자 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     USER_WRONG_PASSWORD("USER401", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
     USER_SAME_PASSWORD("USER400", "동일한 비밀번호로 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    USER_PASSWORD_MISMATCH("USER400", "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
     USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
     USER_NOT_IN_STUDY("USER404", "스터디에 속해있지 않은 회원입니다.", HttpStatus.NOT_FOUND),

@@ -28,6 +28,9 @@ public class StudyWeek {
     @Column(nullable = false)
     private int week;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "studyWeek", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Attendance> attendances = new ArrayList<>();
@@ -37,5 +40,10 @@ public class StudyWeek {
                 .study(study)
                 .week(week)
                 .build();
+    }
+
+    /** 이미지 update 메서드 */
+    public void updateWeekImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

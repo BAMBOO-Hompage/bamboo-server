@@ -47,15 +47,4 @@ public class StudyWeekRepositoryImpl implements StudyWeekRepository {
         return studyWeekJpaRepository.save(studyWeek);
     }
 
-    @Override
-    public List<StudyWeek> findAllByStudyId(Long studyId) {
-        QStudyWeek studyWeek = QStudyWeek.studyWeek;
-
-        return queryFactory
-                .selectFrom(studyWeek)
-                .where(studyWeek.study.studyId.eq(studyId))
-                .orderBy(studyWeek.week.asc())
-                .fetch();
-    }
-
 }

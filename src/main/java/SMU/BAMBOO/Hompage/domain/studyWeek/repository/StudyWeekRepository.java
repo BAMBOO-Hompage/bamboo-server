@@ -11,5 +11,4 @@ public interface StudyWeekRepository {
     Optional<StudyWeek> findById(Long id);
     List<StudyWeek> findByStudyOrderByWeekAsc(Study study);
     StudyWeek save(StudyWeek studyWeek);
-    List<StudyWeek> findAllByStudyId(Long studyId);
 }

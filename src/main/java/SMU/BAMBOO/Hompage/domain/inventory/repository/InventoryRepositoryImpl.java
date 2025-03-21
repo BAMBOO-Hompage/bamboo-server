@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.inventory.repository;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
+import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
@@ -15,6 +16,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.award.entity.QAward.award;
+import static SMU.BAMBOO.Hompage.domain.cohort.entity.QCohort.cohort;
+import static SMU.BAMBOO.Hompage.domain.inventory.entity.QInventory.inventory;
+import static SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.QMemberStudy.memberStudy;
+import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
+import static SMU.BAMBOO.Hompage.domain.study.entity.QStudy.study;
+import static SMU.BAMBOO.Hompage.domain.subject.entity.QSubject.subject;
 
 @Repository
 @RequiredArgsConstructor
@@ -36,8 +45,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     @Override
     public Page<Inventory> findByStudy(Long studyId, Pageable pageable) {
-        QInventory inventory = QInventory.inventory;
-
         // 전체 개수 조회 (NPE 방지 위해 Optional 사용)
         Long totalCount = Optional.ofNullable(
                 queryFactory.select(inventory.count())
@@ -49,6 +56,9 @@ public class InventoryRepositoryImpl implements InventoryRepository {
         // 데이터 조회
         List<Inventory> inventories = queryFactory
                 .selectFrom(inventory)
+                .leftJoin(inventory.member, member).fetchJoin()
+                .leftJoin(inventory.study, study).fetchJoin()
+                .leftJoin(inventory.award, award).fetchJoin()
                 .where(inventory.study.studyId.eq(studyId))
                 .orderBy(inventory.week.desc())
                 .offset(pageable.getOffset())
@@ -65,7 +75,8 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     @Override
     public Page<Inventory> findByPage(Pageable pageable) {
-        QInventory inventory = QInventory.inventory;
+        QMember inventoryMember = new QMember("inventoryMember");
+        QMember studyMember = new QMember("studyMember");
 
         // 전체 개수 조회 (NPE 방지를 위해 Optional.ofNullable 로 기본값 설정)
         Long totalCount = Optional.ofNullable(queryFactory
@@ -76,6 +87,13 @@ public class InventoryRepositoryImpl implements InventoryRepository {
         // 데이터 조회
         List<Inventory> inventories = queryFactory
                 .selectFrom(inventory)
+                .leftJoin(inventory.member, inventoryMember).fetchJoin()
+                .leftJoin(inventory.study, study).fetchJoin()
+                .leftJoin(study.subject, subject).fetchJoin()
+                .leftJoin(study.cohort, cohort).fetchJoin()
+                .leftJoin(study.memberStudies, memberStudy).fetchJoin()
+                .leftJoin(memberStudy.member, studyMember).fetchJoin()
+                .leftJoin(inventory.award, award).fetchJoin()
                 .orderBy(inventory.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -101,8 +119,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     @Override
     public Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week) {
-        QInventory inventory = QInventory.inventory;
-
         return Optional.ofNullable(queryFactory
                 .selectFrom(inventory)
                 .where(
@@ -114,8 +130,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     @Override
     public Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId) {
-        QInventory inventory = QInventory.inventory;
-
         Inventory result = queryFactory
                 .selectFrom(inventory)
                 .where(
@@ -144,8 +158,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
 
     @Override
     public Optional<Inventory> findWeeklyBestByStudyIdAndWeek(Long studyId, int week) {
-        QInventory inventory = QInventory.inventory;
-
         Inventory result = queryFactory
                 .selectFrom(inventory)
                 .where(

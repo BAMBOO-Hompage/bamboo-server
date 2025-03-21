@@ -1,6 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.subject.repository;
 
-import SMU.BAMBOO.Hompage.domain.subject.entity.QSubject;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
@@ -10,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.cohort.entity.QCohort.cohort;
+import static SMU.BAMBOO.Hompage.domain.subject.entity.QSubject.subject;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,10 +33,9 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
     @Override
     public Optional<Subject> findByNameAndBatch(String name, int batch) {
-        QSubject subject = QSubject.subject;
-
         Subject foundSubject = queryFactory
                 .selectFrom(subject)
+                .leftJoin(subject.cohort, cohort).fetchJoin()
                 .where(
                         subject.name.eq(name),
                         subject.cohort.batch.eq(batch)
@@ -51,10 +52,9 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
     @Override
     public List<Subject> findByIsBookAndBatch(Boolean isBook, int batch) {
-        QSubject subject = QSubject.subject;
-
         return queryFactory
                 .selectFrom(subject)
+                .leftJoin(subject.cohort, cohort).fetchJoin()
                 .where(
                         subject.cohort.batch.eq(batch),
                         isBook != null ? subject.isBook.eq(isBook) : null

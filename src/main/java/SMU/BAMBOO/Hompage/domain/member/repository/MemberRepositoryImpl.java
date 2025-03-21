@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.domain.member.repository;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
-import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -16,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -68,8 +69,6 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Page<Member> findAllSortByRole(Pageable pageable) {
-        QMember member = QMember.member;
-
         // Role 에 변경이 없을 것이라 판단
         List<Member> content = queryFactory.selectFrom(member)
                 .orderBy(new CaseBuilder()
@@ -95,8 +94,6 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public void hardDeleteOldMembers(LocalDateTime threshold) {
-        QMember member = QMember.member;
-
         queryFactory.delete(member)
                 .where(member.isDeleted.eq(true)
                         .and(member.deletedAt.loe(threshold)))

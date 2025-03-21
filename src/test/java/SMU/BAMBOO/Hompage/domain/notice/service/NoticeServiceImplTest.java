@@ -102,7 +102,7 @@ class NoticeServiceImplTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.member().getName()).isEqualTo("김재관_운영진");
+        assertThat(response.member().name()).isEqualTo("김재관_운영진");
         assertThat(response.title()).isEqualTo("공지1");
         assertThat(response.content()).isEqualTo("공지1 내용");
         assertThat(response.type()).isEqualTo(NoticeType.NOTICE);
@@ -171,7 +171,7 @@ class NoticeServiceImplTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.member()).isNotNull();
-        assertThat(response.member().getName()).isEqualTo(adminMember.getName());
+        assertThat(response.member().name()).isEqualTo(adminMember.getName());
         assertThat(response.title()).isEqualTo("[수정] 공지1");
         assertThat(response.content()).isEqualTo("수정된 내용");
         assertThat(response.type()).isEqualTo(NoticeType.EVENTS);

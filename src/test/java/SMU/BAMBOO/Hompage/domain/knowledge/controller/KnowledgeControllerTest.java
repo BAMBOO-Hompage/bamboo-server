@@ -83,9 +83,9 @@ class KnowledgeControllerTest {
         assertThat(response.getResult().files()).containsExactly("https://s3.aws.com/file1.pdf");
 
         assertThat(response.getResult().member()).isNotNull();
-        assertThat(response.getResult().member().getName()).isEqualTo(testMember.getName());
-        assertThat(response.getResult().member().getEmail()).isEqualTo(testMember.getEmail());
-        assertThat(response.getResult().member().getRole()).isEqualTo(Role.ROLE_ADMIN);
+        assertThat(response.getResult().member().name()).isEqualTo(testMember.getName());
+        assertThat(response.getResult().member().email()).isEqualTo(testMember.getEmail());
+        assertThat(response.getResult().member().role()).isEqualTo(Role.ROLE_ADMIN);
 
         verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("knowledge/images"), anyList(), anyBoolean());
         verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("knowledge/files"), anyList(), anyBoolean());

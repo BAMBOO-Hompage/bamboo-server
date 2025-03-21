@@ -1,8 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.repository;
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
-import SMU.BAMBOO.Hompage.domain.mainActivites.entity.QMainActivities;
-import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.mainActivites.entity.QMainActivities.mainActivities;
+import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,9 +28,6 @@ public class MainActivitiesRepositoryImpl implements MainActivitiesRepository {
 
     @Override
     public Page<MainActivities> findByYear(int year, Pageable pageable) {
-        QMainActivities mainActivities = QMainActivities.mainActivities;
-        QMember member = QMember.member;
-
         List<MainActivities> results = queryFactory
                 .selectFrom(mainActivities)
                 .leftJoin(mainActivities.member, member).fetchJoin()

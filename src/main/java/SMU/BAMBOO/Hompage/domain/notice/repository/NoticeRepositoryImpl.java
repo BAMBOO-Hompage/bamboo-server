@@ -1,16 +1,19 @@
 package SMU.BAMBOO.Hompage.domain.notice.repository;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
-import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;
-import SMU.BAMBOO.Hompage.domain.notice.entity.QNotice;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
+import static SMU.BAMBOO.Hompage.domain.notice.entity.QNotice.notice;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,9 +29,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
 
     @Override
     public Optional<Notice> findById(Long id) {
-        QMember member = QMember.member;
-        QNotice notice = QNotice.notice;
-
         Notice result = queryFactory
                 .selectFrom(notice)
                 .leftJoin(notice.member, member).fetchJoin()
@@ -45,9 +45,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
 
     @Override
     public Page<Notice> findByType(NoticeType type, Pageable pageable) {
-        QMember member = QMember.member;
-        QNotice notice = QNotice.notice;
-
         List<Notice> result = queryFactory
                 .selectFrom(notice)
                 .leftJoin(notice.member, member).fetchJoin()
@@ -68,9 +65,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
 
     @Override
     public Page<Notice> findAll(Pageable pageable) {
-        QMember member = QMember.member;
-        QNotice notice = QNotice.notice;
-
         List<Notice> result = queryFactory
                 .selectFrom(notice)
                 .leftJoin(notice.member, member).fetchJoin()

@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.studyWeek.repository;
 
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
-import SMU.BAMBOO.Hompage.domain.studyWeek.entity.QStudyWeek;
 import SMU.BAMBOO.Hompage.domain.studyWeek.entity.StudyWeek;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.studyWeek.entity.QStudyWeek.studyWeek;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,8 +20,6 @@ public class StudyWeekRepositoryImpl implements StudyWeekRepository {
 
     @Override
     public Optional<StudyWeek> findByStudyAndWeek(Study study, int week) {
-        QStudyWeek studyWeek = QStudyWeek.studyWeek;
-
         StudyWeek result = queryFactory
                 .selectFrom(studyWeek)
                 .where(

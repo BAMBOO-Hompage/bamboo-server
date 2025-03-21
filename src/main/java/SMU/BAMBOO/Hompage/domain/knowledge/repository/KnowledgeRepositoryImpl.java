@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.domain.knowledge.repository;
 
 import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
-import SMU.BAMBOO.Hompage.domain.knowledge.entity.QKnowledge;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import com.querydsl.core.BooleanBuilder;
@@ -16,6 +15,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static SMU.BAMBOO.Hompage.domain.knowledge.entity.QKnowledge.knowledge;
+import static SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.QKnowledgeComment.knowledgeComment;
+import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -45,8 +48,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
     @Override
     public Page<Knowledge> findAllByType(KnowledgeType type, Pageable pageable) {
-        QKnowledge knowledge = QKnowledge.knowledge;
-
         // 전체 개수 조회
         long total = Optional.ofNullable(
                 queryFactory
@@ -59,6 +60,8 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
+                .leftJoin(knowledge.member, member).fetchJoin()
+                .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(knowledge.type.eq(type))
                 .orderBy(knowledge.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -70,8 +73,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
     @Override
     public Page<Knowledge> findAllByTitle(String title, Pageable pageable) {
-        QKnowledge knowledge = QKnowledge.knowledge;
-
         // 전체 개수 조회
         long total = Optional.ofNullable(
                 queryFactory
@@ -84,6 +85,8 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
+                .leftJoin(knowledge.member, member).fetchJoin()
+                .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(knowledge.title.containsIgnoreCase(title))
                 .orderBy(knowledge.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -95,7 +98,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
     @Override
     public Page<Knowledge> findByTypeAndTitle(KnowledgeType type, String keyword, Pageable pageable) {
-        QKnowledge knowledge = QKnowledge.knowledge;
         BooleanBuilder whereClause = new BooleanBuilder();
 
         // 특정 type 필터링
@@ -117,6 +119,8 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
+                .leftJoin(knowledge.member, member).fetchJoin()
+                .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(whereClause)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -128,8 +132,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
     @Override
     public Page<Knowledge> findAll(Pageable pageable) {
-        QKnowledge knowledge = QKnowledge.knowledge;
-
         // 전체 개수 조회
         long total = Optional.ofNullable(
                 queryFactory
@@ -141,6 +143,8 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
+                .leftJoin(knowledge.member, member).fetchJoin()
+                .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .orderBy(knowledge.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.libraryPost.repository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.QLibraryPost;
 import SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.QLibraryPostTag;
+import SMU.BAMBOO.Hompage.domain.member.entity.QMember;
 import SMU.BAMBOO.Hompage.domain.tag.entity.QTag;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,6 +46,7 @@ public class LibraryPostRepositoryImpl implements LibraryPostRepository {
     @Override
     public Page<LibraryPost> findByPage(Pageable pageable) {
         QLibraryPost libraryPost = QLibraryPost.libraryPost;
+        QMember member = QMember.member;
 
         // 전체 개수 조회 (NPE 방지를 위해 Optional.ofNullable 로 기본값 설정)
         long totalCount = Optional.ofNullable(
@@ -57,6 +59,7 @@ public class LibraryPostRepositoryImpl implements LibraryPostRepository {
         // 데이터 조회
         List<LibraryPost> libraryPosts = queryFactory
                 .selectFrom(libraryPost)
+                .leftJoin(libraryPost.member, member).fetchJoin()
                 .orderBy(libraryPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -108,7 +108,7 @@ public class StudyServiceImpl implements StudyService {
         Cohort cohort = cohortRepository.findByBatch(batchId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
 
-        List<Study> studies = studyRepository.findByCohortAndSubject(cohort, subject);
+        List<Study> studies = studyRepository.findByCohortAndSubject(cohort.getCohortId(), subject.getSubjectId());
 
         return studies.stream()
                 .map(StudyResponseDTO.GetOne::from)

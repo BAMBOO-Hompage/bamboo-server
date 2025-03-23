@@ -18,8 +18,7 @@ public class AuthController {
     // 토큰 재발급 API
     @Operation(method = "POST", summary = "토큰 재발급", description = "Access Token과 Refresh Token을 헤더에 담아서 전송합니다.")
     @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(@RequestHeader("Authorization") String accessToken,
-                                     @RequestHeader("Refresh-Token") String refreshToken) {
-        return ResponseEntity.ok(authService.reissueToken(accessToken, refreshToken));
+    public ResponseEntity<?> reissue(@RequestHeader("Refresh-Token") String refreshToken) {
+        return ResponseEntity.ok(authService.reissueToken(refreshToken));
     }
 }

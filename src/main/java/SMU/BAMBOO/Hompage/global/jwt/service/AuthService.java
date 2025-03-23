@@ -12,7 +12,7 @@ public class AuthService {
 
     private final JwtUtil jwtUtil;
 
-    public String reissueToken(String accessToken, String refreshToken) {
+    public String reissueToken(String refreshToken) {
         // Access Token 에서 사용자 ID 추출 (예시로 Refresh Token 사용)
         String studentId = jwtUtil.getStudentId(refreshToken);
 

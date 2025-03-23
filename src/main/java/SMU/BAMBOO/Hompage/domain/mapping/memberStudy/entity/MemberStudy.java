@@ -27,21 +27,6 @@ public class MemberStudy extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = false)
     private Study study;
 
-    @Builder.Default
-    @Column(name = "o_count", nullable = false)
-    private int oCount = 0;
-
-    @Builder.Default
-    @Column(name = "x_count", nullable = false)
-    private int xCount = 0;
-
-    public void increaseOCount() {
-        this.oCount++;
-    }
-
-    public void increaseXCount() {
-        this.xCount++;
-    }
 
     /**
      * Study 연관 관계 편의 메서드

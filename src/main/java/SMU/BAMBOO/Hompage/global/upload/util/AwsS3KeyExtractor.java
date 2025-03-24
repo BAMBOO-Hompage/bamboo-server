@@ -1,11 +1,11 @@
-package SMU.BAMBOO.Hompage.global.upload.service;
+package SMU.BAMBOO.Hompage.global.upload.util;
 
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class AwsS3KeyExtractor {
 
     @Value("${cloud.aws.s3.bucket}")

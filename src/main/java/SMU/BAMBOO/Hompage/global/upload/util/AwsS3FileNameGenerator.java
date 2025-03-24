@@ -1,14 +1,14 @@
-package SMU.BAMBOO.Hompage.global.upload.service;
+package SMU.BAMBOO.Hompage.global.upload.util;
 
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.text.Normalizer;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+@Component
 public class AwsS3FileNameGenerator {
 
     /** 파일명 생성 - UUID로 중복 방지 */

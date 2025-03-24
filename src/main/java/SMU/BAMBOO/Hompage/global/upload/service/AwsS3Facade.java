@@ -1,5 +1,7 @@
 package SMU.BAMBOO.Hompage.global.upload.service;
 
+import SMU.BAMBOO.Hompage.global.upload.util.AwsS3FileValidator;
+import SMU.BAMBOO.Hompage.global.upload.util.AwsS3KeyExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

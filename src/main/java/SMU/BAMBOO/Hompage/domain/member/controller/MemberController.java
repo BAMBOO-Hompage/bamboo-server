@@ -22,21 +22,23 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "회원")
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberService.AuthenticationService authenticationService;
+    private final MemberService.MemberInfoService memberInfoService;
+    private final MemberService.AdminService adminService;
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입")
     public SuccessResponse<MemberResponseDTO.MemberInfo> signUp(@RequestBody MemberRequestDTO.SignUp request) {
-        MemberResponseDTO.MemberInfo result = memberService.signUp(request, encoder);
+        MemberResponseDTO.MemberInfo result = authenticationService.signUp(request, encoder);
         return SuccessResponse.ok(result);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
     public SuccessResponse<MemberResponseDTO.Login> login(@RequestBody MemberRequestDTO.Login request, HttpServletResponse response) {
-        MemberResponseDTO.Login result = memberService.login(request, response);
+        MemberResponseDTO.Login result = authenticationService.login(request, response);
         return SuccessResponse.ok(result);
     }
 
@@ -44,7 +46,7 @@ public class MemberController {
     @Operation(summary = "로그아웃")
     public SuccessResponse<String> logout(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessToken(request);
-        String result = memberService.logout(accessToken);
+        String result = authenticationService.logout(accessToken);
         return SuccessResponse.ok(result);
     }
 
@@ -54,14 +56,14 @@ public class MemberController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<MemberResponseDTO.MemberInfo> result = memberService.getMembers(page-1, size);
+        Page<MemberResponseDTO.MemberInfo> result = memberInfoService.getMembers(page-1, size);
         return SuccessResponse.ok(result);
     }
 
     @GetMapping("/myPage")
     @Operation(summary = "마이페이지")
     public SuccessResponse<MemberResponseDTO.MyPage> myPage(@CurrentMember Member member) {
-        Member my = memberService.getMember(member.getStudentId());
+        Member my = memberInfoService.getMember(member.getStudentId());
         return SuccessResponse.ok(MemberResponseDTO.MyPage.from(my));
     }
 
@@ -71,14 +73,14 @@ public class MemberController {
             @CurrentMember Member member,
             @ModelAttribute MemberRequestDTO.UpdateProfile request
     ) {
-        MemberResponseDTO.MyPage result = memberService.updateProfile(member.getMemberId(), request);
+        MemberResponseDTO.MyPage result = memberInfoService.updateProfile(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
     @PatchMapping("/myPage/profileImage")
     @Operation(summary = "기본 프로필 이미지로 변경")
     public SuccessResponse<MemberResponseDTO.MyPage> deleteProfileImage(@CurrentMember Member member) {
-        MemberResponseDTO.MyPage result = memberService.deleteProfileImage(member.getMemberId());
+        MemberResponseDTO.MyPage result = memberInfoService.deleteProfileImage(member.getMemberId());
         return SuccessResponse.ok(result);
     }
 
@@ -87,7 +89,7 @@ public class MemberController {
     public SuccessResponse<String> updatePassword(
             @CurrentMember Member member,
             @RequestBody MemberRequestDTO.UpdatePw request) {
-        memberService.updatePw(member.getMemberId(), request);
+        memberInfoService.updatePw(member.getMemberId(), request);
         return SuccessResponse.ok("비밀번호를 변경했습니다.");
     }
 
@@ -95,7 +97,7 @@ public class MemberController {
     @Operation(summary = "비밀번호 초기화 - 비로그인")
     public SuccessResponse<String> resetPassword(
             @RequestBody MemberRequestDTO.ResetPw request) {
-        memberService.resetPw(request);
+        memberInfoService.resetPw(request);
         return SuccessResponse.ok("비밀번호를 초기화했습니다.");
     }
 
@@ -104,7 +106,7 @@ public class MemberController {
     public SuccessResponse<MemberResponseDTO.MemberInfo> updateRole(
             @CurrentMember Member member,
             @RequestBody MemberRequestDTO.UpdateRole request) {
-        MemberResponseDTO.MemberInfo result = memberService.updateRole(member.getMemberId(), request);
+        MemberResponseDTO.MemberInfo result = adminService.updateRole(member.getMemberId(), request);
         return SuccessResponse.ok(result);
     }
 
@@ -120,14 +122,14 @@ public class MemberController {
     @PostMapping("/deactivate")
     @Operation(summary = "회원 탈퇴 - 7일 후 자동 삭제")
     public SuccessResponse<String> deactivateMember(@CurrentMember Member member) {
-        memberService.deactivateMember(member.getMemberId());
+        adminService.deactivateMember(member.getMemberId());
         return SuccessResponse.ok("회원 탈퇴 요청이 완료되었습니다. 7일 후 계정이 삭제됩니다.");
     }
 
     @PostMapping("/{memberId}/deactivate")
     @Operation(summary = "회원 삭제 - 7일 후 자동 삭제")
     public SuccessResponse<String> deleteMember(@PathVariable Long memberId) {
-        memberService.deactivateMember(memberId);
+        adminService.deactivateMember(memberId);
         return SuccessResponse.ok("회원 비활성화에 성공했습니다.");
     }
 }

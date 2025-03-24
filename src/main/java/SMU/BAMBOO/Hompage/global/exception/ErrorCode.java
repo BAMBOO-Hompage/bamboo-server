@@ -42,7 +42,7 @@ public enum ErrorCode {
     // Auth
     AUTH_FAIL("AUTH401", "이메일 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED_UPDATE("AUTH400", "본인 리소스만 수정할 수 있습니다.", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED_DELETE("AUTH400", "본인 리소스만 삭제할 수 있습니다..", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_DELETE("AUTH400", "본인 리소스만 삭제할 수 있습니다.", HttpStatus.UNAUTHORIZED),
 
     // Token
     TOKEN_INVALID("TOKEN401", "유효하지 않은 Token 입니다.", HttpStatus.UNAUTHORIZED),
@@ -123,13 +123,20 @@ public enum ErrorCode {
     KNOWLEDGE_INVALID_TYPE("KNOWLEDGE400", "잘못된 지식 공유 유형입니다. '학습 자료', '기술 트렌드 및 뉴스', '커리어 및 취업 정보' 중 하나로 수정해주세요.", HttpStatus.BAD_REQUEST),
 
     // Knowledge_Comment (지식 공유 게시판 댓글)
-    KNOWLEDGE_COMMENT_NOT_EXIST("KNOWLEDGE_COMMENT404", "존재하지 않는 공지 공유 게시판 댓글입니다.", HttpStatus.NOT_FOUND),
+    KNOWLEDGE_COMMENT_NOT_EXIST("KNOWLEDGE_COMMENT404", "존재하지 않는 지식 공유 게시판 댓글입니다.", HttpStatus.NOT_FOUND),
+    KNOWLEDGE_PARENT_COMMENT_NOT_EXIST("KNOWLEDGE_PARENT_COMMENT404", "존재하지 않는 지식 공유 게시판 부모 댓글입니다.", HttpStatus.NOT_FOUND),
+    COMMENT_KNOWLEDGE_MISMATCH("KNOWLEDGE_COMMENT_MISMATCH403", "댓글이 해당 지식 게시물에 속하지 않습니다.", HttpStatus.FORBIDDEN),
 
     // Main_Activities (주요 활동)
     MAIN_ACTIVITIES_NOT_EXIST("MAIN_ACTIVITIES404", "존재하지 않는 주요 활동입니다.", HttpStatus.NOT_FOUND),
 
     // Library_Post (알렉산드리아 글)
     LIBRARY_POST_NOT_EXIST("LIBRARY_POST404", "알렉산드리아 도서관에 존재하지 않는 글입니다.", HttpStatus.NOT_FOUND),
+
+    // Library_Post_Comment (알렉산드리아 글 댓글)
+    LIBRARY_COMMENT_NOT_EXIST("LIBRARY_COMMENT404", "해당 댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    LIBRARY_PARENT_COMMENT_NOT_EXIST("LIBRARY_PARENT_COMMENT404", "부모 댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    COMMENT_LIBRARY_MISMATCH("LIBRARY_COMMENT_MISMATCH400", "댓글이 해당 게시물에 속하지 않습니다.", HttpStatus.BAD_REQUEST),
 
     // TAG (태그)
     TAG_ALREADY_EXIST("TAG400", "이미 존재하는 태그입니다.", HttpStatus.BAD_REQUEST),

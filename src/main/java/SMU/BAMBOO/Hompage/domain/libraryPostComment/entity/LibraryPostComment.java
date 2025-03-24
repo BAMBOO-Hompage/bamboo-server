@@ -1,6 +1,6 @@
-package SMU.BAMBOO.Hompage.domain.knowledgeComment.entity;
+package SMU.BAMBOO.Hompage.domain.libraryPostComment.entity;
 
-import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
+import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -10,36 +10,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "knowledge_comment")
+@Table(name = "library_post_comment")
+@Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
-public class KnowledgeComment extends BaseEntity {
+public class LibraryPostComment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "knowledge_comment_id")
-    private Long knowledgeCommentId;
+    private Long libraryPostCommentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "library_post_id")
+    private LibraryPost post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "knowledge_id", nullable = false)
-    private Knowledge knowledge;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private KnowledgeComment parent;
+    private LibraryPostComment parent;
 
     @OneToMany(mappedBy = "parent")
     @Builder.Default
-    private List<KnowledgeComment> children = new ArrayList<>();
+    private List<LibraryPostComment> children = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
@@ -54,12 +53,13 @@ public class KnowledgeComment extends BaseEntity {
         this.content = "삭제된 댓글입니다.";
     }
 
-    public static KnowledgeComment from(String content, Knowledge knowledge, Member member, KnowledgeComment parent) {
-        return KnowledgeComment.builder()
+    public static LibraryPostComment from(String content, LibraryPost post, Member member, LibraryPostComment parent) {
+        return LibraryPostComment.builder()
                 .content(content)
-                .knowledge(knowledge)
+                .post(post)
                 .member(member)
                 .parent(parent)
                 .build();
     }
 }
+

@@ -84,4 +84,24 @@ public class MemberResponseDTO {
             );
         }
     }
+
+    @Schema(description = "댓글 작성자 정보 DTO")
+    public record CommentMemberInfo (
+            String name,
+            String profileImageUrl,
+            String major
+    ) {
+        public static CommentMemberInfo from(Member member) {
+            return new CommentMemberInfo(
+                    member.getName(),
+                    member.getProfileImageUrl(),
+                    member.getMajor()
+            );
+        }
+
+        public static CommentMemberInfo deletedUser() {
+            return new CommentMemberInfo("알 수 없음", null, null);
+        }
+    }
+
 }

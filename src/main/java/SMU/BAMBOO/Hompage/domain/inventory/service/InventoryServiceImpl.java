@@ -10,7 +10,7 @@ import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.domain.study.repository.StudyRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +29,7 @@ public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     /** ID로 스터디 정리본 조회 */
     private Inventory getInventoryById(Long id) {
@@ -59,7 +59,7 @@ public class InventoryServiceImpl implements InventoryService {
         String fileUrl = null;
         if (file != null && !file.isEmpty()) {
             try {
-                fileUrl = awsS3Service.uploadFile("inventory/pdf", file, false);
+                fileUrl = awsS3Facade.uploadFile("inventory/pdf", file, false);
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.UPLOAD_FAILED);
             }
@@ -139,12 +139,12 @@ public class InventoryServiceImpl implements InventoryService {
         if (file != null && !file.isEmpty()) {
             // 기존 파일 삭제
             if (inventory.getFileUrl() != null) {
-                awsS3Service.deleteFile(awsS3Service.extractS3Key(inventory.getFileUrl()));
+                awsS3Facade.deleteFile(inventory.getFileUrl());
             }
 
             // 새로운 파일 업로드
             try {
-                fileUrl = awsS3Service.uploadFile("inventory/pdf", file, false);
+                fileUrl = awsS3Facade.uploadFile("inventory/pdf", file, false);
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.UPLOAD_FAILED);
             }

@@ -7,7 +7,7 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesReposito
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
@@ -28,7 +28,7 @@ import java.util.List;
 public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     private final MainActivitiesRepository mainActivitiesRepository;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     @Override
     public MainActivitiesResponseDTO.Detail create(MainActivitiesRequestDTO.Create request, List<String> images, Member member) {
@@ -83,7 +83,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
             if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
                 finalImageUrls.add(url);
             } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
-                String uploadedUrl = awsS3Service.uploadFile("main-activities", file, true);
+                String uploadedUrl = awsS3Facade.uploadFile("main-activities", file, true);
                 finalImageUrls.add(uploadedUrl);
             }
         }
@@ -102,7 +102,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
         }
 
         List<String> imageUrls = activity.getImages();
-        imageUrls.forEach(awsS3Service::deleteFile);
+        imageUrls.forEach(awsS3Facade::deleteFile);
 
         mainActivitiesRepository.deleteById(id);
     }

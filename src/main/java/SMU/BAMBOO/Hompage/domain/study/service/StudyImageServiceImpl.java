@@ -6,7 +6,7 @@ import SMU.BAMBOO.Hompage.domain.studyWeek.entity.StudyWeek;
 import SMU.BAMBOO.Hompage.domain.studyWeek.repository.StudyWeekRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class StudyImageServiceImpl implements StudyImageService {
 
     private final StudyRepository studyRepository;
     private final StudyWeekRepository studyWeekRepository;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     /**
      * 주차별 이미지 조회
@@ -48,11 +48,11 @@ public class StudyImageServiceImpl implements StudyImageService {
 
         // 기존 이미지 삭제 (기존 URL이 있는 경우)
         if (studyWeek.getImageUrl() != null) {
-            awsS3Service.deleteFile(awsS3Service.extractS3Key(studyWeek.getImageUrl()));
+            awsS3Facade.deleteFile(studyWeek.getImageUrl());
         }
 
         // 새 이미지 업로드
-        String fileUrl = awsS3Service.uploadFile("study-week/images", image, true);
+        String fileUrl = awsS3Facade.uploadFile("study-week/images", image, true);
         studyWeek.updateWeekImage(fileUrl);
     }
 

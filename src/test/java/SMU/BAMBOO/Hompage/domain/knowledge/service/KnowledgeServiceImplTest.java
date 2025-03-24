@@ -61,10 +61,10 @@ class KnowledgeServiceImplTest {
                 new MockMultipartFile("files", "test-file.pdf", "application/pdf", "test-file-content".getBytes())
         );
 
-        when(testContainer.awsS3Service.uploadFiles(eq("knowledge/images"), anyList(), eq(true)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("knowledge/images"), anyList(), eq(true)))
                 .thenReturn(List.of("https://s3.aws.com/image1.png"));
 
-        when(testContainer.awsS3Service.uploadFiles(eq("knowledge/files"), anyList(), eq(false)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("knowledge/files"), anyList(), eq(false)))
                 .thenReturn(List.of("https://s3.aws.com/file1.pdf"));
 
         // When
@@ -163,10 +163,10 @@ class KnowledgeServiceImplTest {
         List<MultipartFile> newFiles = List.of(new MockMultipartFile(
                 "newFiles", "test-file.pdf", "application/pdf", "test-file-content".getBytes()));
 
-        when(testContainer.awsS3Service.uploadFiles(eq("knowledge/images"), anyList(), eq(true)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("knowledge/images"), anyList(), eq(true)))
                 .thenReturn(List.of("https://s3.aws.com/new_image.png"));
 
-        when(testContainer.awsS3Service.uploadFiles(eq("knowledge/files"), anyList(), eq(false)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("knowledge/files"), anyList(), eq(false)))
                 .thenReturn(List.of("https://s3.aws.com/new_file.pdf"));
 
         // When
@@ -185,7 +185,7 @@ class KnowledgeServiceImplTest {
                 "https://s3.aws.com/old_file.pdf", "https://s3.aws.com/new_file.pdf"
         );
 
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("knowledge/images"), anyList(), eq(true));
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("knowledge/files"), anyList(), eq(false));
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(eq("knowledge/images"), anyList(), eq(true));
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(eq("knowledge/files"), anyList(), eq(false));
     }
 }

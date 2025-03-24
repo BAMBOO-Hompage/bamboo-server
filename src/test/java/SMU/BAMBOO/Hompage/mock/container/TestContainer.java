@@ -15,7 +15,7 @@ import SMU.BAMBOO.Hompage.domain.notice.service.NoticeServiceImpl;
 import SMU.BAMBOO.Hompage.domain.tag.controller.TagController;
 import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.domain.tag.service.TagServiceImpl;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.repository.*;
 import lombok.Builder;
 import org.mockito.Mockito;
@@ -40,7 +40,7 @@ public class TestContainer {
     public final NoticeController noticeController;
     public final KnowledgeController knowledgeController;
 
-    public final AwsS3Service awsS3Service;
+    public final AwsS3Facade awsS3Facade;
 
     @Builder
     public TestContainer() {
@@ -50,7 +50,7 @@ public class TestContainer {
         this.noticeRepository = new FakeNoticeRepository();
         this.knowledgeRepository = new FakeKnowledgeRepository();
 
-        this.awsS3Service = Mockito.mock(AwsS3Service.class);
+        this.awsS3Facade = Mockito.mock(AwsS3Facade.class);
 
         this.libraryPostService = LibraryPostServiceImpl.builder()
                 .libraryPostRepository(this.libraryPostRepository)
@@ -59,9 +59,9 @@ public class TestContainer {
         this.tagService = TagServiceImpl.builder()
                 .tagRepository(this.tagRepository)
                 .build();
-        this.mainActivitiesService = new MainActivitiesServiceImpl(this.mainActivitiesRepository, this.awsS3Service);
-        this.noticeService = new NoticeServiceImpl(this.noticeRepository, this.awsS3Service);
-        this.knowledgeService = new KnowledgeServiceImpl(this.knowledgeRepository, this.awsS3Service);
+        this.mainActivitiesService = new MainActivitiesServiceImpl(this.mainActivitiesRepository, this.awsS3Facade);
+        this.noticeService = new NoticeServiceImpl(this.noticeRepository, this.awsS3Facade);
+        this.knowledgeService = new KnowledgeServiceImpl(this.knowledgeRepository, this.awsS3Facade);
 
         this.libraryPostController = LibraryPostController.builder()
                 .libraryPostService(this.libraryPostService)
@@ -71,7 +71,7 @@ public class TestContainer {
                 .build();
         this.mainActivitiesController = MainActivitiesController.builder()
                 .mainActivitiesService(this.mainActivitiesService)
-                .awsS3Service(this.awsS3Service)
+                .awsS3Facade(this.awsS3Facade)
                 .build();
         this.noticeController = NoticeController.builder()
                 .noticeService(this.noticeService)

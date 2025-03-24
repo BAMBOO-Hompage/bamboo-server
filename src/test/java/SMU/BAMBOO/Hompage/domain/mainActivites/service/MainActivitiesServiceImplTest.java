@@ -8,7 +8,7 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesReposito
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.repository.FakeMainActivitiesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,15 +27,15 @@ import static org.mockito.Mockito.*;
 class MainActivitiesServiceImplTest {
 
     private MainActivitiesRepository mainActivitiesRepository;
-    private AwsS3Service awsS3Service;
+    private AwsS3Facade awsS3Facade;
     private MainActivitiesServiceImpl mainActivitiesService;
     private Member testMember;
 
     @BeforeEach
     void setUp() {
         mainActivitiesRepository = new FakeMainActivitiesRepository();
-        awsS3Service = Mockito.mock(AwsS3Service.class);
-        mainActivitiesService = new MainActivitiesServiceImpl(mainActivitiesRepository, awsS3Service);
+        awsS3Facade = Mockito.mock(AwsS3Facade.class);
+        mainActivitiesService = new MainActivitiesServiceImpl(mainActivitiesRepository, awsS3Facade);
 
         testMember = Member.builder()
                 .memberId(1L)
@@ -145,7 +145,7 @@ class MainActivitiesServiceImplTest {
 
         MainActivitiesResponseDTO.Detail savedActivity = mainActivitiesService.create(request, images, testMember);
 
-        when(awsS3Service.uploadFile(anyString(), any(), anyBoolean()))
+        when(awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
                 .thenReturn("https://s3.aws.com/new_image.png");
 
         MainActivitiesRequestDTO.Update updateRequest = new MainActivitiesRequestDTO.Update();
@@ -163,7 +163,7 @@ class MainActivitiesServiceImplTest {
         assertThat(updatedActivity.getYear()).isEqualTo(2026);
         assertThat(updatedActivity.getImages()).contains("https://s3.aws.com/old_image.png");
         assertThat(updatedActivity.getImages()).contains("https://s3.aws.com/new_image.png");
-        verify(awsS3Service, times(1)).uploadFile(anyString(), any(), anyBoolean());
+        verify(awsS3Facade, times(1)).uploadFile(anyString(), any(), anyBoolean());
     }
 
     @Test
@@ -188,7 +188,7 @@ class MainActivitiesServiceImplTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST.getMessage());
 
-        verify(awsS3Service, times(1)).deleteFile("https://s3.aws.com/image1.png");
+        verify(awsS3Facade, times(1)).deleteFile("https://s3.aws.com/image1.png");
 
         assertThatThrownBy(() -> mainActivitiesService.deleteMainActivity(savedActivity.getMainActivitiesId(), testMember))
                 .isInstanceOf(CustomException.class)

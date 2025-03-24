@@ -19,7 +19,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolver {
 
     private final JwtUtil jwtUtil;
-    private final MemberService memberService;
+    private final MemberService.MemberInfoService memberInfoService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -33,7 +33,7 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
         if (header != null) {
             String token = header.split(" ")[1];
             String studentId = jwtUtil.getStudentId(token);
-            return memberService.getMember(studentId);
+            return memberInfoService.getMember(studentId);
         }
 
         return null;

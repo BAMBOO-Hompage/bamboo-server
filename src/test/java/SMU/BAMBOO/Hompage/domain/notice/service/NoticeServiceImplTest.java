@@ -8,7 +8,7 @@ import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeResponseDTO;
 import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.repository.FakeNoticeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,16 +27,15 @@ import static org.mockito.Mockito.when;
 class NoticeServiceImplTest {
 
     private FakeNoticeRepository noticeRepository;
-    private AwsS3Service awsS3Service;
+    private AwsS3Facade awsS3Facade;
     private NoticeServiceImpl noticeService;
     private Member adminMember;
-    private Member userMember;
 
     @BeforeEach
     void setUp() {
         noticeRepository = new FakeNoticeRepository();
-        awsS3Service = mock(AwsS3Service.class);
-        noticeService = new NoticeServiceImpl(noticeRepository, awsS3Service);
+        awsS3Facade = mock(AwsS3Facade.class);
+        noticeService = new NoticeServiceImpl(noticeRepository, awsS3Facade);
 
         adminMember = Member.builder()
                 .memberId(1L)
@@ -47,7 +46,7 @@ class NoticeServiceImplTest {
                 .role(Role.ROLE_ADMIN)
                 .build();
 
-        userMember = Member.builder()
+        Member userMember = Member.builder()
                 .memberId(2L)
                 .studentId("202010767")
                 .email("kjk2@example.com")
@@ -69,7 +68,7 @@ class NoticeServiceImplTest {
         List<MultipartFile> images = List.of(mock(MultipartFile.class));
         List<MultipartFile> files = List.of(mock(MultipartFile.class));
 
-        when(awsS3Service.uploadFiles(anyString(), anyList(), anyBoolean()))
+        when(awsS3Facade.uploadFiles(anyString(), anyList(), anyBoolean()))
                 .thenReturn(List.of("https://s3.aws.com/image1.png"));
 
         // When
@@ -159,10 +158,10 @@ class NoticeServiceImplTest {
         List<MultipartFile> newImages = List.of(mock(MultipartFile.class));
         List<MultipartFile> newFiles = List.of(mock(MultipartFile.class));
 
-        when(awsS3Service.uploadFiles(eq("notice/images"), anyList(), eq(true)))
+        when(awsS3Facade.uploadFiles(eq("notice/images"), anyList(), eq(true)))
                 .thenReturn(List.of("https://s3.aws.com/new_image.png"));
 
-        when(awsS3Service.uploadFiles(eq("notice/files"), anyList(), eq(false)))
+        when(awsS3Facade.uploadFiles(eq("notice/files"), anyList(), eq(false)))
                 .thenReturn(List.of("https://s3.aws.com/new_file.pdf"));
 
         // When

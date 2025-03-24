@@ -60,7 +60,7 @@ class NoticeControllerTest {
 
         List<MultipartFile> images = List.of(imageFile);
 
-        when(testContainer.awsS3Service.uploadFiles(anyString(), anyList(), anyBoolean()))
+        when(testContainer.awsS3Facade.uploadFiles(anyString(), anyList(), anyBoolean()))
                 .thenReturn(List.of("https://s3.aws.com/image1.png"));
 
         // When
@@ -80,7 +80,7 @@ class NoticeControllerTest {
         assertThat(response.getResult().member().email()).isEqualTo(testMember.getEmail());
         assertThat(response.getResult().member().role()).isEqualTo(Role.ROLE_ADMIN);
 
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
     }
 
     @Test
@@ -187,10 +187,10 @@ class NoticeControllerTest {
         List<MultipartFile> newFiles = List.of(new MockMultipartFile(
                 "newFiles", "test-file.pdf", "application/pdf", "test-file-content".getBytes()));
 
-        when(testContainer.awsS3Service.uploadFiles(eq("notice/images"), anyList(), eq(true)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("notice/images"), anyList(), eq(true)))
                 .thenReturn(List.of("https://s3.aws.com/new_image.png"));
 
-        when(testContainer.awsS3Service.uploadFiles(eq("notice/files"), anyList(), eq(false)))
+        when(testContainer.awsS3Facade.uploadFiles(eq("notice/files"), anyList(), eq(false)))
                 .thenReturn(List.of("https://s3.aws.com/new_file.pdf"));
 
         // When
@@ -213,8 +213,8 @@ class NoticeControllerTest {
                 "https://s3.aws.com/new_file.pdf"
         );
 
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("notice/images"), anyList(), eq(true));
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(eq("notice/files"), anyList(), eq(false));
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(eq("notice/images"), anyList(), eq(true));
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(eq("notice/files"), anyList(), eq(false));
     }
 
     @Test

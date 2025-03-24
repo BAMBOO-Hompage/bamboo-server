@@ -3,7 +3,7 @@ package SMU.BAMBOO.Hompage.global.upload.controller;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "이미지 업로드 API")
 public class UploadController {
 
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "이미지 업로드 에디터")
@@ -30,7 +30,7 @@ public class UploadController {
 
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
-            imageUrl = awsS3Service.uploadFile("image-editor", image, true);
+            imageUrl = awsS3Facade.uploadFile("image-editor", image, true);
         }
 
         return SuccessResponse.ok(imageUrl);

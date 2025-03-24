@@ -8,7 +8,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ import java.util.List;
 public class MainActivitiesController {
 
     private final MainActivitiesService mainActivitiesService;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
     private final ObjectMapper objectMapper;
 
     /** 주요활동 게시판 게시물 생성 API */
@@ -45,7 +45,7 @@ public class MainActivitiesController {
         List<String> images = new ArrayList<>();
 
         if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images = awsS3Service.uploadFiles("main-activities", request.getImages(), true);
+            images = awsS3Facade.uploadFiles("main-activities", request.getImages(), true);
         }
         MainActivitiesResponseDTO.Detail response = mainActivitiesService.create(request, images, member);
 

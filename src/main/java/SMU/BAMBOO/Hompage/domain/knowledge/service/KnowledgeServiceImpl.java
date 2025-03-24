@@ -8,7 +8,7 @@ import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ import java.util.List;
 public class KnowledgeServiceImpl implements KnowledgeService {
 
     private final KnowledgeRepository knowledgeRepository;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     private Knowledge getKnowledgeById(Long id) {
         return knowledgeRepository.findById(id)
@@ -41,10 +41,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public KnowledgeResponseDTO.Create create(KnowledgeRequestDTO.Create request, Member member, List<MultipartFile> images, List<MultipartFile> files) {
         // 파일 업로드 처리
         List<String> imageUrls = (images != null && !images.isEmpty())
-                ? awsS3Service.uploadFiles("knowledge/images", images, true)
+                ? awsS3Facade.uploadFiles("knowledge/images", images, true)
                 : new ArrayList<>();
         List<String> fileUrls = (files != null && !files.isEmpty())
-                ? awsS3Service.uploadFiles("knowledge/files", files, false)
+                ? awsS3Facade.uploadFiles("knowledge/files", files, false)
                 : new ArrayList<>();
 
         Knowledge knowledge = Knowledge.from(request, member, imageUrls, fileUrls);
@@ -113,13 +113,13 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         // 새 이미지 업로드
         if (newImages != null && !newImages.isEmpty()) {
-            List<String> uploadedImageUrls = awsS3Service.uploadFiles("knowledge/images", newImages, true);
+            List<String> uploadedImageUrls = awsS3Facade.uploadFiles("knowledge/images", newImages, true);
             finalImageUrls.addAll(uploadedImageUrls);
         }
 
         // 새 파일 업로드
         if (newFiles != null && !newFiles.isEmpty()) {
-            List<String> uploadedFileUrls = awsS3Service.uploadFiles("knowledge/files", newFiles, false);
+            List<String> uploadedFileUrls = awsS3Facade.uploadFiles("knowledge/files", newFiles, false);
             finalFileUrls.addAll(uploadedFileUrls);
         }
 
@@ -138,8 +138,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         List<String> imageUrls = knowledge.getImages();
         List<String> fileUrls = knowledge.getFiles();
 
-        imageUrls.forEach(imageUrl -> awsS3Service.deleteFile(awsS3Service.extractS3Key(imageUrl)));
-        fileUrls.forEach(fileUrl -> awsS3Service.deleteFile(awsS3Service.extractS3Key(fileUrl)));
+        imageUrls.forEach(awsS3Facade::deleteFile);
+        fileUrls.forEach(awsS3Facade::deleteFile);
 
         knowledgeRepository.deleteById(id);
     }

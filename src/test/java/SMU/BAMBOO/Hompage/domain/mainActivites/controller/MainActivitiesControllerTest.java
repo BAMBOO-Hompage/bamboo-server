@@ -64,7 +64,7 @@ class MainActivitiesControllerTest {
         List<MultipartFile> images = List.of(imageFile);
         request.setImages(images);
 
-        when(testContainer.awsS3Service.uploadFiles(anyString(), anyList(), anyBoolean()))
+        when(testContainer.awsS3Facade.uploadFiles(anyString(), anyList(), anyBoolean()))
                 .thenReturn(List.of("https://s3.aws.com/image1.png"));
 
         // When
@@ -80,7 +80,7 @@ class MainActivitiesControllerTest {
         assertThat(response.getResult().getImages()).containsExactly("https://s3.aws.com/image1.png");
         assertThat(response.getResult().getMemberName()).isEqualTo(testMember.getName());
 
-        verify(testContainer.awsS3Service, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
+        verify(testContainer.awsS3Facade, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
     }
 
     @Test
@@ -213,7 +213,7 @@ class MainActivitiesControllerTest {
 
         List<MultipartFile> newImages = List.of(newImageFile);
 
-        when(testContainer.awsS3Service.uploadFile(anyString(), any(), anyBoolean()))
+        when(testContainer.awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
                 .thenReturn("https://s3.aws.com/new_image.png");
 
         // When
@@ -234,7 +234,7 @@ class MainActivitiesControllerTest {
                 "https://s3.aws.com/new_image.png"  // 새로 업로드된 이미지
         );
 
-        verify(testContainer.awsS3Service, times(1))
+        verify(testContainer.awsS3Facade, times(1))
                 .uploadFile(anyString(), any(), anyBoolean());
     }
 

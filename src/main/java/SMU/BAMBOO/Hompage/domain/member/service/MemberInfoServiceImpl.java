@@ -6,7 +6,7 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class MemberInfoServiceImpl implements MemberService.MemberInfoService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
     /**
      * 회원 정보
@@ -58,13 +58,12 @@ public class MemberInfoServiceImpl implements MemberService.MemberInfoService {
             // 기존 프로필 이미지 삭제
             String oldImageUrl = member.getProfileImageUrl();
             if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
-                String key = awsS3Service.extractS3Key(oldImageUrl);
-                awsS3Service.deleteFile(key);
+                awsS3Facade.deleteFile(oldImageUrl);
             }
 
             // 새 프로필 이미지 업로드
             MultipartFile file = request.profileImage();
-            profileImageUrl = awsS3Service.uploadFile("profile-images", file, true);
+            profileImageUrl = awsS3Facade.uploadFile("profile-images", file, true);
         } else {
             profileImageUrl = member.getProfileImageUrl();
         }
@@ -84,8 +83,7 @@ public class MemberInfoServiceImpl implements MemberService.MemberInfoService {
 
         String oldImageUrl = member.getProfileImageUrl();
         if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
-            String key = awsS3Service.extractS3Key(oldImageUrl);
-            awsS3Service.deleteFile(key);
+            awsS3Facade.deleteFile(oldImageUrl);
         }
 
         member.setBasicProfileImage();

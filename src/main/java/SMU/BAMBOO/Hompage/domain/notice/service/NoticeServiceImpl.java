@@ -8,7 +8,7 @@ import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;
 import SMU.BAMBOO.Hompage.domain.notice.repository.NoticeRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
-import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Service;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
@@ -29,7 +29,7 @@ public class NoticeServiceImpl implements NoticeService{
 
 
     private final NoticeRepository noticeRepository;
-    private final AwsS3Service awsS3Service;
+    private final AwsS3Facade awsS3Facade;
 
 
     /** 생성 */
@@ -41,10 +41,10 @@ public class NoticeServiceImpl implements NoticeService{
         }
 
         List<String> imageUrls = (images != null && !images.isEmpty())
-                ? awsS3Service.uploadFiles("notice/images", images, true)
+                ? awsS3Facade.uploadFiles("notice/images", images, true)
                 : new ArrayList<>();
         List<String> fileUrls = (files != null && !files.isEmpty())
-                ? awsS3Service.uploadFiles("notice/files", files, false)
+                ? awsS3Facade.uploadFiles("notice/files", files, false)
                 : new ArrayList<>();
 
         Notice notice = Notice.from(request, member, imageUrls, fileUrls);
@@ -95,7 +95,7 @@ public class NoticeServiceImpl implements NoticeService{
         }
 
         List<String> imageUrls = notice.getImages();
-        imageUrls.forEach(awsS3Service::deleteFile);
+        imageUrls.forEach(awsS3Facade::deleteFile);
 
         noticeRepository.deleteById(id);
     }
@@ -115,13 +115,13 @@ public class NoticeServiceImpl implements NoticeService{
 
         // 새 이미지 업로드
         if (newImages != null && !newImages.isEmpty()) {
-            List<String> uploadedImageUrls = awsS3Service.uploadFiles("notice/images", newImages, true);
+            List<String> uploadedImageUrls = awsS3Facade.uploadFiles("notice/images", newImages, true);
             finalImageUrls.addAll(uploadedImageUrls);
         }
 
         // 새 파일 업로드
         if (newFiles != null && !newFiles.isEmpty()) {
-            List<String> uploadedFileUrls = awsS3Service.uploadFiles("notice/files", newFiles, false);
+            List<String> uploadedFileUrls = awsS3Facade.uploadFiles("notice/files", newFiles, false);
             finalFileUrls.addAll(uploadedFileUrls);
         }
 

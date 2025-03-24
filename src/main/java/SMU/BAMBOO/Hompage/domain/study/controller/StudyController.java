@@ -94,7 +94,7 @@ public class StudyController {
     }
 
     // 주차별 이미지 등록(수정)
-    @PatchMapping(value = "/{studyId}/weeks/{weekNumber}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{studyId}/weeks/{week}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "스터디 주차별 이미지 등록(수정)")
     public SuccessResponse<String> updateStudyWeekImage(
             @PathVariable("studyId") Long studyId,

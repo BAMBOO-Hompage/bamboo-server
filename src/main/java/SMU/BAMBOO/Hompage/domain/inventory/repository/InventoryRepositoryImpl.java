@@ -118,17 +118,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
-    public Optional<Inventory> findByMemberIdAndWeek(Long memberId, int week) {
-        return Optional.ofNullable(queryFactory
-                .selectFrom(inventory)
-                .where(
-                        inventory.member.memberId.eq(memberId),
-                        inventory.week.eq(week)
-                )
-                .fetchOne());
-    }
-
-    @Override
     public Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId) {
         Inventory result = queryFactory
                 .selectFrom(inventory)

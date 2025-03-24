@@ -165,10 +165,11 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryRepository.deleteById(id);
     }
 
+    /** StudyId, memberId, week로 스터디 정리본 조회 */
     @Override
-    public InventoryResponseDTO.GetOne getInventoriesByMemberAndWeek(Long memberId, int week) {
+    public InventoryResponseDTO.GetOne getInventoryByStudyAndMemberAndWeek(Long studyId, Long memberId, int week) {
         memberRepository.getById(memberId);
-        Inventory inventory = inventoryRepository.findByMemberIdAndWeek(memberId, week)
+        Inventory inventory = inventoryRepository.findByStudyIdAndWeekAndMemberId(studyId, week, memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVENTORY_NOT_EXIST));
         return InventoryResponseDTO.GetOne.from(inventory);
     }

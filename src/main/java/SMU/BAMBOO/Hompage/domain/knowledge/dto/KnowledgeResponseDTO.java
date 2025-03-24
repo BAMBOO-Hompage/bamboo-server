@@ -2,7 +2,7 @@ package SMU.BAMBOO.Hompage.domain.knowledge.dto;
 
 import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
-import SMU.BAMBOO.Hompage.domain.knowledgeComment.dto.KnowledgeCommentResponse;
+import SMU.BAMBOO.Hompage.domain.knowledgeComment.dto.KnowledgeCommentResponseDTO;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -75,7 +75,6 @@ public class KnowledgeResponseDTO {
             @Schema(description = "조회수") int views,
             @Schema(description = "이미지 리스트") List<String> images,
             @Schema(description = "파일 리스트") List<String> files,
-            @Schema(description = "댓글 리스트") List<KnowledgeCommentResponse.GetOne> comments,
             @Schema(description = "생성일")LocalDateTime createdAt,
             @Schema(description = "수정일")LocalDateTime updatedAt
     ) {
@@ -89,9 +88,6 @@ public class KnowledgeResponseDTO {
                     knowledge.getViews(),
                     knowledge.getImages() != null ? knowledge.getImages() : new ArrayList<>(),
                     knowledge.getFiles() != null ? knowledge.getFiles() : new ArrayList<>(),
-                    knowledge.getKnowledgeComments().stream()
-                            .map(KnowledgeCommentResponse.GetOne::from)
-                            .collect(Collectors.toList()),
                     knowledge.getCreatedAt(),
                     knowledge.getModifiedAt()
             );

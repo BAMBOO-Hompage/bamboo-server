@@ -1,4 +1,3 @@
-
 package SMU.BAMBOO.Hompage.domain.knowledgeComment.dto;
 
 import SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.KnowledgeComment;
@@ -6,9 +5,11 @@ import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Schema(description = "지식공유 게시판 댓글 응답 DTO")
-public class KnowledgeCommentResponse{
+public class KnowledgeCommentResponseDTO {
 
     @Schema(description = "지식공유 게시판 댓글 생성 응답 DTO")
     public record Create(
@@ -16,8 +17,8 @@ public class KnowledgeCommentResponse{
             @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
             @Schema(description = "댓글 내용") String content
     ) {
-        public static KnowledgeCommentResponse.Create from(KnowledgeComment comment) {
-            return new KnowledgeCommentResponse.Create(
+        public static Create from(KnowledgeComment comment) {
+            return new Create(
                     comment.getKnowledgeCommentId(),
                     MemberResponseDTO.MemberInfo.from(comment.getMember()),
                     comment.getContent()
@@ -30,30 +31,47 @@ public class KnowledgeCommentResponse{
             @Schema(description = "댓글 ID") Long commentId,
             @Schema(description = "댓글 내용") String content
     ) {
-        public static KnowledgeCommentResponse.Update from(KnowledgeComment comment) {
-            return new KnowledgeCommentResponse.Update(
+        public static Update from(KnowledgeComment comment) {
+            return new Update(
                     comment.getKnowledgeCommentId(),
                     comment.getContent()
             );
         }
     }
 
-    @Schema(description = "지식공유 게시판 댓글 조회 응답 DTO")
+    @Schema(description = "지식공유 게시판 댓글 조회 응답 DTO (대댓글 포함)")
     public record GetOne(
             @Schema(description = "댓글 ID") Long commentId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
+            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.CommentMemberInfo member,
             @Schema(description = "댓글 내용") String content,
             @Schema(description = "작성일") LocalDateTime createdAt,
-            @Schema(description = "수정일") LocalDateTime modifiedAt
+            @Schema(description = "수정일") LocalDateTime modifiedAt,
+            @Schema(description = "대댓글 목록") List<GetOne> children
     ) {
-        public static KnowledgeCommentResponse.GetOne from(KnowledgeComment comment) {
-            return new KnowledgeCommentResponse.GetOne(
+        public static GetOne from(KnowledgeComment comment) {
+            List<GetOne> children = comment.getChildren() != null
+                    ? comment.getChildren().stream()
+                    .map(GetOne::from)
+                    .collect(Collectors.toList())
+                    : List.of();
+
+            String content = comment.isDeleted()
+                    ? "삭제된 댓글입니다."
+                    : comment.getContent();
+
+            MemberResponseDTO.CommentMemberInfo memberInfo = comment.isDeleted()
+                    ? MemberResponseDTO.CommentMemberInfo.deletedUser()
+                    : MemberResponseDTO.CommentMemberInfo.from(comment.getMember());
+
+            return new GetOne(
                     comment.getKnowledgeCommentId(),
-                    MemberResponseDTO.MemberInfo.from(comment.getMember()),
-                    comment.getContent(),
+                    memberInfo,
+                    content,
                     comment.getCreatedAt(),
-                    comment.getModifiedAt()
+                    comment.getModifiedAt(),
+                    children
             );
         }
+
     }
 }

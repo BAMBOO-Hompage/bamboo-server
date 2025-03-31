@@ -94,7 +94,7 @@ public class StudyController {
     }
 
     // 주차별 이미지 등록(수정)
-    @PatchMapping(value = "/{studyId}/weeks/{week}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{studyId}/weeks/{week}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "스터디 주차별 이미지 등록(수정)")
     public SuccessResponse<String> updateStudyWeekImage(
             @PathVariable("studyId") Long studyId,
@@ -103,5 +103,16 @@ public class StudyController {
     ) {
         studyImageService.updateStudyWeekImage(studyId, week, image);
         return SuccessResponse.ok("스터디 주차별 이미지 등록(수정)에 성공하였습니다.");
+    }
+
+    // 주차별 이미지 삭제
+    @DeleteMapping("/{studyId}/weeks/{week}/image")
+    @Operation(summary = "스터디 주차별 이미지 삭제")
+    public SuccessResponse<String> deleteStudyWeekImage(
+            @PathVariable("studyId") Long studyId,
+            @PathVariable("week") int week
+    ) {
+        studyImageService.deleteStudyWeekImage(studyId, week);
+        return SuccessResponse.ok("스터디 주차별 이미지 삭제에 성공하였습니다.");
     }
 }

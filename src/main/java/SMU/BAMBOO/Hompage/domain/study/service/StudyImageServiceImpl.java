@@ -57,6 +57,23 @@ public class StudyImageServiceImpl implements StudyImageService {
     }
 
     /**
+     * 주차별 이미지 삭제
+     */
+    @Override
+    public void deleteStudyWeekImage(Long studyId, int weekNumber) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));
+
+        StudyWeek studyWeek = studyWeekRepository.findByStudyAndWeek(study, weekNumber)
+                .orElseThrow(() -> new CustomException(ErrorCode.STUDY_WEEK_NOT_EXIST));
+
+        if (studyWeek.getImageUrl() != null) {
+            awsS3Facade.deleteFile(studyWeek.getImageUrl());
+            studyWeek.updateWeekImage(null);
+        }
+    }
+
+    /**
      * 주차가 없는 경우 새로 생성하는 메서드
      */
     private StudyWeek createNewStudyWeek(Study study, int weekNumber) {

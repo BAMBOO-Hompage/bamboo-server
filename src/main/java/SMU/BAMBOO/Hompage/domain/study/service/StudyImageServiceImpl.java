@@ -60,6 +60,7 @@ public class StudyImageServiceImpl implements StudyImageService {
      * 주차별 이미지 삭제
      */
     @Override
+    @Transactional
     public void deleteStudyWeekImage(Long studyId, int weekNumber) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));

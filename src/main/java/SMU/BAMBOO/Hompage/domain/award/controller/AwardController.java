@@ -72,4 +72,14 @@ public class AwardController {
         awardService.delete(id);
         return SuccessResponse.ok("어워드 삭제에 성공했습니다.");
     }
+
+    @GetMapping("/awards/latest")
+    @Operation(summary = "기수 기준 최신 주차의 명예의 전당 목록 조회")
+    public SuccessResponse<List<AwardResponseDTO.GetOne>> getLatestWeekAwardsByBatch(
+            @RequestParam int batch
+    ) {
+        List<AwardResponseDTO.GetOne> response = awardService.getLatestWeekAwardsByBatch(batch);
+        return SuccessResponse.ok(response);
+    }
+
 }

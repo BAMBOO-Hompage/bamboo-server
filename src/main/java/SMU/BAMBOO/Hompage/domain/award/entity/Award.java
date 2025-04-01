@@ -16,8 +16,6 @@ import java.time.LocalDate;
 @Getter
 public class Award extends BaseEntity {
 
-    // FIXME 컬럼 정리 필요 (추후에 요구사항 확실히 정해지면)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "award_id")

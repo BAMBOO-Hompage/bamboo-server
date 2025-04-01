@@ -12,4 +12,6 @@ public interface AwardRepository {
     List<Award> findByBatch(int batch);
     Award save(Award award);
     void delete(Long id);
+    Integer findLatestWeekByBatch(int batch);
+    List<Award> findAllByBatchAndWeek(int batch, int week);
 }

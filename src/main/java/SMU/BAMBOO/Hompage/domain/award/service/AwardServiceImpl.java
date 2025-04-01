@@ -9,6 +9,8 @@ import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.inventory.repository.InventoryRepository;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.subject.repository.SubjectRepository;
+import SMU.BAMBOO.Hompage.global.exception.CustomException;
+import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,5 +109,21 @@ public class AwardServiceImpl implements AwardService {
         awardRepository.save(award);
 
         awardRepository.delete(awardId);
+    }
+
+    /**
+     * 기수 기준 최신 주차의 Award 목록 조회
+     */
+    @Override
+    public List<AwardResponseDTO.GetOne> getLatestWeekAwardsByBatch(int batch) {
+        Integer latestWeek = awardRepository.findLatestWeekByBatch(batch);
+        if (latestWeek == null) {
+            throw new CustomException(ErrorCode.AWARD_LAST_NOT_FOUND);
+        }
+
+        List<Award> awards = awardRepository.findAllByBatchAndWeek(batch, latestWeek);
+        return awards.stream()
+                .map(AwardResponseDTO.GetOne::from)
+                .toList();
     }
 }

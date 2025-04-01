@@ -66,4 +66,16 @@ public class AwardRepositoryImpl implements AwardRepository {
                 .where(award.batch.eq(batch), award.week.eq(week))
                 .fetch();
     }
+
+    @Override
+    public boolean existsByInventoryId(Long inventoryId) {
+        return Optional.ofNullable(
+                queryFactory
+                        .selectOne()
+                        .from(award)
+                        .where(award.inventory.inventoryId.eq(inventoryId))
+                        .fetchFirst()
+        ).isPresent();
+
+    }
 }

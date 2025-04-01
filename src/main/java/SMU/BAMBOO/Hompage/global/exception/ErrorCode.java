@@ -103,6 +103,7 @@ public enum ErrorCode {
     AWARD_ALREADY_EXIST("AWARD400", "이미 명예의 전당에 존재합니다.", HttpStatus.BAD_REQUEST),
     AWARD_NOT_EXIST("AWARD404", "명예의 전당에 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     AWARD_LAST_NOT_FOUND("AWARD404", "명예의 전당에 마지막 주차를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    DUPLICATE_AWARD("AWARD400", "이미 명예의 전당에 등록된 스터디 정리본입니다.", HttpStatus.BAD_REQUEST),
 
     // Subject (과목)
     SUBJECT_ALREADY_EXIST("SUBJECT400", "이미 존재하는 과목입니다.", HttpStatus.BAD_REQUEST),

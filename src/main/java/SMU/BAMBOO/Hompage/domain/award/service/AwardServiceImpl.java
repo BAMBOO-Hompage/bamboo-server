@@ -34,6 +34,8 @@ public class AwardServiceImpl implements AwardService {
     @Override
     @Transactional
     public AwardResponseDTO.Create create(AwardRequestDTO.Create request) {
+        validateDuplicateAward(request.inventoryId());
+
         Inventory inventory = inventoryRepository.getById(request.inventoryId());
         cohortRepository.getByBatch(request.batch());
         subjectRepository.getById(request.subjectId());
@@ -125,5 +127,15 @@ public class AwardServiceImpl implements AwardService {
         return awards.stream()
                 .map(AwardResponseDTO.GetOne::from)
                 .toList();
+    }
+
+    /**
+     * 명예의 전당 중복 등록 방지
+     */
+    private void validateDuplicateAward(Long inventoryId) {
+        boolean exists = awardRepository.existsByInventoryId(inventoryId);
+        if (exists) {
+            throw new CustomException(ErrorCode.DUPLICATE_AWARD);
+        }
     }
 }

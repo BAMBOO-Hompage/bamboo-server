@@ -104,4 +104,17 @@ public class MemberResponseDTO {
         }
     }
 
+    @Schema(description = "학번, 이름만 반환하는 간단한 회원 정보 응답 DTO")
+    public record SimpleMemberInfo (
+            String studentId,
+            String name
+    ) {
+        public static SimpleMemberInfo from(Member member) {
+            return new SimpleMemberInfo(
+                    member.getStudentId(),
+                    member.getName()
+            );
+        }
+    }
+
 }

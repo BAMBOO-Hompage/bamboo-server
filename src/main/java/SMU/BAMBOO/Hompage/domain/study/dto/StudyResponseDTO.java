@@ -124,29 +124,19 @@ public class StudyResponseDTO {
     @Schema(description = "명예의 전당 관련 스터디 단건 조회 응답 DTO")
     public record GetForAward(
             @Schema(description = "스터디 ID") Long studyId,
-            @Schema(description = "팀명", example = "에그타르트") String teamName,
             @Schema(description = "과목 이름") String subjectName,
-            @Schema(description = "기수") int batch,
-            @Schema(description = "분반") int section,
-            @Schema(description = "스터디장") MemberResponseDTO.MemberInStudy studyMaster,
-            @Schema(description = "스터디원") List<MemberResponseDTO.MemberInStudy> studyMembers
+            @Schema(description = "분반") int section
     ) {
         public static GetForAward from(Study study) {
             return new GetForAward(
                     study.getStudyId(),
-                    study.getTeamName(),
                     study.getSubject().getName(),
-                    study.getCohort().getBatch(),
-                    study.getSection(),
-                    MemberResponseDTO.MemberInStudy.from(study.getStudyMaster()),
-                    study.getMemberStudies().stream()
-                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMember()))
-                            .toList()
+                    study.getSection()
             );
         }
     }
 
-    @Schema(description = "명예의 전당 관련 스터디 단건 조회 응답 DTO")
+    @Schema(description = "스터디 정리본 관련 스터디 단건 조회 응답 DTO")
     public record GetForInventory(
             @Schema(description = "팀명") String teamName,
             @Schema(description = "과목 이름") String subjectName,

@@ -53,7 +53,7 @@ public class Study extends BaseEntity {
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inventory> inventories = new ArrayList<>();
 
     @Builder.Default

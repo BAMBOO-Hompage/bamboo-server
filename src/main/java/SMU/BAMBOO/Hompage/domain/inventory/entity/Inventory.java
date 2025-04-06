@@ -63,4 +63,8 @@ public class Inventory extends BaseEntity {
     public void markAsWeeklyBest() {
         this.isWeeklyBest = true;
     }
+
+    public void removeFile() {
+        this.fileUrl = null;
+    }
 }

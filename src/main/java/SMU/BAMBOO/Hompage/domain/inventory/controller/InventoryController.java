@@ -101,6 +101,15 @@ public class InventoryController {
         return SuccessResponse.ok("스터디 정리본 삭제에 성공했습니다.");
     }
 
+    @DeleteMapping("/{inventoriesId}/file")
+    @Operation(summary = "스터디 정리본의 파일만 삭제")
+    public SuccessResponse<String> deleteInventoryFile(
+            @PathVariable("inventoriesId") Long id
+    ) {
+        inventoryService.deleteFile(id);
+        return SuccessResponse.ok("스터디 정리본 파일 삭제에 성공했습니다.");
+    }
+
     @GetMapping("/studies/{studyId}/members/{memberId}/week/{week}")
     @Operation(summary = "스터디 ID, 회원 ID와 주차 정보로 스터디 정리본 조회")
     public SuccessResponse<InventoryResponseDTO.GetOne> getInventoriesByMemberAndWeek(

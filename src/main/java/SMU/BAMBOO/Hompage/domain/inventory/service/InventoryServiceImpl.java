@@ -165,7 +165,23 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryRepository.deleteById(id);
     }
 
-    /** StudyId, memberId, week로 스터디 정리본 조회 */
+    /**
+     * 스터디 정리본 파일 삭제
+     */
+    @Override
+    @Transactional
+    public void deleteFile(Long id) {
+        Inventory inventory = getInventoryById(id);
+        if (inventory.getFileUrl() != null) {
+            awsS3Facade.deleteFile(inventory.getFileUrl());
+        }
+
+        inventory.removeFile();
+    }
+
+    /**
+     * StudyId, memberId, week로 스터디 정리본 조회
+     */
     @Override
     public InventoryResponseDTO.GetOne getInventoryByStudyAndMemberAndWeek(Long studyId, Long memberId, int week) {
         memberRepository.getById(memberId);

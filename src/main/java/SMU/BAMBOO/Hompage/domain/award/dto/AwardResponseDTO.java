@@ -5,8 +5,6 @@ import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.time.LocalDate;
-
 @Schema(description = "명예의 전당 관련 응답 DTO")
 public class AwardResponseDTO {
 
@@ -14,19 +12,13 @@ public class AwardResponseDTO {
     public record Create(
             @Schema(description = "Award Id") Long awardId,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
-            @Schema(description = "제목") String title,
-            @Schema(description = "주차") int week,
-            @Schema(description = "시작 기간") LocalDate startDate,
-            @Schema(description = "마감 기간") LocalDate endDate
+            @Schema(description = "주차") int week
     ) {
         public static Create from(Award award) {
             return new Create(
                     award.getAwardId(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
-                    award.getTitle(),
-                    award.getWeek(),
-                    award.getStartDate(),
-                    award.getEndDate()
+                    award.getWeek()
             );
         }
     }
@@ -34,20 +26,14 @@ public class AwardResponseDTO {
     @Schema(description = "명예의 전당 수정 응답 DTO")
     public record Update(
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
-            @Schema(description = "제목") String title,
             @Schema(description = "기수") int batch,
-            @Schema(description = "주차") int week,
-            @Schema(description = "시작 기간") LocalDate startDate,
-            @Schema(description = "마감 기간") LocalDate endDate
+            @Schema(description = "주차") int week
     ) {
         public static Update from(Award award) {
             return new Update(
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
-                    award.getTitle(),
                     award.getBatch(),
-                    award.getWeek(),
-                    award.getStartDate(),
-                    award.getEndDate()
+                    award.getWeek()
             );
         }
     }
@@ -57,11 +43,8 @@ public class AwardResponseDTO {
             @Schema(description = "Award Id") Long awardId,
             @Schema(description = "작성자 이름") MemberResponseDTO.SimpleMemberInfo member,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
-            @Schema(description = "제목") String title,
             @Schema(description = "기수") int batch,
-            @Schema(description = "주차") int week,
-            @Schema(description = "시작 기간") LocalDate startDate,
-            @Schema(description = "마감 기간") LocalDate endDate
+            @Schema(description = "주차") int week
     ) {
         public static GetOne from(Award award) {
             if (award == null) {
@@ -72,11 +55,8 @@ public class AwardResponseDTO {
                     award.getAwardId(),
                     MemberResponseDTO.SimpleMemberInfo.from(award.getInventory().getMember()),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
-                    award.getTitle(),
                     award.getBatch(),
-                    award.getWeek(),
-                    award.getStartDate(),
-                    award.getEndDate()
+                    award.getWeek()
             );
         }
     }

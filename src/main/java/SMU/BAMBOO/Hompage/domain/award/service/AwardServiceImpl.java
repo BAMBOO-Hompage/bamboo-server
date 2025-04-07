@@ -44,10 +44,7 @@ public class AwardServiceImpl implements AwardService {
         Award award = Award.builder()
                 .inventory(inventory)
                 .batch(request.batch())
-                .title(request.title())
                 .week(request.week())
-                .startDate(request.startDate())
-                .endDate(request.endDate())
                 .build();
 
         Award savedAward = awardRepository.save(award);

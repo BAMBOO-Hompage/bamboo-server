@@ -6,8 +6,6 @@ import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "award")
 @Builder
@@ -28,25 +26,13 @@ public class Award extends BaseEntity {
     @Column(nullable = false)
     private int batch;
 
-    @Column(nullable = false, length = 200)
-    private String title;
-
     @Column(nullable = false)
     private int week;
-
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
 
     public void updateAward(Inventory inventory, AwardRequestDTO.Update request) {
         this.inventory = inventory;
         this.batch = request.batch();
-        this.title = request.title();
         this.week = request.week();
-        this.startDate = request.startDate();
-        this.endDate = request.endDate();
     }
 
     /** 연관 관계 삭제를 위한 메서드 */

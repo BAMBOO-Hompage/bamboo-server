@@ -41,7 +41,7 @@ public class AwardController {
     @GetMapping("/batch/{batchId}")
     @Operation(summary = "기수 기준 명예의 전당 조회")
     public SuccessResponse<List<AwardResponseDTO.GetOne>> getAwardsByBatch(
-            @PathVariable("batchId") int batch
+            @PathVariable("batch") int batch
     ) {
         List<AwardResponseDTO.GetOne> result = awardService.getAwardsByBatch(batch);
         return SuccessResponse.ok(result);
@@ -73,10 +73,10 @@ public class AwardController {
         return SuccessResponse.ok("어워드 삭제에 성공했습니다.");
     }
 
-    @GetMapping("/awards/latest")
+    @GetMapping("/awards/{batchId}/latest")
     @Operation(summary = "기수 기준 최신 주차의 명예의 전당 목록 조회")
     public SuccessResponse<List<AwardResponseDTO.GetOne>> getLatestWeekAwardsByBatch(
-            @RequestParam int batch
+            @PathVariable("batch") int batch
     ) {
         List<AwardResponseDTO.GetOne> response = awardService.getLatestWeekAwardsByBatch(batch);
         return SuccessResponse.ok(response);

@@ -1,8 +1,11 @@
 package SMU.BAMBOO.Hompage.domain.award.repository;
 
 import SMU.BAMBOO.Hompage.domain.award.entity.Award;
+import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
+import SMU.BAMBOO.Hompage.domain.subject.repository.dto.SubjectWeek;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -51,23 +54,6 @@ public class AwardRepositoryImpl implements AwardRepository {
     }
 
     @Override
-    public Integer findLatestWeekByBatch(int batch) {
-        return queryFactory
-                .select(award.week.max())
-                .from(award)
-                .where(award.batch.eq(batch))
-                .fetchOne();
-    }
-
-    @Override
-    public List<Award> findAllByBatchAndWeek(int batch, int week) {
-        return queryFactory
-                .selectFrom(award)
-                .where(award.batch.eq(batch), award.week.eq(week))
-                .fetch();
-    }
-
-    @Override
     public boolean existsByInventoryId(Long inventoryId) {
         return Optional.ofNullable(
                 queryFactory
@@ -76,6 +62,29 @@ public class AwardRepositoryImpl implements AwardRepository {
                         .where(award.inventory.inventoryId.eq(inventoryId))
                         .fetchFirst()
         ).isPresent();
+    }
 
+    @Override
+    public List<SubjectWeek> findLatestWeeksBySubjectInBatch(int batch) {
+        return queryFactory
+                .select(Projections.constructor(SubjectWeek.class,
+                        award.subject,
+                        award.week.max()))
+                .from(award)
+                .where(award.batch.eq(batch))
+                .groupBy(award.subject)
+                .fetch();
+    }
+
+    @Override
+    public List<Award> findAllByBatchAndSubjectAndWeek(int batch, Subject subject, Integer week) {
+        return queryFactory
+                .selectFrom(award)
+                .where(
+                        award.batch.eq(batch),
+                        award.subject.eq(subject),
+                        award.week.eq(week)
+                )
+                .fetch();
     }
 }

@@ -2,6 +2,7 @@ package SMU.BAMBOO.Hompage.domain.award.entity;
 
 import SMU.BAMBOO.Hompage.domain.award.dto.AwardRequestDTO;
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
+import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,10 @@ public class Award extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_id", nullable = false, unique = true)
     private Inventory inventory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id", nullable = false)
+    private Subject subject;
 
     @Column(nullable = false)
     private int batch;

@@ -10,7 +10,7 @@ public class AwardRequestDTO {
             @Schema(description = "주차", example = "1") int week,
             @Schema(description = "기수", example = "6") int batch,
             @Schema(description = "스터디 정리본 ID", example = "1") Long inventoryId,
-            @Schema(description = "과목 ID", example = "1") Long subjectId,
+            @Schema(description = "과목 이름", example = "PY") String subjectName,
             @Schema(description = "분반", example = "1") int section,
             @Schema(description = "선발된 회원 ID", example = "1") Long memberId
     ) {}
@@ -20,7 +20,7 @@ public class AwardRequestDTO {
             @Schema(description = "주차", example = "2") int week,
             @Schema(description = "기수", example = "6") int batch,
             @Schema(description = "스터디 정리본 ID", example = "1") Long inventoryId,
-            @Schema(description = "과목 ID", example = "1") Long subjectId,
+            @Schema(description = "과목 이름", example = "PY") String subjectName,
             @Schema(description = "분반", example = "2") int section,
             @Schema(description = "선발된 회원 ID", example = "2") Long memberId
     ) {}

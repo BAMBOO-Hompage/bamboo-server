@@ -72,4 +72,19 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     public void deleteById(Long id) {
         subjectJpaRepository.deleteById(id);
     }
+
+    @Override
+    public Subject getByBatchAndName(int batch, String subjectName) {
+        return Optional.ofNullable(
+                        queryFactory
+                                .selectFrom(subject)
+                                .join(subject.cohort, cohort).fetchJoin()
+                                .where(
+                                        cohort.batch.eq(batch),
+                                        subject.name.eq(subjectName)
+                                )
+                                .fetchOne()
+                )
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
+    }
 }

@@ -13,4 +13,5 @@ public interface SubjectRepository {
     List<Subject> findAll();
     Subject save(Subject subject);
     void deleteById(Long id);
+    Subject getByBatchAndName(int batch, String subjectName);
 }

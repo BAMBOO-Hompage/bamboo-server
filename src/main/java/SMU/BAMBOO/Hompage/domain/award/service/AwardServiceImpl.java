@@ -41,7 +41,7 @@ public class AwardServiceImpl implements AwardService {
 
         Inventory inventory = inventoryRepository.getById(request.inventoryId());
         cohortRepository.getByBatch(request.batch());
-        Subject subject = subjectRepository.getById(request.subjectId());
+        Subject subject = subjectRepository.getByBatchAndName(request.batch(), request.subjectName());
         memberRepository.getById(request.memberId());
 
         Award award = Award.builder()

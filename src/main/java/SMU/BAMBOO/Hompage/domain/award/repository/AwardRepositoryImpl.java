@@ -40,7 +40,11 @@ public class AwardRepositoryImpl implements AwardRepository {
 
     @Override
     public List<Award> findByBatch(int batch) {
-        return awardJpaRepository.findByBatch(batch);
+        return queryFactory
+                .selectFrom(award)
+                .where(award.batch.eq(batch))
+                .orderBy(award.week.asc())
+                .fetch();
     }
 
     @Override

@@ -104,15 +104,19 @@ public class MemberResponseDTO {
         }
     }
 
-    @Schema(description = "학번, 이름만 반환하는 간단한 회원 정보 응답 DTO")
-    public record SimpleMemberInfo (
+    @Schema(description = "명예의 전당 조회에 사용할 회원 정보 응답 DTO")
+    public record GetForAward(
+            Long memberId,
             String studentId,
-            String name
+            String name,
+            String profileImageUrl
     ) {
-        public static SimpleMemberInfo from(Member member) {
-            return new SimpleMemberInfo(
+        public static GetForAward from(Member member) {
+            return new GetForAward(
+                    member.getMemberId(),
                     member.getStudentId(),
-                    member.getName()
+                    member.getName(),
+                    member.getProfileImageUrl()
             );
         }
     }

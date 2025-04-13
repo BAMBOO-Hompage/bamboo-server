@@ -41,7 +41,7 @@ public class AwardResponseDTO {
     @Schema(description = "명예의 전당 조회 응답 DTO")
     public record GetOne(
             @Schema(description = "Award Id") Long awardId,
-            @Schema(description = "작성자 이름") MemberResponseDTO.SimpleMemberInfo member,
+            @Schema(description = "작성자 정보") MemberResponseDTO.GetForAward member,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
             @Schema(description = "기수") int batch,
             @Schema(description = "주차") int week
@@ -53,7 +53,7 @@ public class AwardResponseDTO {
 
             return new GetOne(
                     award.getAwardId(),
-                    MemberResponseDTO.SimpleMemberInfo.from(award.getInventory().getMember()),
+                    MemberResponseDTO.GetForAward.from(award.getInventory().getMember()),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
                     award.getBatch(),
                     award.getWeek()

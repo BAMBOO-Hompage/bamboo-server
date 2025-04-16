@@ -87,12 +87,14 @@ public class MemberResponseDTO {
 
     @Schema(description = "댓글 작성자 정보 DTO")
     public record CommentMemberInfo (
+            String studentId,
             String name,
             String profileImageUrl,
             String major
     ) {
         public static CommentMemberInfo from(Member member) {
             return new CommentMemberInfo(
+                    member.getStudentId(),
                     member.getName(),
                     member.getProfileImageUrl(),
                     member.getMajor()
@@ -100,7 +102,7 @@ public class MemberResponseDTO {
         }
 
         public static CommentMemberInfo deletedUser() {
-            return new CommentMemberInfo("알 수 없음", null, null);
+            return new CommentMemberInfo("알 수 없음", "알 수 없음", null, null);
         }
     }
 

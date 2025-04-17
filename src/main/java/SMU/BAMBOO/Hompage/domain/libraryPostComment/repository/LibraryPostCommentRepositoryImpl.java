@@ -26,8 +26,13 @@ public class LibraryPostCommentRepositoryImpl implements LibraryPostCommentRepos
 
     @Override
     public void validateBelongsToPost(LibraryPostComment comment, Long postId) {
-        if (!comment.getPost().getLibraryPostId().equals(postId)) {
+        if (!comment.getLibraryPost().getLibraryPostId().equals(postId)) {
             throw new CustomException(ErrorCode.COMMENT_LIBRARY_MISMATCH);
         }
+    }
+
+    @Override
+    public int countByPostId(Long libraryPostId) {
+        return jpaRepository.countByLibraryPost_LibraryPostId(libraryPostId);
     }
 }

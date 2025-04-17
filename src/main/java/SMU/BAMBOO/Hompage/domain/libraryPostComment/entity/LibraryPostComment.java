@@ -23,7 +23,7 @@ public class LibraryPostComment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library_post_id")
-    private LibraryPost post;
+    private LibraryPost libraryPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -56,7 +56,7 @@ public class LibraryPostComment extends BaseEntity {
     public static LibraryPostComment from(String content, LibraryPost post, Member member, LibraryPostComment parent) {
         return LibraryPostComment.builder()
                 .content(content)
-                .post(post)
+                .libraryPost(post)
                 .member(member)
                 .parent(parent)
                 .build();

@@ -42,7 +42,7 @@ public class LibraryPostCommentServiceImpl implements LibraryPostCommentService 
     @Override
     public Page<LibraryPostCommentResponseDTO.GetOne> getCommentsByPostId(Long postId, Pageable pageable) {
         getPostById(postId);
-        return libraryPostCommentJpaRepository.findAllByPost_LibraryPostIdAndParentIsNullOrderByCreatedAtAsc(postId, pageable)
+        return libraryPostCommentJpaRepository.findAllByLibraryPost_LibraryPostIdAndParentIsNullOrderByCreatedAtAsc(postId, pageable)
                 .map(LibraryPostCommentResponseDTO.GetOne::from);
     }
 

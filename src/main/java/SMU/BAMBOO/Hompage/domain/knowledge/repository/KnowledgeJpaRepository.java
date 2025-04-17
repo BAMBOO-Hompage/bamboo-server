@@ -1,7 +1,10 @@
 package SMU.BAMBOO.Hompage.domain.knowledge.repository;
 
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 public interface KnowledgeJpaRepository extends JpaRepository<Knowledge, Long> {
 }

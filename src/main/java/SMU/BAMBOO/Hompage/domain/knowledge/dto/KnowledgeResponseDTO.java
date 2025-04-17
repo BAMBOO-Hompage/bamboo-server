@@ -75,6 +75,7 @@ public class KnowledgeResponseDTO {
             @Schema(description = "조회수") int views,
             @Schema(description = "이미지 리스트") List<String> images,
             @Schema(description = "파일 리스트") List<String> files,
+            @Schema(description = "댓글 개수") int commentCount,
             @Schema(description = "생성일")LocalDateTime createdAt,
             @Schema(description = "수정일")LocalDateTime updatedAt
     ) {
@@ -88,6 +89,7 @@ public class KnowledgeResponseDTO {
                     knowledge.getViews(),
                     knowledge.getImages() != null ? knowledge.getImages() : new ArrayList<>(),
                     knowledge.getFiles() != null ? knowledge.getFiles() : new ArrayList<>(),
+                    knowledge.getKnowledgeComments() != null ? knowledge.getKnowledgeComments().size() : 0,
                     knowledge.getCreatedAt(),
                     knowledge.getModifiedAt()
             );

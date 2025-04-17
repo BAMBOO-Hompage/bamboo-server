@@ -4,6 +4,7 @@ import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostRequestDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostResponseDTO;
 import SMU.BAMBOO.Hompage.domain.libraryPost.entity.LibraryPost;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
+import SMU.BAMBOO.Hompage.domain.libraryPostComment.repository.LibraryPostCommentRepository;
 import SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.LibraryPostTag;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
@@ -33,6 +34,7 @@ import java.util.stream.Stream;
 public class LibraryPostServiceImpl implements LibraryPostService {
 
     private final LibraryPostRepository libraryPostRepository;
+    private final LibraryPostCommentRepository libraryPostCommentRepository;
     private final TagRepository tagRepository;
 
     private LibraryPost getLibraryPostById(Long id) {
@@ -209,6 +211,16 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         return LibraryPostResponseDTO.GetOne.from(libraryPost);
     }
 
+    @Override
+    public LibraryPostResponseDTO.GetOne getLibraryPostWithCommentCount(Long postId) {
+        LibraryPost post = libraryPostRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.LIBRARY_POST_NOT_EXIST));
+
+        int commentCount = libraryPostCommentRepository.countByPostId(postId);
+
+        return LibraryPostResponseDTO.GetOne.from(post).withCommentCount(commentCount);
+    }
+
     /**
      * 현재 사용자가 알렉산드리아 게시글의 작성자인지 검증하는 메서드
      */
@@ -219,4 +231,6 @@ public class LibraryPostServiceImpl implements LibraryPostService {
             throw new CustomException(errorCode);
         }
     }
+
+
 }

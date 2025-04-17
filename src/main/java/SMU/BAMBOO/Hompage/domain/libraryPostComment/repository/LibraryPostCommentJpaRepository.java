@@ -6,5 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LibraryPostCommentJpaRepository extends JpaRepository<LibraryPostComment, Long> {
-    Page<LibraryPostComment> findAllByPost_LibraryPostIdAndParentIsNullOrderByCreatedAtAsc(Long libraryPostId, Pageable pageable);
+    Page<LibraryPostComment> findAllByLibraryPost_LibraryPostIdAndParentIsNullOrderByCreatedAtAsc(Long libraryPostId, Pageable pageable);
+    int countByLibraryPost_LibraryPostId(Long libraryPostId);
 }

@@ -37,7 +37,8 @@ public class SecurityConfig {
             "/api/emails/**",
             "/auth/reissue",
             "/api/main-activities/year",
-            "/health"
+            "/health",
+            "/actuator"
     };
 
     // 임원진 이상의 권한 필요 (OPS)

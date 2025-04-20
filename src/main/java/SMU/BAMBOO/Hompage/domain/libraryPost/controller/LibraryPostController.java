@@ -38,7 +38,7 @@ public class LibraryPostController {
     public SuccessResponse<LibraryPostResponseDTO.GetOne> getOne(
             @PathVariable("libraryPostId") Long id
     ) {
-        LibraryPostResponseDTO.GetOne result = libraryPostService.getById(id);
+        LibraryPostResponseDTO.GetOne result = libraryPostService.getLibraryPostWithCommentCount(id);
         return SuccessResponse.ok(result);
     }
 

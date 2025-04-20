@@ -14,4 +14,5 @@ public interface LibraryPostService {
     void delete(Long id);
     LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);
     LibraryPostResponseDTO.GetOne resetTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);
+    LibraryPostResponseDTO.GetOne getLibraryPostWithCommentCount(Long postId);
 }

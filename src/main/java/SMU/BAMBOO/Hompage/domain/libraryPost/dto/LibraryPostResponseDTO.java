@@ -80,7 +80,10 @@ public class LibraryPostResponseDTO {
             String link,
 
             @Schema(description = "관련 태그들")
-            List<String> tagNames
+            List<String> tagNames,
+
+            @Schema(description = "댓글 수")
+            int commentCount
     ) {
         public static GetOne from(LibraryPost libraryPost) {
             return new GetOne(
@@ -97,9 +100,25 @@ public class LibraryPostResponseDTO {
                             .orElse(List.of())
                             .stream()
                             .map(libraryPostTag -> libraryPostTag.getTag().getName())
-                            .toList()
+                            .toList(),
+                    0
             );
         }
+
+        public GetOne withCommentCount(int count) {
+            return new GetOne(
+                    this.libraryPostId,
+                    this.member,
+                    this.paperName,
+                    this.year,
+                    this.topic,
+                    this.content,
+                    this.link,
+                    this.tagNames,
+                    count
+            );
+        }
+
     }
 }
 

@@ -4,17 +4,21 @@ import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.domain.weeklyContent.entity.WeeklyContent;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+import static SMU.BAMBOO.Hompage.domain.weeklyContent.entity.QWeeklyContent.weeklyContent;
+
 @Repository
 @RequiredArgsConstructor
 public class WeeklyContentRepositoryImpl implements WeeklyContentRepository {
 
     private final WeeklyContentJpaRepository weeklyContentJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Optional<WeeklyContent> findById(Long id) {
@@ -45,5 +49,13 @@ public class WeeklyContentRepositoryImpl implements WeeklyContentRepository {
     @Override
     public void delete(Long id) {
         weeklyContentJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteBySubjcetId(Long subjectId) {
+        queryFactory
+                .delete(weeklyContent)
+                .where(weeklyContent.subject.subjectId.eq(subjectId))
+                .execute();
     }
 }

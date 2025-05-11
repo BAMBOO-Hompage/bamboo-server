@@ -107,4 +107,15 @@ public class WeeklyContentServiceImpl implements WeeklyContentService {
         weeklyContentRepository.getById(id);
         weeklyContentRepository.delete(id);
     }
+
+    /**
+     * 과목의 주차별 내용 전체 삭제
+     */
+    @Override
+    @Transactional
+    public void deleteBySubjectId(Long subjectId) {
+        subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
+        weeklyContentRepository.deleteBySubjcetId(subjectId);
+    }
 }

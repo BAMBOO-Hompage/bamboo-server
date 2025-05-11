@@ -13,4 +13,5 @@ public interface WeeklyContentRepository {
     Optional<WeeklyContent> findBySubjectAndWeek(Subject subject, int week);
     WeeklyContent save(WeeklyContent weeklyContent);
     void delete(Long id);
+    void deleteBySubjcetId(Long subjectId);
 }

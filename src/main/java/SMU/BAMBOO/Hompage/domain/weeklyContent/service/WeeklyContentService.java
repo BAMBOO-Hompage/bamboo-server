@@ -12,4 +12,5 @@ public interface WeeklyContentService {
     List<WeeklyContentResponseDTO.GetOne> getWeeklyContentBySubjectId(Long subjectId);
     WeeklyContentResponseDTO.Update update(Long id, Long subjectId, WeeklyContentRequestDTO.Update request);
     void delete(Long id, Long subjectId);
+    void deleteBySubjectId(Long subjectId);
 }

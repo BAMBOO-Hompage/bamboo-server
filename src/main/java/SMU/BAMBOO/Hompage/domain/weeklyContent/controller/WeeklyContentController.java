@@ -72,4 +72,13 @@ public class WeeklyContentController {
         weeklyContentService.delete(id, subjectId);
         return SuccessResponse.ok("주차별 내용 삭제에 성공했습니다.");
     }
+
+    @DeleteMapping
+    @Operation(summary = "과목에 있는 주차별 내용 모두 삭제")
+    public SuccessResponse<String> deleteBySubjectId(
+            @PathVariable("subjectId") Long subjectId
+    ) {
+        weeklyContentService.deleteBySubjectId(subjectId);
+        return SuccessResponse.ok("과목의 주차별 내용 전체 삭제에 성공했습니다.");
+    }
 }

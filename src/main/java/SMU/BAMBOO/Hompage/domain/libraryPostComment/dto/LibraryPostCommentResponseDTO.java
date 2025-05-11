@@ -53,4 +53,23 @@ public class LibraryPostCommentResponseDTO {
             );
         }
     }
+
+    @Schema(description = "자료 게시판 댓글 페이지네이션 응답 DTO")
+    public record PagedGet(
+            List<GetOne> content,
+            int page,
+            int size,
+            int totalPages,
+            long totalElements
+    ) {
+        public static PagedGet from(org.springframework.data.domain.Page<GetOne> pageResult) {
+            return new PagedGet(
+                    pageResult.getContent(),
+                    pageResult.getNumber() + 1,
+                    pageResult.getSize(),
+                    pageResult.getTotalPages(),
+                    pageResult.getTotalElements()
+            );
+        }
+    }
 }

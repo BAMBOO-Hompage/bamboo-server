@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.knowledgeComment.dto;
 import SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.KnowledgeComment;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,5 +74,24 @@ public class KnowledgeCommentResponseDTO {
             );
         }
 
+    }
+
+    @Schema(description = "댓글 페이지네이션 응답 DTO")
+    public record PagedGet(
+            @Schema(description = "댓글 리스트") List<GetOne> content,
+            @Schema(description = "현재 페이지 (1부터 시작)") int page,
+            @Schema(description = "페이지 크기") int size,
+            @Schema(description = "전체 페이지 수") int totalPages,
+            @Schema(description = "전체 댓글 수") long totalElements
+    ) {
+        public static PagedGet from(Page<GetOne> pageResult) {
+            return new PagedGet(
+                    pageResult.getContent(),
+                    pageResult.getNumber() + 1,
+                    pageResult.getSize(),
+                    pageResult.getTotalPages(),
+                    pageResult.getTotalElements()
+            );
+        }
     }
 }

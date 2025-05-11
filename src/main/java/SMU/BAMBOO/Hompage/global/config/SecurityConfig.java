@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/api/members/login",
             "/api/members/sign-up",
             "/api/members/password",
+            "/api/members/exists",
             "/api/emails/**",
             "/auth/reissue",
             "/api/main-activities/year",

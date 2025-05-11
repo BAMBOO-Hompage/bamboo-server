@@ -29,6 +29,8 @@ public interface MemberService {
         void updatePw(Long memberId, MemberRequestDTO.UpdatePw request);
 
         void resetPw(MemberRequestDTO.ResetPw request);
+
+        boolean existsByStudentId(String studentId);
     }
 
     interface AdminService {

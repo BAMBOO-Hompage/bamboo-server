@@ -99,4 +99,9 @@ public class MemberRepositoryImpl implements MemberRepository {
                         .and(member.deletedAt.loe(threshold)))
                 .execute();
     }
+
+    @Override
+    public boolean existsByStudentId(String studentId) {
+        return memberJpaRepository.existsByStudentId(studentId);
+    }
 }

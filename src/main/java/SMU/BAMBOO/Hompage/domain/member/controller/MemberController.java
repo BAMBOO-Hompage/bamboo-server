@@ -110,15 +110,6 @@ public class MemberController {
         return SuccessResponse.ok(result);
     }
 
-    /** DB 초기화하는 경우를 대비하여 냅둡니다 */
-//    @PatchMapping("/{memberId}/role/test")
-//    @Operation(summary = "임원진 권한 없이 권한 변경 - 초기에 필요")
-//    public SuccessResponse<MemberResponse> testUpdateRole(
-//            @RequestBody TestUpdateRoleDto request) {
-//        MemberResponse result = memberService.testUpdateRole(request);
-//        return SuccessResponse.ok(result);
-//    }
-
     @PostMapping("/deactivate")
     @Operation(summary = "회원 탈퇴 - 7일 후 자동 삭제")
     public SuccessResponse<String> deactivateMember(@CurrentMember Member member) {
@@ -132,4 +123,12 @@ public class MemberController {
         adminService.deactivateMember(memberId);
         return SuccessResponse.ok("회원 비활성화에 성공했습니다.");
     }
+
+    @GetMapping("/exists")
+    @Operation(summary = "학번으로 회원 존재 여부 확인")
+    public SuccessResponse<Boolean> checkStudentIdExists(@RequestParam("studentId") String studentId) {
+        boolean exists = memberInfoService.existsByStudentId(studentId);
+        return SuccessResponse.ok(exists);
+    }
+
 }

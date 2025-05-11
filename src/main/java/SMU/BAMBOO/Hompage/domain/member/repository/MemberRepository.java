@@ -19,4 +19,5 @@ public interface MemberRepository {
     Page<Member> findAll(Pageable pageable);
     Page<Member> findAllSortByRole(Pageable pageable);
     void hardDeleteOldMembers(LocalDateTime threshold);
+    boolean existsByStudentId(String studentId);
 }

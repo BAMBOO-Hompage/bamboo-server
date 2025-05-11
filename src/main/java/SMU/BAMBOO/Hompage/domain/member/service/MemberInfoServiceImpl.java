@@ -129,6 +129,14 @@ public class MemberInfoServiceImpl implements MemberService.MemberInfoService {
         member.updatePw(newPassword);
     }
 
+    /**
+     * 학번으로 회원 존재 여부 검증
+     */
+    @Override
+    public boolean existsByStudentId(String studentId) {
+        return memberRepository.existsByStudentId(studentId);
+    }
+
     // ID로 회원 반환
     private Member getMemberById(Long id){
         return memberRepository.findById(id)

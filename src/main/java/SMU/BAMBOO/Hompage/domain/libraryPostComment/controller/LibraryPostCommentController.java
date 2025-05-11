@@ -36,15 +36,15 @@ public class LibraryPostCommentController {
 
     @GetMapping
     @Operation(summary = "댓글 목록 조회")
-    public SuccessResponse<List<LibraryPostCommentResponseDTO.GetOne>> getComments(
+    public SuccessResponse<LibraryPostCommentResponseDTO.PagedGet> getComments(
             @PathVariable Long libraryPostId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return SuccessResponse.ok(libraryPostCommentService.getCommentsByPostId(libraryPostId, pageable).getContent());
+        var pageResult = libraryPostCommentService.getCommentsByPostId(libraryPostId, pageable);
+        return SuccessResponse.ok(LibraryPostCommentResponseDTO.PagedGet.from(pageResult));
     }
-
     @PutMapping("/{commentId}")
     @Operation(summary = "댓글 수정")
     public SuccessResponse<List<LibraryPostCommentResponseDTO.GetOne>> updateComment(

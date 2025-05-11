@@ -40,14 +40,14 @@ public class KnowledgeCommentController {
 
     @GetMapping
     @Operation(summary = "댓글 목록 조회")
-    public SuccessResponse<List<KnowledgeCommentResponseDTO.GetOne>> getComments(
+    public SuccessResponse<KnowledgeCommentResponseDTO.PagedGet> getComments(
             @PathVariable("knowledgeId") Long knowledgeId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        Pageable pageable = PageRequest.of(page - 1, size); // page-1 처리
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<KnowledgeCommentResponseDTO.GetOne> result = commentService.getCommentsByKnowledgeId(knowledgeId, pageable);
-        return SuccessResponse.ok(result.getContent());
+        return SuccessResponse.ok(KnowledgeCommentResponseDTO.PagedGet.from(result));
     }
 
     @PutMapping("/{commentId}")

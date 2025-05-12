@@ -55,6 +55,7 @@ public class TestContainer {
         this.libraryPostService = LibraryPostServiceImpl.builder()
                 .libraryPostRepository(this.libraryPostRepository)
                 .tagRepository(this.tagRepository)
+                .awsS3Facade(awsS3Facade)
                 .build();
         this.tagService = TagServiceImpl.builder()
                 .tagRepository(this.tagRepository)

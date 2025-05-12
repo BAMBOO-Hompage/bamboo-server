@@ -8,17 +8,23 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.repository.FakeLibraryPostRepository;
 import SMU.BAMBOO.Hompage.mock.repository.FakeTagRepository;
 import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 class LibraryPostServiceImplTest {
 
@@ -26,14 +32,20 @@ class LibraryPostServiceImplTest {
     private FakeTagRepository fakeTagRepository;
     private LibraryPostServiceImpl libraryPostService;
     private Member testMember;
+    private AwsS3Facade awsS3Facade;
 
     @BeforeEach
     void init() {
         fakeLibraryPostRepository = new FakeLibraryPostRepository();
         fakeTagRepository = new FakeTagRepository();
+        awsS3Facade = Mockito.mock(AwsS3Facade.class);
+        when(awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
+                .thenReturn("https://s3.aws.com/test.pdf");
+
         libraryPostService = LibraryPostServiceImpl.builder()
                 .libraryPostRepository(fakeLibraryPostRepository)
                 .tagRepository(fakeTagRepository)
+                .awsS3Facade(awsS3Facade)
                 .build();
 
         testMember = Member.builder()
@@ -74,9 +86,12 @@ class LibraryPostServiceImplTest {
                 "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
 
         // When
-        LibraryPostResponseDTO.Create response = libraryPostService.create(request, testMember);
+        LibraryPostResponseDTO.Create response = libraryPostService.create(request, testMember, file);
 
         // Then
         assertThat(response).isNotNull();

@@ -7,25 +7,33 @@ import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.jwt.userDetails.CustomUserDetails;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.container.TestContainer;
 import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 public class LibraryPostControllerTest {
 
     private TestContainer testContainer;
     private Member testMember;
+    private AwsS3Facade awsS3Facade;
 
     @BeforeEach
     void setUp() {
         testContainer = new TestContainer();
+        awsS3Facade = Mockito.mock(AwsS3Facade.class);
 
         testMember = Member.builder()
                 .memberId(1L)
@@ -44,6 +52,9 @@ public class LibraryPostControllerTest {
         testContainer.tagRepository.save(Tag.builder().tagId(2L).name("ML").build());
         testContainer.tagRepository.save(Tag.builder().tagId(3L).name("DA").build());
         testContainer.tagRepository.save(Tag.builder().tagId(4L).name("DL").build());
+
+        when(awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
+                .thenReturn("https://s3.aws.com/test.pdf");
     }
 
     @Test
@@ -58,9 +69,13 @@ public class LibraryPostControllerTest {
                 List.of("CV", "ML")
         );
 
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
+
         // When
         LibraryPostResponseDTO.Create response =
-                testContainer.libraryPostService.create(request, testMember);
+                testContainer.libraryPostService.create(request, testMember, file);
 
         // Then
         assertThat(response.link()).isEqualTo("http://link.com");
@@ -83,7 +98,10 @@ public class LibraryPostControllerTest {
                 "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
-        LibraryPostResponseDTO.Create libraryPost = testContainer.libraryPostService.create(request, testMember);
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
+        LibraryPostResponseDTO.Create libraryPost = testContainer.libraryPostService.create(request, testMember, file);
 
         // When
         LibraryPostResponseDTO.GetOne response = testContainer.libraryPostService.getById(libraryPost.libraryPostId());
@@ -108,7 +126,10 @@ public class LibraryPostControllerTest {
                 "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
-        LibraryPostResponseDTO.Create libraryPost = testContainer.libraryPostService.create(request, testMember);
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
+        LibraryPostResponseDTO.Create libraryPost = testContainer.libraryPostService.create(request, testMember, file);
 
         LibraryPostRequestDTO.Update updateRequest = new LibraryPostRequestDTO.Update(
                 "http://newlink.com",
@@ -143,7 +164,10 @@ public class LibraryPostControllerTest {
                 "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
-        LibraryPostResponseDTO.Create createdPost = testContainer.libraryPostService.create(request, testMember);
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
+        LibraryPostResponseDTO.Create createdPost = testContainer.libraryPostService.create(request, testMember, file);
 
         // When
         testContainer.libraryPostService.delete(createdPost.libraryPostId());
@@ -163,7 +187,10 @@ public class LibraryPostControllerTest {
                 "최신 논문에 대한 정리",
                 List.of("CV", "ML")
         );
-        LibraryPostResponseDTO.Create createdPost = testContainer.libraryPostService.create(request, testMember);
+        MultipartFile file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
+        LibraryPostResponseDTO.Create createdPost = testContainer.libraryPostService.create(request, testMember, file);
         LibraryPostRequestDTO.ResetTag resetTagRequest = new LibraryPostRequestDTO.ResetTag(List.of("DA", "DL"));
 
         // When

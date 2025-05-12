@@ -193,6 +193,15 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         LibraryPost libraryPost = getLibraryPostById(id);
         validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_DELETE);
 
+        String fileUrl = libraryPost.getFileUrl();
+        if (fileUrl != null && !fileUrl.isBlank()) {
+            try {
+                awsS3Facade.deleteFile(fileUrl);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.DELETE_FAILED);
+            }
+        }
+
         libraryPostRepository.deleteById(id);
     }
 

@@ -7,12 +7,16 @@ import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @RestController
@@ -23,13 +27,16 @@ public class LibraryPostController {
 
     private final LibraryPostService libraryPostService;
 
-    @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "알렉산드리아에 글 등록")
     public SuccessResponse<LibraryPostResponseDTO.Create> create(
-            @Valid @RequestBody LibraryPostRequestDTO.Create request,
-            @CurrentMember Member member
+            @CurrentMember Member member,
+            @RequestPart LibraryPostRequestDTO.Create request,
+            @RequestPart(required = false) MultipartFile file
     ) {
-        LibraryPostResponseDTO.Create result = libraryPostService.create(request, member);
+        LibraryPostResponseDTO.Create result = libraryPostService.create(request, member, file);
         return SuccessResponse.ok(result);
     }
 

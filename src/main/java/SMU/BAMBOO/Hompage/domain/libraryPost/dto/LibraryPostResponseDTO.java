@@ -33,6 +33,9 @@ public class LibraryPostResponseDTO {
             @Schema(description = "링크")
             String link,
 
+            @Schema(description = "파일 URL")
+            String fileUrl,
+
             @Schema(description = "관련 태그들")
             List<String> tagNames
     ) {
@@ -47,6 +50,7 @@ public class LibraryPostResponseDTO {
                     libraryPost.getTopic(),
                     libraryPost.getContent(),
                     libraryPost.getLink(),
+                    libraryPost.getFileUrl(),
                     Optional.ofNullable(libraryPost.getLibraryPostTags())
                             .orElse(List.of())
                             .stream()
@@ -79,6 +83,9 @@ public class LibraryPostResponseDTO {
             @Schema(description = "링크")
             String link,
 
+            @Schema(description = "파일 URL")
+            String fileUrl,
+
             @Schema(description = "관련 태그들")
             List<String> tagNames,
 
@@ -96,6 +103,7 @@ public class LibraryPostResponseDTO {
                     libraryPost.getTopic(),
                     libraryPost.getContent(),
                     libraryPost.getLink(),
+                    libraryPost.getFileUrl(),
                     Optional.ofNullable(libraryPost.getLibraryPostTags())
                             .orElse(List.of())
                             .stream()
@@ -114,6 +122,7 @@ public class LibraryPostResponseDTO {
                     this.topic,
                     this.content,
                     this.link,
+                    this.fileUrl,
                     this.tagNames,
                     count
             );

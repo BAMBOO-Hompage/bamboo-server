@@ -12,6 +12,7 @@ import SMU.BAMBOO.Hompage.domain.tag.repository.TagRepository;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.jwt.util.SecurityUtil;
+import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +38,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     private final LibraryPostRepository libraryPostRepository;
     private final LibraryPostCommentRepository libraryPostCommentRepository;
     private final TagRepository tagRepository;
+    private final AwsS3Facade awsS3Facade;
 
     private LibraryPost getLibraryPostById(Long id) {
         return libraryPostRepository.findById(id)
@@ -44,9 +47,18 @@ public class LibraryPostServiceImpl implements LibraryPostService {
 
     @Override
     @Transactional
-    public LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member) {
+    public LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member, MultipartFile file) {
 
         List<String> tagNames = dto.tagNames() != null ? dto.tagNames() : List.of();
+
+        String fileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            try {
+                fileUrl = awsS3Facade.uploadFile("alexandria/pdf", file, false);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
+        }
 
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
@@ -57,6 +69,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
                 .topic(dto.topic())
                 .content(dto.content())
                 .link(dto.link())
+                .fileUrl(fileUrl)
                 .build();
 
         // 이미 존재하는 태그 조회

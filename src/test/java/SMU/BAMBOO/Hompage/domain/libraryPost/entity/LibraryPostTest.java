@@ -29,7 +29,8 @@ public class LibraryPostTest {
                 "CV 논문2",
                 "머신러닝의 ~에 대하여",
                 "[수정] 최신 논문에 대한 정리",
-                List.of()
+                List.of(),
+                null
         );
 
         // When

@@ -134,7 +134,8 @@ public class LibraryPostControllerTest {
                 "DL 논문",
                 "DL의 ~에 대하여",
                 "최신 딥러닝 논문에 대한 정리",
-                List.of("DA", "DL")
+                List.of("DA", "DL"),
+                null
         );
 
         // When

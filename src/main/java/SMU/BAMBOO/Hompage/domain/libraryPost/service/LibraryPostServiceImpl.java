@@ -158,6 +158,16 @@ public class LibraryPostServiceImpl implements LibraryPostService {
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.UPLOAD_FAILED);
             }
+        } else if (request.fileUrl() != null && !request.fileUrl().isBlank()) {
+            fileUrl = request.fileUrl();
+        } else {
+            if (libraryPost.getFileUrl() != null) {
+                try {
+                    awsS3Facade.deleteFile(libraryPost.getFileUrl());
+                } catch (Exception e) {
+                    throw new CustomException(ErrorCode.DELETE_FAILED);
+                }
+            }
         }
 
         List<String> tagNames = request.tagNames() != null ? request.tagNames() : List.of();

@@ -31,6 +31,7 @@ class LibraryPostServiceImplTest {
     private FakeLibraryPostRepository fakeLibraryPostRepository;
     private LibraryPostServiceImpl libraryPostService;
     private Member testMember;
+    private MultipartFile file;
 
     @BeforeEach
     void init() {
@@ -69,6 +70,10 @@ class LibraryPostServiceImplTest {
                 .topic("CV의 ~에 대하여")
                 .link("link..")
                 .build());
+
+        file = new MockMultipartFile(
+                "files", "test-file.pdf", "application/pdf", "test-file-content".getBytes()
+        );
 
         SecurityTestUtil.setAuthentication(testMember);
     }
@@ -123,7 +128,7 @@ class LibraryPostServiceImplTest {
         );
 
         //when
-        libraryPostService.update(1L, request);
+        libraryPostService.update(1L, request, file);
 
         //then
         Optional<LibraryPost> updatedPost = fakeLibraryPostRepository.findById(1L);
@@ -154,7 +159,7 @@ class LibraryPostServiceImplTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> libraryPostService.update(99L, request))
+        assertThatThrownBy(() -> libraryPostService.update(99L, request, file))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.LIBRARY_POST_NOT_EXIST.getMessage());
     }

@@ -33,7 +33,7 @@ public class LibraryPostTest {
         );
 
         // When
-        libraryPost.updateBasicFields(request);
+        libraryPost.updateBasicFields(request, "test-file.url");
 
         // Then
         assertThat(libraryPost.getPaperName()).isEqualTo("CV 논문2");
@@ -41,6 +41,7 @@ public class LibraryPostTest {
         assertThat(libraryPost.getTopic()).isEqualTo("머신러닝의 ~에 대하여");
         assertThat(libraryPost.getContent()).isEqualTo("[수정] 최신 논문에 대한 정리");
         assertThat(libraryPost.getLink()).isEqualTo("http://linkkk.com");
+        assertThat(libraryPost.getFileUrl()).isEqualTo("test-file.url");
     }
 
     @Test

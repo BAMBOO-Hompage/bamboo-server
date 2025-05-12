@@ -26,12 +26,11 @@ public class LibraryPostControllerTest {
 
     private TestContainer testContainer;
     private Member testMember;
-    private AwsS3Facade awsS3Facade;
 
     @BeforeEach
     void setUp() {
         testContainer = new TestContainer();
-        awsS3Facade = Mockito.mock(AwsS3Facade.class);
+        AwsS3Facade awsS3Facade = Mockito.mock(AwsS3Facade.class);
 
         testMember = Member.builder()
                 .memberId(1L)
@@ -139,7 +138,7 @@ public class LibraryPostControllerTest {
         );
 
         // When
-        testContainer.libraryPostService.update(libraryPost.libraryPostId(), updateRequest);
+        testContainer.libraryPostService.update(libraryPost.libraryPostId(), updateRequest, file);
         LibraryPostResponseDTO.GetOne updatedPost = testContainer.libraryPostService.getById(libraryPost.libraryPostId());
 
         // Then

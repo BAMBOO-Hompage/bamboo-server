@@ -29,16 +29,14 @@ import static org.mockito.Mockito.when;
 class LibraryPostServiceImplTest {
 
     private FakeLibraryPostRepository fakeLibraryPostRepository;
-    private FakeTagRepository fakeTagRepository;
     private LibraryPostServiceImpl libraryPostService;
     private Member testMember;
-    private AwsS3Facade awsS3Facade;
 
     @BeforeEach
     void init() {
         fakeLibraryPostRepository = new FakeLibraryPostRepository();
-        fakeTagRepository = new FakeTagRepository();
-        awsS3Facade = Mockito.mock(AwsS3Facade.class);
+        FakeTagRepository fakeTagRepository = new FakeTagRepository();
+        AwsS3Facade awsS3Facade = Mockito.mock(AwsS3Facade.class);
         when(awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
                 .thenReturn("https://s3.aws.com/test.pdf");
 

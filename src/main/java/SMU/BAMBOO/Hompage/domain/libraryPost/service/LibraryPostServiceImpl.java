@@ -134,13 +134,30 @@ public class LibraryPostServiceImpl implements LibraryPostService {
 
     @Override
     @Transactional
-    public void update(Long id, LibraryPostRequestDTO.Update request) {
+    public void update(Long id, LibraryPostRequestDTO.Update request, MultipartFile file) {
         LibraryPost libraryPost = getLibraryPostById(id);
         validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
 
         String currentStudentId = SecurityUtil.getCurrentStudentId();
         if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
+        }
+
+        String fileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            if (libraryPost.getFileUrl() != null) {
+                try {
+                    awsS3Facade.deleteFile(libraryPost.getFileUrl());
+                } catch (Exception e) {
+                    throw new CustomException(ErrorCode.DELETE_FAILED);
+                }
+            }
+
+            try {
+                fileUrl = awsS3Facade.uploadFile("alexandria/pdf", file, false);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
         }
 
         List<String> tagNames = request.tagNames() != null ? request.tagNames() : List.of();
@@ -167,7 +184,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
 
         // 태그 업데이트
         libraryPost.setTags(allTags);
-        libraryPost.updateBasicFields(request);
+        libraryPost.updateBasicFields(request, fileUrl);
     }
 
     @Override
@@ -244,6 +261,4 @@ public class LibraryPostServiceImpl implements LibraryPostService {
             throw new CustomException(errorCode);
         }
     }
-
-
 }

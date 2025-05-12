@@ -61,13 +61,16 @@ public class LibraryPostController {
         return SuccessResponse.ok(result);
     }
 
-    @PutMapping("/{libraryPostId}")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
+    @PutMapping(value = "/{libraryPostId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "알렉산드리아 글 수정")
     public SuccessResponse<String> update(
             @PathVariable("libraryPostId") Long id,
-            @Valid @RequestBody LibraryPostRequestDTO.Update request
+            @RequestPart LibraryPostRequestDTO.Update request,
+            @RequestPart(required = false) MultipartFile file
     ) {
-        libraryPostService.update(id, request);
+        libraryPostService.update(id, request, file);
         return SuccessResponse.ok("알렉산드리아 글 수정에 성공했습니다.");
     }
 

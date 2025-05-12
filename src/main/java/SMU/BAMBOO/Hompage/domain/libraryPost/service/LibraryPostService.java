@@ -11,7 +11,7 @@ public interface LibraryPostService {
     LibraryPostResponseDTO.Create create(LibraryPostRequestDTO.Create dto, Member member, MultipartFile file);
     LibraryPostResponseDTO.GetOne getById(Long id);
     Page<LibraryPostResponseDTO.GetOne> getLibraryPosts(String tab, String keyword, int page, int size);
-    void update(Long id, LibraryPostRequestDTO.Update dto);
+    void update(Long id, LibraryPostRequestDTO.Update dto, MultipartFile file);
     void delete(Long id);
     LibraryPostResponseDTO.GetOne addTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);
     LibraryPostResponseDTO.GetOne resetTags(Long libraryPostId, LibraryPostRequestDTO.ResetTag dto);

@@ -46,19 +46,20 @@ public class LibraryPost extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String link;
 
-    @Column(name = "file_url", nullable = false)
+    @Column(name = "file_url")
     private String fileUrl;
 
     @Builder.Default
     @OneToMany(mappedBy = "libraryPost", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryPostTag> libraryPostTags = new ArrayList<>();
 
-    public void updateBasicFields(LibraryPostRequestDTO.Update request) {
+    public void updateBasicFields(LibraryPostRequestDTO.Update request, String fileUrl) {
         this.paperName = request.paperName();
         this.year = request.year();
         this.topic = request.topic();
         this.content = request.content();
         this.link = request.link();
+        this.fileUrl = fileUrl;
     }
 
     /** 연관관계 편의 메서드 */

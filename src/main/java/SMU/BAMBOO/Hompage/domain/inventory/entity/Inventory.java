@@ -44,7 +44,7 @@ public class Inventory extends BaseEntity {
     @Column(name = "file_url")
     private String fileUrl;
 
-    @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Award award;
 
     public void updateInventory(InventoryRequestDTO.Update updateRequest, String fileUrl) {

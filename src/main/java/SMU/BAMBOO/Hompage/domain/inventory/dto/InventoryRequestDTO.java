@@ -17,6 +17,7 @@ public class InventoryRequestDTO {
     public record Update(
             @Schema(description = "제목", example = "CV 스터디 정리") String title,
             @Schema(description = "내용", example = "수정했습니다~") String content,
-            @Schema(description = "스터디 주차", example = "1") int week
+            @Schema(description = "스터디 주차", example = "1") int week,
+            @Schema(description = "유지할 파일 URL", example = "https://s3.aws.com/file.pdf") String fileUrl
     ) {}
 }

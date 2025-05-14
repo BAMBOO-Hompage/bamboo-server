@@ -132,21 +132,34 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     @Transactional
     public InventoryResponseDTO.Update update(Long id, InventoryRequestDTO.Update request, MultipartFile file) {
-        // 객체 조회 및 수정
         Inventory inventory = getInventoryById(id);
 
         String fileUrl = null;
+
         if (file != null && !file.isEmpty()) {
             // 기존 파일 삭제
             if (inventory.getFileUrl() != null) {
-                awsS3Facade.deleteFile(inventory.getFileUrl());
+                try {
+                    awsS3Facade.deleteFile(inventory.getFileUrl());
+                } catch (Exception e) {
+                    throw new CustomException(ErrorCode.DELETE_FAILED);
+                }
             }
-
-            // 새로운 파일 업로드
+            // 새 파일 업로드
             try {
                 fileUrl = awsS3Facade.uploadFile("inventory/pdf", file, false);
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.UPLOAD_FAILED);
+            }
+        } else if (request.fileUrl() != null && !request.fileUrl().isBlank()) {
+            fileUrl = request.fileUrl();
+        } else {
+            if (inventory.getFileUrl() != null) {
+                try {
+                    awsS3Facade.deleteFile(inventory.getFileUrl());
+                } catch (Exception e) {
+                    throw new CustomException(ErrorCode.DELETE_FAILED);
+                }
             }
         }
 
@@ -154,6 +167,7 @@ public class InventoryServiceImpl implements InventoryService {
 
         return InventoryResponseDTO.Update.from(inventory);
     }
+
 
     /**
      * 스터디 정리본 삭제

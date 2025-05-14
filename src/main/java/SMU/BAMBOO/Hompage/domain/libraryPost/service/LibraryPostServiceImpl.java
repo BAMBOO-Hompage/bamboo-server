@@ -138,11 +138,6 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         LibraryPost libraryPost = getLibraryPostById(id);
         validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
 
-        String currentStudentId = SecurityUtil.getCurrentStudentId();
-        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
-        }
-
         String fileUrl = null;
         if (file != null && !file.isEmpty()) {
             if (libraryPost.getFileUrl() != null) {
@@ -271,12 +266,15 @@ public class LibraryPostServiceImpl implements LibraryPostService {
     }
 
     /**
-     * 현재 사용자가 알렉산드리아 게시글의 작성자인지 검증하는 메서드
+     * 현재 사용자가 알렉산드리아 게시글의 작성자이거나 운영진인지 검증하는 메서드
      */
     private void validateOwner(LibraryPost libraryPost, ErrorCode errorCode) {
         String currentStudentId = SecurityUtil.getCurrentStudentId();
 
-        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
+        boolean isOwner = libraryPost.getMember().getStudentId().equals(currentStudentId);
+        boolean isAdminOrOps = SecurityUtil.hasRole("ROLE_ADMIN") || SecurityUtil.hasRole("ROLE_OPS");
+
+        if (!isOwner && !isAdminOrOps) {
             throw new CustomException(errorCode);
         }
     }

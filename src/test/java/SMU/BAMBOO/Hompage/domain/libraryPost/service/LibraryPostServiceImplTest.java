@@ -9,6 +9,7 @@ import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
+import SMU.BAMBOO.Hompage.mock.repository.FakeLibraryPostCommentRepository;
 import SMU.BAMBOO.Hompage.mock.repository.FakeLibraryPostRepository;
 import SMU.BAMBOO.Hompage.mock.repository.FakeTagRepository;
 import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
@@ -36,6 +37,7 @@ class LibraryPostServiceImplTest {
     @BeforeEach
     void init() {
         fakeLibraryPostRepository = new FakeLibraryPostRepository();
+        FakeLibraryPostCommentRepository fakeLibraryPostCommentRepository = new FakeLibraryPostCommentRepository();
         FakeTagRepository fakeTagRepository = new FakeTagRepository();
         AwsS3Facade awsS3Facade = Mockito.mock(AwsS3Facade.class);
         when(awsS3Facade.uploadFile(anyString(), any(), anyBoolean()))
@@ -43,6 +45,7 @@ class LibraryPostServiceImplTest {
 
         libraryPostService = LibraryPostServiceImpl.builder()
                 .libraryPostRepository(fakeLibraryPostRepository)
+                .libraryPostCommentRepository(fakeLibraryPostCommentRepository)
                 .tagRepository(fakeTagRepository)
                 .awsS3Facade(awsS3Facade)
                 .build();

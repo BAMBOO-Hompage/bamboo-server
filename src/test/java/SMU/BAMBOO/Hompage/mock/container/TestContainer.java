@@ -6,6 +6,7 @@ import SMU.BAMBOO.Hompage.domain.knowledge.service.KnowledgeServiceImpl;
 import SMU.BAMBOO.Hompage.domain.libraryPost.controller.LibraryPostController;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.service.LibraryPostServiceImpl;
+import SMU.BAMBOO.Hompage.domain.libraryPostComment.repository.LibraryPostCommentRepository;
 import SMU.BAMBOO.Hompage.domain.mainActivites.controller.MainActivitiesController;
 import SMU.BAMBOO.Hompage.domain.mainActivites.repository.MainActivitiesRepository;
 import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesServiceImpl;
@@ -23,6 +24,7 @@ import org.mockito.Mockito;
 public class TestContainer {
 
     public final LibraryPostRepository libraryPostRepository;
+    public final LibraryPostCommentRepository libraryPostCommentRepository;
     public final TagRepository tagRepository;
     public final MainActivitiesRepository mainActivitiesRepository;
     public final NoticeRepository noticeRepository;
@@ -45,6 +47,7 @@ public class TestContainer {
     @Builder
     public TestContainer() {
         this.libraryPostRepository = new FakeLibraryPostRepository();
+        this.libraryPostCommentRepository = new FakeLibraryPostCommentRepository();
         this.tagRepository = new FakeTagRepository();
         this.mainActivitiesRepository = new FakeMainActivitiesRepository();
         this.noticeRepository = new FakeNoticeRepository();
@@ -54,6 +57,7 @@ public class TestContainer {
 
         this.libraryPostService = LibraryPostServiceImpl.builder()
                 .libraryPostRepository(this.libraryPostRepository)
+                .libraryPostCommentRepository(this.libraryPostCommentRepository)
                 .tagRepository(this.tagRepository)
                 .awsS3Facade(awsS3Facade)
                 .build();

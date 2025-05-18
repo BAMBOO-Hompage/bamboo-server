@@ -7,4 +7,5 @@ public interface LibraryPostCommentRepository {
     LibraryPostComment findParentByIdOrThrow(Long id);
     void validateBelongsToPost(LibraryPostComment comment, Long postId);
     int countByPostId(Long libraryPostId);
+    void deleteAllByLibraryPostId(Long libraryPostId);
 }

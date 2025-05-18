@@ -207,6 +207,7 @@ public class LibraryPostServiceImpl implements LibraryPostService {
             }
         }
 
+        libraryPostCommentRepository.deleteAllByLibraryPostId(id);
         libraryPostRepository.deleteById(id);
     }
 

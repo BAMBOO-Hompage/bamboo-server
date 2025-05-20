@@ -42,7 +42,8 @@ class KnowledgeTest {
 
         // Then
         assertThat(knowledge).isNotNull();
-        assertThat(knowledge.getMember()).isEqualTo(testMember);
+        assertThat(knowledge.getWriterId()).isEqualTo(testMember.getMemberId());
+        assertThat(knowledge.getWriterName()).isEqualTo(testMember.getName());
         assertThat(knowledge.getTitle()).isEqualTo("지식 공유 글");
         assertThat(knowledge.getContent()).isEqualTo("이 글은 지식 공유를 위한 글입니다.");
         assertThat(knowledge.getType()).isEqualTo(KnowledgeType.RESOURCES);
@@ -56,7 +57,8 @@ class KnowledgeTest {
     void updateKnowledgeSuccessfully() {
         // Given
         Knowledge knowledge = Knowledge.builder()
-                .member(testMember)
+                .writerId(testMember.getMemberId())
+                .writerName(testMember.getName())
                 .title("파이썬 지식공유")
                 .content("반복문이란 ~")
                 .type(KnowledgeType.RESOURCES)
@@ -88,7 +90,8 @@ class KnowledgeTest {
     void updateKnowledgeWithNullImageAndFileLists() {
         // Given
         Knowledge knowledge = Knowledge.builder()
-                .member(testMember)
+                .writerId(testMember.getMemberId())
+                .writerName(testMember.getName())
                 .title("기존 지식 글")
                 .content("기존 내용")
                 .type(KnowledgeType.RESOURCES)

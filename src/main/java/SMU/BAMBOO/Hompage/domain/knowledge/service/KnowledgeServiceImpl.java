@@ -148,11 +148,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
      * 현재 사용자가 게시글의 작성자이거나 관리자/운영진인지 검증하는 메서드
      */
     private void validateOwnerOrAdmin(Member member, Knowledge knowledge, ErrorCode errorCode) {
-        String currentStudentId = member.getStudentId();
+        Knowledge findKnowledge = knowledgeRepository.findById(knowledge.getKnowledgeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.KNOWLEDGE_NOT_EXIST));
         String currentRole = member.getRole().name();
 
         boolean isAdmin = currentRole.equals("ROLE_ADMIN") || currentRole.equals("ROLE_OPS");
-        boolean isOwner = knowledge.getMember().getStudentId().equals(currentStudentId);
+        boolean isOwner = knowledge.getWriterId().equals(findKnowledge.getWriterId());
 
         if (!isOwner && !isAdmin) {
             throw new CustomException(errorCode);

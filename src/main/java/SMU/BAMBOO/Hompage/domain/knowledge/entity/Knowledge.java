@@ -24,9 +24,11 @@ public class Knowledge extends BaseEntity {
     @Column(name = "knowledge_id")
     private Long knowledgeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
-    private Member member;
+    @Column(name = "WRITER_ID", nullable = false)
+    private Long writerId;
+
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -60,7 +62,8 @@ public class Knowledge extends BaseEntity {
 
     public static Knowledge from(KnowledgeRequestDTO.Create request, Member member, List<String> images, List<String> files) {
         return Knowledge.builder()
-                .member(member)
+                .writerId(member.getMemberId())
+                .writerName(member.getName())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .type(request.getType())

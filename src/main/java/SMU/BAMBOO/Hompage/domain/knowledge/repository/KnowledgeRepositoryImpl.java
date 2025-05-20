@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static SMU.BAMBOO.Hompage.domain.knowledge.entity.QKnowledge.knowledge;
 import static SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.QKnowledgeComment.knowledgeComment;
-import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,7 +59,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
-                .leftJoin(knowledge.member, member).fetchJoin()
                 .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(knowledge.type.eq(type))
                 .orderBy(knowledge.createdAt.desc())
@@ -85,7 +83,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
-                .leftJoin(knowledge.member, member).fetchJoin()
                 .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(knowledge.title.containsIgnoreCase(title))
                 .orderBy(knowledge.createdAt.desc())
@@ -119,7 +116,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
 
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
-                .leftJoin(knowledge.member, member).fetchJoin()
                 .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .where(whereClause)
                 .offset(pageable.getOffset())
@@ -143,7 +139,6 @@ public class KnowledgeRepositoryImpl implements KnowledgeRepository {
         // 데이터 조회
         List<Knowledge> results = queryFactory
                 .selectFrom(knowledge)
-                .leftJoin(knowledge.member, member).fetchJoin()
                 .leftJoin(knowledge.knowledgeComments, knowledgeComment).fetchJoin()
                 .orderBy(knowledge.createdAt.desc())
                 .offset(pageable.getOffset())

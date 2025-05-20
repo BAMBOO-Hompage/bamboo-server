@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.member.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
+import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
@@ -66,6 +67,10 @@ public class Member extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberStudy> memberStudies = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Inventory> inventories = new ArrayList<>();
 
     public static Member from(MemberRequestDTO.SignUp request, BCryptPasswordEncoder encoder) {
         return Member.builder()

@@ -2,21 +2,19 @@ package SMU.BAMBOO.Hompage.domain.knowledge.dto;
 
 import SMU.BAMBOO.Hompage.domain.enums.KnowledgeType;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
-import SMU.BAMBOO.Hompage.domain.knowledgeComment.dto.KnowledgeCommentResponseDTO;
-import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Schema(description = "지식공유 게시판 응답 DTO")
 public class KnowledgeResponseDTO {
     @Schema(description = "지식공유 게시판 생성 응답 DTO")
     public record Create(
             @Schema(description = "지식공유 게시판 ID") Long knowledgeId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
+            @Schema(description = "작성자 ID") Long writerId,
+            @Schema(description = "작성자 이름") String writerName,
             @Schema(description = "제목") String title,
             @Schema(description = "내용") String content,
             @Schema(description = "게시글 유형(RESOURCES, INSIGHTS, CAREERS)") KnowledgeType type,
@@ -28,7 +26,8 @@ public class KnowledgeResponseDTO {
         public static KnowledgeResponseDTO.Create from(Knowledge knowledge) {
             return new KnowledgeResponseDTO.Create(
                     knowledge.getKnowledgeId(),
-                    MemberResponseDTO.MemberInfo.from(knowledge.getMember()),
+                    knowledge.getWriterId(),
+                    knowledge.getWriterName(),
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),
@@ -68,7 +67,8 @@ public class KnowledgeResponseDTO {
     @Schema(description = "지식공유 게시판 단건 조회 응답 DTO")
     public record GetOne(
             @Schema(description = "지식공유 게시판 ID") Long knowledgeId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
+            @Schema(description = "작성자 ID") Long writerId,
+            @Schema(description = "작성자 이름") String writerName,
             @Schema(description = "제목") String title,
             @Schema(description = "내용") String content,
             @Schema(description = "게시글 유형(RESOURCES, INSIGHTS, CAREERS)") KnowledgeType type,
@@ -82,7 +82,8 @@ public class KnowledgeResponseDTO {
         public static KnowledgeResponseDTO.GetOne from(Knowledge knowledge) {
             return new KnowledgeResponseDTO.GetOne(
                     knowledge.getKnowledgeId(),
-                    MemberResponseDTO.MemberInfo.from(knowledge.getMember()),
+                    knowledge.getWriterId(),
+                    knowledge.getWriterName(),
                     knowledge.getTitle(),
                     knowledge.getContent(),
                     knowledge.getType(),

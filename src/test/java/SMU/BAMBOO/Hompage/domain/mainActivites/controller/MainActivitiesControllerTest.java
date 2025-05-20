@@ -77,7 +77,6 @@ class MainActivitiesControllerTest {
         assertThat(response.getResult().getEndDate()).isEqualTo(LocalDate.of(2025, 2, 28));
         assertThat(response.getResult().getYear()).isEqualTo(2025);
         assertThat(response.getResult().getImages()).containsExactly("https://s3.aws.com/image1.png");
-        assertThat(response.getResult().getMemberName()).isEqualTo(testMember.getName());
 
         verify(testContainer.awsS3Facade, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
     }
@@ -166,7 +165,6 @@ class MainActivitiesControllerTest {
         assertThat(response.getResult().getStartDate()).isEqualTo(LocalDate.of(2025, 1, 1));
         assertThat(response.getResult().getEndDate()).isEqualTo(LocalDate.of(2025, 2, 28));
         assertThat(response.getResult().getYear()).isEqualTo(2025);
-        assertThat(response.getResult().getMemberName()).isEqualTo(testMember.getName());
     }
 
     @Test
@@ -181,7 +179,7 @@ class MainActivitiesControllerTest {
 
     @Test
     @DisplayName("주요 활동 게시물 수정 성공")
-    void updateMainActivity_Success() throws JsonProcessingException {
+    void updateMainActivity_Success() {
         // Given
         MainActivitiesRequestDTO.Create request = new MainActivitiesRequestDTO.Create();
         request.setTitle("BAMBOO 프로젝트");
@@ -265,7 +263,7 @@ class MainActivitiesControllerTest {
         // Then
         assertThatThrownBy(() -> testContainer.mainActivitiesController.updateMainActivity(activityId, updateRequest, List.of(), unauthorizedUser))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorCode.UNAUTHORIZED_UPDATE.getMessage());
+                .hasMessage(ErrorCode.USER_NO_PERMISSION.getMessage());
     }
 
     @Test

@@ -67,6 +67,10 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     @Override
     @Transactional
     public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<MultipartFile> newImages, Member member) {
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
+
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
 

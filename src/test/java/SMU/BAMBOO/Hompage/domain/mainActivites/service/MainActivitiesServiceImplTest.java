@@ -95,7 +95,6 @@ class MainActivitiesServiceImplTest {
         assertThat(response.getEndDate()).isEqualTo(LocalDate.of(2025, 2, 28));
         assertThat(response.getYear()).isEqualTo(2025);
         assertThat(response.getImages()).containsExactlyElementsOf(images);
-        assertThat(response.getMemberName()).isEqualTo(testMember.getName());
     }
 
     @Test

@@ -1,8 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.entity;
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -11,18 +9,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainActivitiesTest {
-
-    private Member testMember;
-
-    @BeforeEach
-    void setUp() {
-        testMember = Member.builder()
-                .memberId(1L)
-                .email("kjk@example.com")
-                .name("김재관")
-                .build();
-    }
-
     @Test
     void from_메서드_테스트() {
         // Given
@@ -35,11 +21,10 @@ public class MainActivitiesTest {
         List<String> imageUrls = List.of("https://s3.aws.com/image1.png", "https://s3.aws.com/image2.png");
 
         // When
-        MainActivities mainActivity = MainActivities.from(request, testMember, imageUrls);
+        MainActivities mainActivity = MainActivities.from(request, imageUrls);
 
         // Then
         assertThat(mainActivity).isNotNull();
-        assertThat(mainActivity.getMember()).isEqualTo(testMember);
         assertThat(mainActivity.getTitle()).isEqualTo("BAMBOO 프로젝트 개발");
         assertThat(mainActivity.getStartDate()).isEqualTo(LocalDate.of(2025, 1, 1));
         assertThat(mainActivity.getEndDate()).isEqualTo(LocalDate.of(2025, 2, 28));
@@ -51,7 +36,6 @@ public class MainActivitiesTest {
     void update_메서드_테스트() {
         // Given
         MainActivities mainActivity = MainActivities.builder()
-                .member(testMember)
                 .title("BAMBOO 프로젝트 개발")
                 .startDate(LocalDate.of(2025, 1, 1))
                 .endDate(LocalDate.of(2025, 2, 28))

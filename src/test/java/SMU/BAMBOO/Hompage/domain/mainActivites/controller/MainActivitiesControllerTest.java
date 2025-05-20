@@ -9,7 +9,6 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.mock.container.TestContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -198,10 +197,7 @@ class MainActivitiesControllerTest {
         MainActivitiesRequestDTO.Update updateRequest = new MainActivitiesRequestDTO.Update();
         updateRequest.setTitle("[수정] BAMBOO 프로젝트");
         updateRequest.setYear(2025);
-
-        // 기존 이미지 URL을 JSON 문자열로 변환하여 전달
-        ObjectMapper objectMapper = new ObjectMapper();
-        String imageUrlsJson = objectMapper.writeValueAsString(List.of("https://s3.aws.com/old_image.png"));
+        updateRequest.setKeptImageUrls(List.of("https://s3.aws.com/old_image.png"));
 
         // 새로운 이미지 파일(MockMultipartFile) 추가
         MockMultipartFile newImageFile = new MockMultipartFile(
@@ -218,7 +214,7 @@ class MainActivitiesControllerTest {
 
         // When
         SuccessResponse<String> updateResponse = testContainer.mainActivitiesController
-                .updateMainActivity(activityId, updateRequest, imageUrlsJson, newImages, testMember);
+                .updateMainActivity(activityId, updateRequest, newImages, testMember);
 
         SuccessResponse<MainActivitiesResponseDTO.Detail> updatedResponse =
                 testContainer.mainActivitiesController.getMainActivity(activityId);
@@ -230,8 +226,8 @@ class MainActivitiesControllerTest {
         assertThat(updatedResponse.getResult().getYear()).isEqualTo(2025);
 
         assertThat(updatedResponse.getResult().getImages()).containsExactlyInAnyOrder(
-                "https://s3.aws.com/old_image.png", // 기존 이미지
-                "https://s3.aws.com/new_image.png"  // 새로 업로드된 이미지
+                "https://s3.aws.com/old_image.png",
+                "https://s3.aws.com/new_image.png"
         );
 
         verify(testContainer.awsS3Facade, times(1))
@@ -267,9 +263,9 @@ class MainActivitiesControllerTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> testContainer.mainActivitiesController.updateMainActivity(activityId, updateRequest, "[]", List.of(), unauthorizedUser))
+        assertThatThrownBy(() -> testContainer.mainActivitiesController.updateMainActivity(activityId, updateRequest, List.of(), unauthorizedUser))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorCode.USER_NO_PERMISSION.getMessage());
+                .hasMessage(ErrorCode.UNAUTHORIZED_UPDATE.getMessage());
     }
 
     @Test
@@ -281,7 +277,7 @@ class MainActivitiesControllerTest {
         updateRequest.setYear(2025);
 
         // When & Then
-        assertThatThrownBy(() -> testContainer.mainActivitiesController.updateMainActivity(999L, updateRequest, "[]", List.of(), testMember))
+        assertThatThrownBy(() -> testContainer.mainActivitiesController.updateMainActivity(999L, updateRequest, List.of(), testMember))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST.getMessage());
     }

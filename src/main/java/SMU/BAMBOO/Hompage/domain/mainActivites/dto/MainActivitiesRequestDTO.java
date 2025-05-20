@@ -31,7 +31,7 @@ public class MainActivitiesRequestDTO {
         @Schema(description = "연도", example = "2025")
         private int year;
 
-        @Schema(description = "이미지 파일 목록", example = "[]", required = false)
+        @Schema(description = "이미지 파일 목록", example = "[]")
         private List<MultipartFile> images;
 
     }
@@ -57,9 +57,7 @@ public class MainActivitiesRequestDTO {
         @Schema(description = "연도", example = "2025")
         private int year;
 
-        @Schema(description = "기존 이미지 URL 및 새 파일 목록",
-                example = "[\"https://s3.aws.com/image1.png\", \"https://s3.aws.com/image2.png\"]",
-                required = false)
-        private List<Object> images;
+        @Schema(description = "유지할 기존 이미지 URL 리스트", example = "[\"https://.../image1.jpg\"]")
+        private List<String> keptImageUrls;
     }
 }

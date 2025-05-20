@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -152,7 +153,7 @@ class MainActivitiesServiceImplTest {
         updateRequest.setTitle("[수정] BAMBOO 프로젝트");
         updateRequest.setYear(2026);
 
-        List<Object> updatedImages = List.of("https://s3.aws.com/old_image.png", new MockMultipartFile("file", "test.png", "image/png", new byte[10])); // 파일 업로드 테스트 용도 (실제 업로드X)
+        List<MultipartFile> updatedImages = List.of(new MockMultipartFile("file", "test.png", "image/png", new byte[10])); // 파일 업로드 테스트 용도 (실제 업로드X)
 
         // When
         mainActivitiesService.updateMainActivity(savedActivity.getMainActivitiesId(), updateRequest, updatedImages, testMember);
@@ -161,7 +162,6 @@ class MainActivitiesServiceImplTest {
         // Then
         assertThat(updatedActivity.getTitle()).isEqualTo("[수정] BAMBOO 프로젝트");
         assertThat(updatedActivity.getYear()).isEqualTo(2026);
-        assertThat(updatedActivity.getImages()).contains("https://s3.aws.com/old_image.png");
         assertThat(updatedActivity.getImages()).contains("https://s3.aws.com/new_image.png");
         verify(awsS3Facade, times(1)).uploadFile(anyString(), any(), anyBoolean());
     }

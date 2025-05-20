@@ -13,5 +13,5 @@ public interface MainActivitiesService {
     Page<MainActivitiesResponseDTO.ActivitiesByYearResponse> getMainActivitiesByYear(int year, int page, int size);
     MainActivitiesResponseDTO.Detail getMainActivity(Long id);
     void deleteMainActivity(Long id, Member member);
-    void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<Object> images, Member member);
+    void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<MultipartFile> images, Member member);
 }

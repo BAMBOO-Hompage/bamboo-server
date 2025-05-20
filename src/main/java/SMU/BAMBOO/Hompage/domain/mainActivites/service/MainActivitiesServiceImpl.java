@@ -69,22 +69,42 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     @Transactional
-    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<Object> images, Member member) {
+    public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<MultipartFile> newImages, Member member) {
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
-
-        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
-            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
-        }
+        validateOwnership(activity, member);
 
         List<String> finalImageUrls = new ArrayList<>();
 
-        for (Object image : images) {
-            if (image instanceof String url) { // 기존 이미지 URL이면 그대로 사용
-                finalImageUrls.add(url);
-            } else if (image instanceof MultipartFile file) { // 새 이미지 파일이면 업로드 후 URL 저장
-                String uploadedUrl = awsS3Facade.uploadFile("main-activities", file, true);
-                finalImageUrls.add(uploadedUrl);
+        // 기존 유지할 이미지 URL
+        if (request.getKeptImageUrls() != null) {
+            finalImageUrls.addAll(request.getKeptImageUrls());
+        }
+
+        // 삭제 대상 이미지 삭제
+        List<String> existingUrls = activity.getImages();
+        List<String> toDelete = existingUrls.stream()
+                .filter(url -> !finalImageUrls.contains(url))
+                .toList();
+
+        toDelete.forEach(url -> {
+            try {
+                awsS3Facade.deleteFile(url);
+            } catch (Exception e) {
+                throw new CustomException(ErrorCode.DELETE_FAILED);
+            }
+        });
+
+        // 새 이미지 업로드
+        if (newImages != null) {
+            for (MultipartFile image : newImages) {
+                try {
+                    String uploadedUrl = awsS3Facade.uploadFile("main-activities", image, true);
+                    finalImageUrls.add(uploadedUrl);
+                } catch (Exception e) {
+                    log.error("S3 업로드 중 예외 발생: {}", e.getMessage(), e);
+                    throw new CustomException(ErrorCode.UPLOAD_FAILED);
+                }
             }
         }
 
@@ -106,4 +126,11 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
         mainActivitiesRepository.deleteById(id);
     }
+
+    private void validateOwnership(MainActivities activity, Member currentMember) {
+        if (!activity.getMember().getMemberId().equals(currentMember.getMemberId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
+        }
+    }
+
 }

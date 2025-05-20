@@ -6,13 +6,11 @@ import SMU.BAMBOO.Hompage.domain.mainActivites.service.MainActivitiesService;
 import SMU.BAMBOO.Hompage.domain.member.annotation.CurrentMember;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.dto.response.SuccessResponse;
-import SMU.BAMBOO.Hompage.global.exception.CustomException;
-import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Builder;
@@ -72,37 +70,18 @@ public class MainActivitiesController {
     }
 
     /** 주요활동 게시판 게시물 수정 API */
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PatchMapping(value = "/api/main-activities/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "주요활동 게시물 수정 (기존 이미지 URL은 JSON 배열, 새 이미지는 Multipart로 전송)")
     public SuccessResponse<String> updateMainActivity(
             @PathVariable Long id,
-            @Valid @ModelAttribute MainActivitiesRequestDTO.Update request,
-            @RequestPart(required = false) String imageUrls,  // 기존 이미지 URL을 JSON으로 받음
-            @RequestPart(required = false) List<MultipartFile> newImages, // 새 이미지 파일
+            @RequestPart("request") @Valid MainActivitiesRequestDTO.Update request,
+            @RequestPart(required = false) List<MultipartFile> newImages,
             @CurrentMember Member member) {
-
-        List<Object> finalImages = new ArrayList<>();
-
-        // 기존 이미지 URL JSON 파싱
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<String> existingUrls = objectMapper.readValue(imageUrls, new TypeReference<List<String>>() {});
-                finalImages.addAll(existingUrls);
-            } catch (JsonProcessingException e) {
-                throw new CustomException(ErrorCode.INVALID_URL);
-            }
-        }
-
-        // 새 파일 추가
-        if (newImages != null && !newImages.isEmpty()) {
-            finalImages.addAll(newImages);
-        }
-
-        mainActivitiesService.updateMainActivity(id, request, finalImages, member);
+        mainActivitiesService.updateMainActivity(id, request, newImages, member);
         return SuccessResponse.ok("주요 활동 게시판 게시물이 수정되었습니다.");
     }
-
 
 
     /** 주요활동 게시판 게시물 삭제 API */

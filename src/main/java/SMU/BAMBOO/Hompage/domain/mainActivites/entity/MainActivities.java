@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.mainActivites.entity;
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.dto.MainActivitiesRequestDTO;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,9 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "main_activities")
-@Builder(toBuilder = true)
-// 위 항목은 하드코딩을 위한 항목이니 삭제!
-// @Builder
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -25,17 +22,13 @@ public class MainActivities extends BaseEntity {
     @Column(name = "main_activities_id")
     private Long mainActivitiesId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
-    private Member member;
-
     @Column(nullable = false, length = 200)
     private String title;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "end_date", nullable = true)
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @Column(nullable = false)
@@ -48,15 +41,14 @@ public class MainActivities extends BaseEntity {
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "main_activities_images", joinColumns = @JoinColumn(name = "main_activities_id"))
-    @Column(name = "image_url", nullable = true)
+    @Column(name = "image_url")
     private List<String> images = new ArrayList<>();
 
-    public static MainActivities from(MainActivitiesRequestDTO.Create request, Member member, List<String> images) {
+    public static MainActivities from(MainActivitiesRequestDTO.Create request, List<String> images) {
         if (images == null) {
             images = new ArrayList<>();
         }
         return MainActivities.builder()
-                .member(member)
                 .title(request.getTitle())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -70,9 +62,7 @@ public class MainActivities extends BaseEntity {
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.year = request.getYear();
-        this.images = new ArrayList<>(newImages); // 새 이미지 추가
+        this.images = new ArrayList<>(newImages);
     }
-
-
 
 }

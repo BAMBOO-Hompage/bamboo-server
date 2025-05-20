@@ -10,7 +10,6 @@ import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +40,7 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
             throw new CustomException(ErrorCode.USER_NO_PERMISSION);
         }
 
-        MainActivities mainActivities = MainActivities.from(request, member, images);
+        MainActivities mainActivities = MainActivities.from(request, images);
 
         MainActivities savedMainActivities = mainActivitiesRepository.save(mainActivities);
 
@@ -58,11 +57,9 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
 
     @Override
     public MainActivitiesResponseDTO.Detail getMainActivity(Long id){
-
         MainActivities mainActivity = mainActivitiesRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
-        // Lazy Loading 초기화
-        Hibernate.initialize(mainActivity.getMember());
+
         return MainActivitiesResponseDTO.Detail.from(mainActivity);
 
     }
@@ -72,7 +69,6 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
     public void updateMainActivity(Long id, MainActivitiesRequestDTO.Update request, List<MultipartFile> newImages, Member member) {
         MainActivities activity = mainActivitiesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.MAIN_ACTIVITIES_NOT_EXIST));
-        validateOwnership(activity, member);
 
         List<String> finalImageUrls = new ArrayList<>();
 
@@ -125,12 +121,6 @@ public class MainActivitiesServiceImpl implements MainActivitiesService {
         imageUrls.forEach(awsS3Facade::deleteFile);
 
         mainActivitiesRepository.deleteById(id);
-    }
-
-    private void validateOwnership(MainActivities activity, Member currentMember) {
-        if (!activity.getMember().getMemberId().equals(currentMember.getMemberId())) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
-        }
     }
 
 }

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static SMU.BAMBOO.Hompage.domain.mainActivites.entity.QMainActivities.mainActivities;
-import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class MainActivitiesRepositoryImpl implements MainActivitiesRepository {
     public Page<MainActivities> findByYear(int year, Pageable pageable) {
         List<MainActivities> results = queryFactory
                 .selectFrom(mainActivities)
-                .leftJoin(mainActivities.member, member).fetchJoin()
                 .where(mainActivities.year.eq(year))
                 .orderBy(mainActivities.startDate.desc())
                 .offset(pageable.getOffset())

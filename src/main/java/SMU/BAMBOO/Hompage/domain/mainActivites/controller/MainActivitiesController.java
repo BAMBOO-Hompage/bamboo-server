@@ -38,8 +38,8 @@ public class MainActivitiesController {
     @Operation(summary = "주요활동 게시판 게시물 생성")
     public SuccessResponse<MainActivitiesResponseDTO.Detail> createMainActivities(
             @Valid @ModelAttribute MainActivitiesRequestDTO.Create request,
-            @CurrentMember Member member) {
-
+            @CurrentMember Member member
+    ) {
         List<String> images = new ArrayList<>();
 
         if (request.getImages() != null && !request.getImages().isEmpty()) {

@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.domain.mainActivites.dto;
 
 
 import SMU.BAMBOO.Hompage.domain.mainActivites.entity.MainActivities;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,6 @@ public class MainActivitiesResponseDTO {
     @Schema(description = "주요활동 게시판 게시물 단일 응답 DTO")
     public static class Detail {
         private final Long mainActivitiesId;
-        private final String memberName;
         private final String title;
         private final LocalDate startDate;
         private final LocalDate endDate;
@@ -31,7 +29,6 @@ public class MainActivitiesResponseDTO {
         public static Detail from(MainActivities mainActivities) {
             return Detail.builder()
                     .mainActivitiesId(mainActivities.getMainActivitiesId())
-                    .memberName(mainActivities.getMember().getName())
                     .title(mainActivities.getTitle())
                     .startDate(mainActivities.getStartDate())
                     .endDate(mainActivities.getEndDate())

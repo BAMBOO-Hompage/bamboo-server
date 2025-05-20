@@ -75,11 +75,6 @@ class NoticeControllerTest {
         assertThat(response.getResult().images()).containsExactly("https://s3.aws.com/image1.png");
         assertThat(response.getResult().files()).isEmpty();
 
-        assertThat(response.getResult().member()).isNotNull();
-        assertThat(response.getResult().member().name()).isEqualTo(testMember.getName());
-        assertThat(response.getResult().member().email()).isEqualTo(testMember.getEmail());
-        assertThat(response.getResult().member().role()).isEqualTo(Role.ROLE_ADMIN);
-
         verify(testContainer.awsS3Facade, times(1)).uploadFiles(anyString(), anyList(), anyBoolean());
     }
 
@@ -108,11 +103,6 @@ class NoticeControllerTest {
         assertThat(response.getResult().type()).isEqualTo(NoticeType.NOTICE);
         assertThat(response.getResult().images()).isEmpty();
         assertThat(response.getResult().files()).isEmpty();
-
-        assertThat(response.getResult().member()).isNotNull();
-        assertThat(response.getResult().member().name()).isEqualTo(testMember.getName());
-        assertThat(response.getResult().member().email()).isEqualTo(testMember.getEmail());
-        assertThat(response.getResult().member().role()).isEqualTo(Role.ROLE_ADMIN);
     }
 
     @Test
@@ -195,7 +185,7 @@ class NoticeControllerTest {
 
         // When
         SuccessResponse<NoticeResponseDTO.Detail> response =
-                testContainer.noticeController.updateNotice(noticeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
+                testContainer.noticeController.updateNotice(noticeId, updateRequest, testMember, existingImages, newImages, existingFiles, newFiles);
 
         // Then
         assertThat(response.getResult()).isNotNull();
@@ -228,7 +218,7 @@ class NoticeControllerTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> testContainer.noticeController.updateNotice(999L, updateRequest,
+        assertThatThrownBy(() -> testContainer.noticeController.updateNotice(999L, updateRequest, testMember,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.NOTICE_NOT_EXIST.getMessage());

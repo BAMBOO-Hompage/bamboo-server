@@ -1,9 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.notice.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,18 +11,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NoticeTest {
-
-    private Member testMember;
-
-    @BeforeEach
-    void setUp() {
-        testMember = Member.builder()
-                .memberId(1L)
-                .email("kjk@example.com")
-                .name("김재관")
-                .build();
-    }
-
     @Test
     @DisplayName("공지사항 객체 생성 테스트")
     void createNoticeSuccessfully() {
@@ -38,11 +24,10 @@ class NoticeTest {
         List<String> fileUrls = List.of("https://s3.aws.com/file1.pdf", "https://s3.aws.com/file2.pdf");
 
         // When
-        Notice notice = Notice.from(request, testMember, imageUrls, fileUrls);
+        Notice notice = Notice.from(request, imageUrls, fileUrls);
 
         // Then
         assertThat(notice).isNotNull();
-        assertThat(notice.getMember()).isEqualTo(testMember);
         assertThat(notice.getTitle()).isEqualTo("공지사항1");
         assertThat(notice.getContent()).isEqualTo("공지사항1 내용");
         assertThat(notice.getType()).isEqualTo(NoticeType.NOTICE);
@@ -55,7 +40,6 @@ class NoticeTest {
     void updateNoticeSuccessfully() {
         // Given
         Notice notice = Notice.builder()
-                .member(testMember)
                 .title("공지사항1")
                 .content("공지사항1 내용")
                 .type(NoticeType.NOTICE)
@@ -87,7 +71,6 @@ class NoticeTest {
     void updateNoticeWithNullImageAndFileLists() {
         // Given
         Notice notice = Notice.builder()
-                .member(testMember)
                 .title("공지사항1")
                 .content("공지사항1 내용")
                 .type(NoticeType.NOTICE)

@@ -98,6 +98,7 @@ public class NoticeController {
     public SuccessResponse<NoticeResponseDTO.Detail> updateNotice(
             @PathVariable Long id,
             @Valid @RequestPart(value = "request") NoticeRequestDTO.Update request,
+            @CurrentMember Member member,
             @RequestParam(required = false) List<String> imageUrls,  // 기존 이미지 URL을 JSON 배열로 받음
             @RequestPart(required = false) List<MultipartFile> newImages, // 새 이미지 파일
             @RequestParam(required = false) List<String> fileUrls,
@@ -111,7 +112,7 @@ public class NoticeController {
             newFiles = null;
         }
 
-        NoticeResponseDTO.Detail result = noticeService.update(id, request, imageUrls, newImages, fileUrls, newFiles);
+        NoticeResponseDTO.Detail result = noticeService.update(id, request, member, imageUrls, newImages, fileUrls, newFiles);
         return SuccessResponse.ok(result);
     }
 

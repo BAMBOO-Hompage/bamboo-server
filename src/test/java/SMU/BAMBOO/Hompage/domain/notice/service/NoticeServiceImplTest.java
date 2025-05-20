@@ -45,15 +45,6 @@ class NoticeServiceImplTest {
                 .major("휴먼지능정보공학과")
                 .role(Role.ROLE_ADMIN)
                 .build();
-
-        Member userMember = Member.builder()
-                .memberId(2L)
-                .studentId("202010767")
-                .email("kjk2@example.com")
-                .name("김재관_회원")
-                .major("휴먼지능정보공학과")
-                .role(Role.ROLE_ADMIN)
-                .build();
     }
 
     @Test
@@ -91,7 +82,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();
@@ -101,7 +92,6 @@ class NoticeServiceImplTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.member().name()).isEqualTo("김재관_운영진");
         assertThat(response.title()).isEqualTo("공지1");
         assertThat(response.content()).isEqualTo("공지1 내용");
         assertThat(response.type()).isEqualTo(NoticeType.NOTICE);
@@ -119,7 +109,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();
@@ -142,7 +132,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();
@@ -165,12 +155,10 @@ class NoticeServiceImplTest {
                 .thenReturn(List.of("https://s3.aws.com/new_file.pdf"));
 
         // When
-        NoticeResponseDTO.Detail response = noticeService.update(savedNoticeId, updateRequest, existingImages, newImages, existingFiles, newFiles);
+        NoticeResponseDTO.Detail response = noticeService.update(savedNoticeId, updateRequest, adminMember, existingImages, newImages, existingFiles, newFiles);
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.member()).isNotNull();
-        assertThat(response.member().name()).isEqualTo(adminMember.getName());
         assertThat(response.title()).isEqualTo("[수정] 공지1");
         assertThat(response.content()).isEqualTo("수정된 내용");
         assertThat(response.type()).isEqualTo(NoticeType.EVENTS);

@@ -16,7 +16,7 @@ public interface NoticeService {
 
     void deleteNotice(Long id, Member member);
 
-    NoticeResponseDTO.Detail update(Long id, NoticeRequestDTO.Update request,
+    NoticeResponseDTO.Detail update(Long id, NoticeRequestDTO.Update request, Member member,
                                     List<String> imageUrls, List<MultipartFile> newImages,
                                     List<String> fileUrls, List<MultipartFile> newFiles);
 

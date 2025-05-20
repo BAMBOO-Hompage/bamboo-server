@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.notice.dto;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
-import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.notice.entity.Notice;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,7 +14,6 @@ public class NoticeResponseDTO {
     @Schema(description = "공지사항 게시판 단일 응답 DTO")
     public record Detail(
             @Schema(description = "공지사항 게시판 ID") Long noticeId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
             @Schema(description = "제목") String title,
             @Schema(description = "내용") String content,
             @Schema(description = "게시글 유형(EVENTS, NOTICE)") NoticeType type,
@@ -27,7 +25,6 @@ public class NoticeResponseDTO {
         public static NoticeResponseDTO.Detail from(Notice notice) {
             return new NoticeResponseDTO.Detail(
                     notice.getNoticeId(),
-                    MemberResponseDTO.MemberInfo.from(notice.getMember()),
                     notice.getTitle(),
                     notice.getContent(),
                     notice.getType(),

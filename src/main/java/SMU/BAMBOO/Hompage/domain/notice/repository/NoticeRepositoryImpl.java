@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 import static SMU.BAMBOO.Hompage.domain.notice.entity.QNotice.notice;
 
 @Repository
@@ -31,7 +30,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     public Optional<Notice> findById(Long id) {
         Notice result = queryFactory
                 .selectFrom(notice)
-                .leftJoin(notice.member, member).fetchJoin()
                 .where(notice.noticeId.eq(id))
                 .fetchOne();
 
@@ -47,7 +45,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     public Page<Notice> findByType(NoticeType type, Pageable pageable) {
         List<Notice> result = queryFactory
                 .selectFrom(notice)
-                .leftJoin(notice.member, member).fetchJoin()
                 .where(notice.type.eq(type))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -67,7 +64,6 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     public Page<Notice> findAll(Pageable pageable) {
         List<Notice> result = queryFactory
                 .selectFrom(notice)
-                .leftJoin(notice.member, member).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(notice.createdAt.desc())

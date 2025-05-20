@@ -11,7 +11,6 @@ import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class NoticeServiceImpl implements NoticeService{
                 ? awsS3Facade.uploadFiles("notice/files", files, false)
                 : new ArrayList<>();
 
-        Notice notice = Notice.from(request, member, imageUrls, fileUrls);
+        Notice notice = Notice.from(request, imageUrls, fileUrls);
 
         Notice savedNotice = noticeRepository.save(notice);
 
@@ -58,11 +57,8 @@ public class NoticeServiceImpl implements NoticeService{
     /** 단일 조회 */
     @Override
     public NoticeResponseDTO.Detail getNotice(Long id) {
-
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOTICE_NOT_EXIST));
-        // Lazy Loading 초기화
-        Hibernate.initialize(notice.getMember());
 
         return NoticeResponseDTO.Detail.from(notice);
     }
@@ -103,9 +99,14 @@ public class NoticeServiceImpl implements NoticeService{
 
     /** 수정 */
     @Override
-    public NoticeResponseDTO.Detail update(Long id, NoticeRequestDTO.Update request,
-                                           List<String> imageUrls, List<MultipartFile> newImages,
-                                           List<String> fileUrls, List<MultipartFile> newFiles) {
+    public NoticeResponseDTO.Detail update(
+            Long id, NoticeRequestDTO.Update request, Member member,
+            List<String> imageUrls, List<MultipartFile> newImages,
+            List<String> fileUrls, List<MultipartFile> newFiles) {
+
+        if (!"ROLE_ADMIN".equals(member.getRole().name()) && !"ROLE_OPS".equals(member.getRole().name())) {
+            throw new CustomException(ErrorCode.USER_NO_PERMISSION);
+        }
 
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOTICE_NOT_EXIST));

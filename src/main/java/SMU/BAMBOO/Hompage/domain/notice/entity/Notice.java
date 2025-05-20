@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.notice.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -22,10 +21,6 @@ public class Notice extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notice_id")
     private Long noticeId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
-    private Member member;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -48,9 +43,8 @@ public class Notice extends BaseEntity {
     @Column(name = "file_url")
     private List<String> files = new ArrayList<>();
 
-    public static Notice from(NoticeRequestDTO.Create request, Member member, List<String> images, List<String> files) {
+    public static Notice from(NoticeRequestDTO.Create request, List<String> images, List<String> files) {
         return Notice.builder()
-                .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .type(request.getType())

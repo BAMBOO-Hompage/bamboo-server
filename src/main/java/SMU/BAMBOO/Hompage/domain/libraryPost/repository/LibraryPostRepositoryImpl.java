@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static SMU.BAMBOO.Hompage.domain.libraryPost.entity.QLibraryPost.libraryPost;
 import static SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.QLibraryPostTag.libraryPostTag;
-import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 import static SMU.BAMBOO.Hompage.domain.tag.entity.QTag.tag;
 
 @Repository
@@ -57,7 +56,6 @@ public class LibraryPostRepositoryImpl implements LibraryPostRepository {
         // 데이터 조회
         List<LibraryPost> libraryPosts = queryFactory
                 .selectFrom(libraryPost)
-                .leftJoin(libraryPost.member, member).fetchJoin()
                 .orderBy(libraryPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

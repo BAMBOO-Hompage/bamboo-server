@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.domain.libraryPost.entity;
 
 import SMU.BAMBOO.Hompage.domain.libraryPost.dto.LibraryPostRequestDTO;
 import SMU.BAMBOO.Hompage.domain.mapping.libraryPostTag.LibraryPostTag;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.tag.entity.Tag;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -24,9 +23,11 @@ public class LibraryPost extends BaseEntity {
     @Column(name = "library_post_id")
     private Long libraryPostId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "WRITER_ID", nullable = false)
+    private Long writerId;
+
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
 
     @Column(nullable = false, length = 10)
     private String speaker;

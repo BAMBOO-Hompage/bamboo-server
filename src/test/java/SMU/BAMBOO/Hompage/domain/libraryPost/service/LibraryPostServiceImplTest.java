@@ -67,7 +67,8 @@ class LibraryPostServiceImplTest {
 
         fakeLibraryPostRepository.save(LibraryPost.builder()
                 .libraryPostId(1L)
-                .member(testMember)
+                .writerId(1L)
+                .writerName("kim")
                 .paperName("CV 논문1")
                 .year("2025")
                 .topic("CV의 ~에 대하여")

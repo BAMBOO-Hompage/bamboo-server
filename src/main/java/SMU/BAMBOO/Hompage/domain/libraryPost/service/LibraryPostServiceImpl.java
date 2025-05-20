@@ -62,7 +62,8 @@ public class LibraryPostServiceImpl implements LibraryPostService {
 
         // 객체 생성
         LibraryPost libraryPost = LibraryPost.builder()
-                .member(member)
+                .writerId(member.getMemberId())
+                .writerName(member.getName())
                 .speaker(member.getName())
                 .paperName(dto.paperName())
                 .year(dto.year())
@@ -220,12 +221,6 @@ public class LibraryPostServiceImpl implements LibraryPostService {
         LibraryPost libraryPost = getLibraryPostById(libraryPostId);
         validateOwner(libraryPost, ErrorCode.UNAUTHORIZED_UPDATE);
 
-        // 본인의 글인지 검증
-        String currentStudentId = SecurityUtil.getCurrentStudentId();
-        if (!libraryPost.getMember().getStudentId().equals(currentStudentId)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
-        }
-
         // 태그 조회
         List<Tag> tags = request.tagNames().stream()
                 .map(tagName -> tagRepository.findByName(tagName)
@@ -270,9 +265,10 @@ public class LibraryPostServiceImpl implements LibraryPostService {
      * 현재 사용자가 알렉산드리아 게시글의 작성자이거나 운영진인지 검증하는 메서드
      */
     private void validateOwner(LibraryPost libraryPost, ErrorCode errorCode) {
-        String currentStudentId = SecurityUtil.getCurrentStudentId();
+        LibraryPost post = libraryPostRepository.findById(libraryPost.getLibraryPostId())
+                .orElseThrow(() -> new CustomException(ErrorCode.LIBRARY_POST_NOT_EXIST));
 
-        boolean isOwner = libraryPost.getMember().getStudentId().equals(currentStudentId);
+        boolean isOwner = libraryPost.getWriterId().equals(post.getWriterId());
         boolean isAdminOrOps = SecurityUtil.hasRole("ROLE_ADMIN") || SecurityUtil.hasRole("ROLE_OPS");
 
         if (!isOwner && !isAdminOrOps) {

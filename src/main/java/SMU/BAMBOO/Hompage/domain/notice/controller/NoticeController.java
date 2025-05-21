@@ -41,8 +41,8 @@ public class NoticeController {
             @Valid @RequestPart(value = "request")NoticeRequestDTO.Create request,
             @RequestPart(required = false) List<MultipartFile> images,
             @RequestPart(required = false) List<MultipartFile> files,
-            @CurrentMember Member member){
-
+            @CurrentMember Member member
+    ){
             // 빈 문자열로 들어온 경우 null 처리
             if (images != null && images.size() == 1 && images.get(0).isEmpty()) {
                   images = null;

@@ -1,7 +1,10 @@
 package SMU.BAMBOO.Hompage.domain.notice.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
+import SMU.BAMBOO.Hompage.domain.enums.Role;
+import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +14,23 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NoticeTest {
+
+    private Member testMember;
+
+    @BeforeEach
+    void setUp() {
+        testMember = Member.builder()
+                .memberId(1L)
+                .studentId("202010766")
+                .email("test1@naver.com")
+                .pw("1234")
+                .name("kim")
+                .major("휴먼")
+                .phone("010-1111-1111")
+                .role(Role.ROLE_USER)
+                .build();
+    }
+
     @Test
     @DisplayName("공지사항 객체 생성 테스트")
     void createNoticeSuccessfully() {
@@ -24,7 +44,7 @@ class NoticeTest {
         List<String> fileUrls = List.of("https://s3.aws.com/file1.pdf", "https://s3.aws.com/file2.pdf");
 
         // When
-        Notice notice = Notice.from(request, imageUrls, fileUrls);
+        Notice notice = Notice.from(request, testMember, imageUrls, fileUrls);
 
         // Then
         assertThat(notice).isNotNull();

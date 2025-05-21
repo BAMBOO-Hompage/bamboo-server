@@ -46,7 +46,7 @@ public class NoticeServiceImpl implements NoticeService{
                 ? awsS3Facade.uploadFiles("notice/files", files, false)
                 : new ArrayList<>();
 
-        Notice notice = Notice.from(request, imageUrls, fileUrls);
+        Notice notice = Notice.from(request, member, imageUrls, fileUrls);
 
         Notice savedNotice = noticeRepository.save(notice);
 

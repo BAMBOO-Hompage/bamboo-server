@@ -10,6 +10,7 @@ import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import SMU.BAMBOO.Hompage.global.upload.service.AwsS3Facade;
 import SMU.BAMBOO.Hompage.mock.repository.FakeNoticeRepository;
+import SMU.BAMBOO.Hompage.util.SecurityTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,8 @@ class NoticeServiceImplTest {
                 .major("휴먼지능정보공학과")
                 .role(Role.ROLE_ADMIN)
                 .build();
+
+        SecurityTestUtil.setAuthentication(adminMember);
     }
 
     @Test
@@ -69,6 +72,7 @@ class NoticeServiceImplTest {
         assertThat(response).isNotNull();
         assertThat(response.title()).isEqualTo("공지1");
         assertThat(response.content()).isEqualTo("공지1 내용");
+        assertThat(response.writerName()).isEqualTo("김재관_운영진");
         assertThat(response.type()).isEqualTo(NoticeType.NOTICE);
         assertThat(response.images()).contains("https://s3.aws.com/image1.png");
     }
@@ -82,7 +86,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();
@@ -109,7 +113,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();
@@ -132,7 +136,7 @@ class NoticeServiceImplTest {
         request.setContent("공지1 내용");
         request.setType(NoticeType.NOTICE);
 
-        Notice notice = Notice.from(request, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
+        Notice notice = Notice.from(request, adminMember, List.of("https://s3.aws.com/image.png"), new ArrayList<>());
 
         Notice savedNotice = noticeRepository.save(notice);
         Long savedNoticeId = savedNotice.getNoticeId();

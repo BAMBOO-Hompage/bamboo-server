@@ -1,6 +1,7 @@
 package SMU.BAMBOO.Hompage.domain.notice.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.NoticeType;
+import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.notice.dto.NoticeRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -28,6 +29,12 @@ public class Notice extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "WRITER_ID", nullable = false)
+    private Long writerId;
+
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 15)
     private NoticeType type;
@@ -43,10 +50,12 @@ public class Notice extends BaseEntity {
     @Column(name = "file_url")
     private List<String> files = new ArrayList<>();
 
-    public static Notice from(NoticeRequestDTO.Create request, List<String> images, List<String> files) {
+    public static Notice from(NoticeRequestDTO.Create request, Member member, List<String> images, List<String> files) {
         return Notice.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .writerId(member.getMemberId())
+                .writerName(member.getName())
                 .type(request.getType())
                 .images(images != null ? new ArrayList<>(images) : new ArrayList<>())
                 .files(files != null ? new ArrayList<>(files) : new ArrayList<>())

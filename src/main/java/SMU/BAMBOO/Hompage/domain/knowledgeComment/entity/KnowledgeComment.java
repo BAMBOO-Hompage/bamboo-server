@@ -31,6 +31,9 @@ public class KnowledgeComment extends BaseEntity {
     @Column(name = "WRITER_MAJOR", nullable = false)
     private String writerMajor;
 
+    @Column(name = "WRITER_IMAGE_URL")
+    private String writerImageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "knowledge_id", nullable = false)
     private Knowledge knowledge;
@@ -66,6 +69,7 @@ public class KnowledgeComment extends BaseEntity {
                 .writerId(member.getMemberId())
                 .writerName(member.getName())
                 .writerMajor(member.getMajor())
+                .writerImageUrl(member.getProfileImageUrl())
                 .parent(parent)
                 .build();
     }

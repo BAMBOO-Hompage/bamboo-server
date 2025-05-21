@@ -29,6 +29,7 @@ public class LibraryPostCommentResponseDTO {
             Long memberId,
             String writerName,
             String writerMajor,
+            String writerImageUrl,
             String content,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt,
@@ -42,12 +43,15 @@ public class LibraryPostCommentResponseDTO {
             String content = comment.isDeleted() ? "삭제된 댓글입니다." : comment.getContent();
             String writerName = comment.isDeleted()
                     ? "알 수 없음" : comment.getWriterName();
+            String writerImageUrl = comment.isDeleted()
+                    ? null : comment.getWriterImageUrl();
 
             return new GetOne(
                     comment.getLibraryPostCommentId(),
                     comment.getWriterId(),
                     writerName,
                     comment.getWriterMajor(),
+                    writerImageUrl,
                     content,
                     comment.getCreatedAt(),
                     comment.getModifiedAt(),

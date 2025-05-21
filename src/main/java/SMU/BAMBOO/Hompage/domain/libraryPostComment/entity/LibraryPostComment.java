@@ -34,6 +34,9 @@ public class LibraryPostComment extends BaseEntity {
     @Column(name = "WRITER_MAJOR", nullable = false)
     private String writerMajor;
 
+    @Column(name = "WRITER_IMAGE_URL")
+    private String writerImageUrl;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -65,6 +68,7 @@ public class LibraryPostComment extends BaseEntity {
                 .writerId(member.getMemberId())
                 .writerName(member.getName())
                 .writerMajor(member.getMajor())
+                .writerImageUrl(member.getProfileImageUrl())
                 .parent(parent)
                 .build();
     }

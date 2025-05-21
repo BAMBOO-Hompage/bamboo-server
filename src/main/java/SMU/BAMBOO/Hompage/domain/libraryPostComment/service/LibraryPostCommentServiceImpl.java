@@ -75,7 +75,7 @@ public class LibraryPostCommentServiceImpl implements LibraryPostCommentService 
     }
 
     private void validateAuthority(LibraryPostComment comment, Member member) {
-        boolean isOwner = comment.getMember().getMemberId().equals(member.getMemberId());
+        boolean isOwner = comment.getWriterStudentId().equals(member.getStudentId());
         boolean isAdminOrOps = member.getRole() == Role.ROLE_ADMIN || member.getRole() == Role.ROLE_OPS;
         if (!(isOwner || isAdminOrOps)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DELETE);

@@ -80,9 +80,9 @@ public class KnowledgeCommentServiceImpl implements KnowledgeCommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.KNOWLEDGE_NOT_EXIST));
     }
 
-    private void validateCommentAuthority(KnowledgeComment comment, Member requester) {
-        boolean isOwner = comment.getMember() != null && comment.getMember().getMemberId().equals(requester.getMemberId());
-        boolean isAdminOrOps = requester.getRole() == Role.ROLE_ADMIN || requester.getRole() == Role.ROLE_OPS;
+    private void validateCommentAuthority(KnowledgeComment comment, Member member) {
+        boolean isOwner = comment.getWriterStudentId().equals(member.getStudentId());
+        boolean isAdminOrOps = member.getRole() == Role.ROLE_ADMIN || member.getRole() == Role.ROLE_OPS;
 
         if (!(isOwner || isAdminOrOps)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DELETE);

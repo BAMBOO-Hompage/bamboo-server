@@ -25,9 +25,11 @@ public class LibraryPostComment extends BaseEntity {
     @JoinColumn(name = "library_post_id")
     private LibraryPost libraryPost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "WRITER_STUDENT_ID", nullable = false)
+    private String writerStudentId;
+
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -57,7 +59,8 @@ public class LibraryPostComment extends BaseEntity {
         return LibraryPostComment.builder()
                 .content(content)
                 .libraryPost(post)
-                .member(member)
+                .writerStudentId(member.getStudentId())
+                .writerName(member.getName())
                 .parent(parent)
                 .build();
     }

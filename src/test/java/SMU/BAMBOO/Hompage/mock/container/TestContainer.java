@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.mock.container;
 import SMU.BAMBOO.Hompage.domain.knowledge.controller.KnowledgeController;
 import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
 import SMU.BAMBOO.Hompage.domain.knowledge.service.KnowledgeServiceImpl;
+import SMU.BAMBOO.Hompage.domain.knowledgeComment.repository.KnowledgeCommentRepository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.controller.LibraryPostController;
 import SMU.BAMBOO.Hompage.domain.libraryPost.repository.LibraryPostRepository;
 import SMU.BAMBOO.Hompage.domain.libraryPost.service.LibraryPostServiceImpl;
@@ -29,6 +30,7 @@ public class TestContainer {
     public final MainActivitiesRepository mainActivitiesRepository;
     public final NoticeRepository noticeRepository;
     public final KnowledgeRepository knowledgeRepository;
+    public final KnowledgeCommentRepository knowledgeCommentRepository;
 
     public final LibraryPostServiceImpl libraryPostService;
     public final TagServiceImpl tagService;
@@ -52,6 +54,7 @@ public class TestContainer {
         this.mainActivitiesRepository = new FakeMainActivitiesRepository();
         this.noticeRepository = new FakeNoticeRepository();
         this.knowledgeRepository = new FakeKnowledgeRepository();
+        this.knowledgeCommentRepository = new FakeKnowledgeCommentRepository();
 
         this.awsS3Facade = Mockito.mock(AwsS3Facade.class);
 
@@ -66,7 +69,7 @@ public class TestContainer {
                 .build();
         this.mainActivitiesService = new MainActivitiesServiceImpl(this.mainActivitiesRepository, this.awsS3Facade);
         this.noticeService = new NoticeServiceImpl(this.noticeRepository, this.awsS3Facade);
-        this.knowledgeService = new KnowledgeServiceImpl(this.knowledgeRepository, this.awsS3Facade);
+        this.knowledgeService = new KnowledgeServiceImpl(this.knowledgeRepository, this.knowledgeCommentRepository, this.awsS3Facade);
 
         this.libraryPostController = LibraryPostController.builder()
                 .libraryPostService(this.libraryPostService)

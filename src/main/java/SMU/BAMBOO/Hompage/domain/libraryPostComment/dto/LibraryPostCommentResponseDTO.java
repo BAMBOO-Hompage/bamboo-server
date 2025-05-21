@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.libraryPostComment.dto;
 
 import SMU.BAMBOO.Hompage.domain.libraryPostComment.entity.LibraryPostComment;
-import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -13,13 +12,13 @@ public class LibraryPostCommentResponseDTO {
 
     public record Create(
             Long commentId,
-            MemberResponseDTO.MemberInfo member,
+            String writerName,
             String content
     ) {
         public static Create from(LibraryPostComment comment) {
             return new Create(
                     comment.getLibraryPostCommentId(),
-                    MemberResponseDTO.MemberInfo.from(comment.getMember()),
+                    comment.getWriterName(),
                     comment.getContent()
             );
         }
@@ -27,7 +26,8 @@ public class LibraryPostCommentResponseDTO {
 
     public record GetOne(
             Long commentId,
-            MemberResponseDTO.CommentMemberInfo member,
+            String studentId,
+            String writerName,
             String content,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt,
@@ -39,13 +39,15 @@ public class LibraryPostCommentResponseDTO {
                     : List.of();
 
             String content = comment.isDeleted() ? "삭제된 댓글입니다." : comment.getContent();
-            MemberResponseDTO.CommentMemberInfo member = comment.isDeleted()
-                    ? MemberResponseDTO.CommentMemberInfo.deletedUser()
-                    : MemberResponseDTO.CommentMemberInfo.from(comment.getMember());
+            String writerStudentId = comment.isDeleted()
+                    ? "알 수 없음" : comment.getWriterStudentId();
+            String writerName = comment.isDeleted()
+                    ? "알 수 없음" : comment.getWriterName();
 
             return new GetOne(
                     comment.getLibraryPostCommentId(),
-                    member,
+                    writerStudentId,
+                    writerName,
                     content,
                     comment.getCreatedAt(),
                     comment.getModifiedAt(),

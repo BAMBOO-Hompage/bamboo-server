@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.knowledgeComment.dto;
 
 import SMU.BAMBOO.Hompage.domain.knowledgeComment.entity.KnowledgeComment;
-import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
@@ -15,13 +14,15 @@ public class KnowledgeCommentResponseDTO {
     @Schema(description = "지식공유 게시판 댓글 생성 응답 DTO")
     public record Create(
             @Schema(description = "댓글 ID") Long commentId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.MemberInfo member,
+            @Schema(description = "작성자 학번") String writerStudentId,
+            @Schema(description = "작성자 이름") String writerName,
             @Schema(description = "댓글 내용") String content
     ) {
         public static Create from(KnowledgeComment comment) {
             return new Create(
                     comment.getKnowledgeCommentId(),
-                    MemberResponseDTO.MemberInfo.from(comment.getMember()),
+                    comment.getWriterStudentId(),
+                    comment.getWriterName(),
                     comment.getContent()
             );
         }
@@ -43,7 +44,8 @@ public class KnowledgeCommentResponseDTO {
     @Schema(description = "지식공유 게시판 댓글 조회 응답 DTO (대댓글 포함)")
     public record GetOne(
             @Schema(description = "댓글 ID") Long commentId,
-            @Schema(description = "작성한 멤버 정보") MemberResponseDTO.CommentMemberInfo member,
+            @Schema(description = "작성자 학번") String writerStudentId,
+            @Schema(description = "작성자 이름") String writerName,
             @Schema(description = "댓글 내용") String content,
             @Schema(description = "작성일") LocalDateTime createdAt,
             @Schema(description = "수정일") LocalDateTime modifiedAt,
@@ -56,17 +58,16 @@ public class KnowledgeCommentResponseDTO {
                     .collect(Collectors.toList())
                     : List.of();
 
-            String content = comment.isDeleted()
-                    ? "삭제된 댓글입니다."
-                    : comment.getContent();
-
-            MemberResponseDTO.CommentMemberInfo memberInfo = comment.isDeleted()
-                    ? MemberResponseDTO.CommentMemberInfo.deletedUser()
-                    : MemberResponseDTO.CommentMemberInfo.from(comment.getMember());
+            String content = comment.isDeleted() ? "삭제된 댓글입니다." : comment.getContent();
+            String writerStudentId = comment.isDeleted()
+                    ? "알 수 없음" : comment.getWriterStudentId();
+            String writerName = comment.isDeleted()
+                    ? "알 수 없음" : comment.getWriterName();
 
             return new GetOne(
                     comment.getKnowledgeCommentId(),
-                    memberInfo,
+                    writerStudentId,
+                    writerName,
                     content,
                     comment.getCreatedAt(),
                     comment.getModifiedAt(),

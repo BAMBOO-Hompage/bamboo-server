@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeRequestDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.dto.KnowledgeResponseDTO;
 import SMU.BAMBOO.Hompage.domain.knowledge.entity.Knowledge;
 import SMU.BAMBOO.Hompage.domain.knowledge.repository.KnowledgeRepository;
+import SMU.BAMBOO.Hompage.domain.knowledgeComment.repository.KnowledgeCommentRepository;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
@@ -28,6 +29,7 @@ import java.util.List;
 public class KnowledgeServiceImpl implements KnowledgeService {
 
     private final KnowledgeRepository knowledgeRepository;
+    private final KnowledgeCommentRepository knowledgeCommentRepository;
     private final AwsS3Facade awsS3Facade;
 
     private Knowledge getKnowledgeById(Long id) {
@@ -141,6 +143,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         imageUrls.forEach(awsS3Facade::deleteFile);
         fileUrls.forEach(awsS3Facade::deleteFile);
 
+        knowledgeCommentRepository.deleteAllByKnowledgeId(id);
         knowledgeRepository.deleteById(id);
     }
 

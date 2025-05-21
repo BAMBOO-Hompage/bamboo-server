@@ -6,5 +6,6 @@ public interface KnowledgeCommentRepository {
     KnowledgeComment findByIdOrThrow(Long id);
     KnowledgeComment findParentByIdOrThrow(Long id);
     void validateBelongsToKnowledge(KnowledgeComment comment, Long knowledgeId);
+    void deleteAllByKnowledgeId(Long knowledgeId);
 }
 

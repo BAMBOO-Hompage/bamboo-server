@@ -25,11 +25,14 @@ public class LibraryPostComment extends BaseEntity {
     @JoinColumn(name = "library_post_id")
     private LibraryPost libraryPost;
 
-    @Column(name = "WRITER_STUDENT_ID", nullable = false)
-    private String writerStudentId;
+    @Column(name = "WRITER_ID", nullable = false)
+    private Long writerId;
 
     @Column(name = "WRITER_NAME", nullable = false)
     private String writerName;
+
+    @Column(name = "WRITER_MAJOR", nullable = false)
+    private String writerMajor;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -59,8 +62,9 @@ public class LibraryPostComment extends BaseEntity {
         return LibraryPostComment.builder()
                 .content(content)
                 .libraryPost(post)
-                .writerStudentId(member.getStudentId())
+                .writerId(member.getMemberId())
                 .writerName(member.getName())
+                .writerMajor(member.getMajor())
                 .parent(parent)
                 .build();
     }

@@ -26,8 +26,9 @@ public class LibraryPostCommentResponseDTO {
 
     public record GetOne(
             Long commentId,
-            String studentId,
+            Long memberId,
             String writerName,
+            String writerMajor,
             String content,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt,
@@ -39,15 +40,14 @@ public class LibraryPostCommentResponseDTO {
                     : List.of();
 
             String content = comment.isDeleted() ? "삭제된 댓글입니다." : comment.getContent();
-            String writerStudentId = comment.isDeleted()
-                    ? "알 수 없음" : comment.getWriterStudentId();
             String writerName = comment.isDeleted()
                     ? "알 수 없음" : comment.getWriterName();
 
             return new GetOne(
                     comment.getLibraryPostCommentId(),
-                    writerStudentId,
+                    comment.getWriterId(),
                     writerName,
+                    comment.getWriterMajor(),
                     content,
                     comment.getCreatedAt(),
                     comment.getModifiedAt(),

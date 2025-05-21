@@ -81,7 +81,7 @@ public class KnowledgeCommentServiceImpl implements KnowledgeCommentService {
     }
 
     private void validateCommentAuthority(KnowledgeComment comment, Member member) {
-        boolean isOwner = comment.getWriterStudentId().equals(member.getStudentId());
+        boolean isOwner = comment.getWriterId().equals(member.getMemberId());
         boolean isAdminOrOps = member.getRole() == Role.ROLE_ADMIN || member.getRole() == Role.ROLE_OPS;
 
         if (!(isOwner || isAdminOrOps)) {

@@ -22,11 +22,14 @@ public class KnowledgeComment extends BaseEntity {
     @Column(name = "knowledge_comment_id")
     private Long knowledgeCommentId;
 
-    @Column(name = "WRITER_STUDENT_ID", nullable = false)
-    private String writerStudentId;
+    @Column(name = "WRITER_ID", nullable = false)
+    private Long writerId;
 
     @Column(name = "WRITER_NAME", nullable = false)
     private String writerName;
+
+    @Column(name = "WRITER_MAJOR", nullable = false)
+    private String writerMajor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "knowledge_id", nullable = false)
@@ -60,8 +63,9 @@ public class KnowledgeComment extends BaseEntity {
         return KnowledgeComment.builder()
                 .content(content)
                 .knowledge(knowledge)
-                .writerStudentId(member.getStudentId())
+                .writerId(member.getMemberId())
                 .writerName(member.getName())
+                .writerMajor(member.getMajor())
                 .parent(parent)
                 .build();
     }

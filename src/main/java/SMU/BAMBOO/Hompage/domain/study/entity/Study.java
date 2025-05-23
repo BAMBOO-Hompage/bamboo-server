@@ -44,12 +44,18 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private int section;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_master", nullable = false)
-    private Member studyMaster;
+    @Column(name = "study_master_id")
+    private Long studyMasterId;
+
+    @Column(name = "study_master_name")
+    private String studyMasterName;
+
+    @Column(name = "study_master_student_id")
+    private String studyMasterStudentId;
 
     @Builder.Default
-    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "study_id", insertable = false, updatable = false)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @Builder.Default
@@ -60,33 +66,29 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyWeek> studyWeeks = new ArrayList<>();
 
-    public void updateStudy(Subject subject, String teamName, Cohort cohort, Boolean isBook, int section, Member studyMaster, List<MemberStudy> updatedMemberStudies) {
+    public void updateStudy(
+            Subject subject,
+            String teamName,
+            Cohort cohort,
+            Boolean isBook,
+            int section,
+            Member studyMaster,
+            List<MemberStudy> updatedMemberStudies
+    ) {
         this.subject = subject;
         this.teamName = teamName;
         this.cohort = cohort;
         this.isBook = isBook;
         this.section = section;
-        this.studyMaster = studyMaster;
 
-        // NPE 방지를 위해 memberStudies 가 null 이라면 초기화
-        if (this.memberStudies == null) {
-            this.memberStudies = new ArrayList<>();
-        }
+        // 스터디장 정보 설정
+        this.studyMasterId = studyMaster.getMemberId();
+        this.studyMasterName = studyMaster.getName();
+        this.studyMasterStudentId = studyMaster.getStudentId();
 
-        // 기존 MemberStudy 리스트를 순회하면서 관계 제거
-        this.memberStudies.forEach(memberStudy -> memberStudy.associateStudy(null));
+        // 기존 MemberStudy 삭제 후 교체
         this.memberStudies.clear();
-
-        // 새로운 MemberStudy 추가
         this.memberStudies.addAll(updatedMemberStudies);
     }
 
-
-    /**
-     * 연관 관계 편의 메서드
-     */
-    public void addMemberStudy(MemberStudy memberStudy) {
-        this.memberStudies.add(memberStudy);
-        memberStudy.associateStudy(this);
-    }
 }

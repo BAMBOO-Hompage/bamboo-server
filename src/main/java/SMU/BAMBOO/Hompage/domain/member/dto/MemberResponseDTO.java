@@ -28,11 +28,9 @@ public class MemberResponseDTO {
             String studentId,
             String name
     ) {
-        public static MemberInStudy from(Member member) {
+        public static MemberInStudy from(Long memberId, String studentId, String name) {
             return new MemberInStudy(
-                    member.getMemberId(),
-                    member.getStudentId(),
-                    member.getName()
+                    memberId, studentId, name
             );
         }
     }

@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.inventory.repository;
 
 import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,7 @@ public interface InventoryRepository {
     Page<Inventory> findByPage(Pageable pageable);
     Inventory save(Inventory inventory);
     void deleteById(Long id);
-    Boolean existsByMemberAndStudyAndWeek(Member member, Study study, int week);
+    Boolean existsByWriterIdAndStudyAndWeek(Long memberID, Study study, int week);
     Optional<Inventory> findByStudyIdAndWeekAndMemberId(Long studyId, int week, Long memberId);
     void resetWeeklyBest(Long studyId, int week);
     Optional<Inventory> findWeeklyBestByStudyIdAndWeek(Long studyId, int week);

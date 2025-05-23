@@ -1,8 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.member.entity;
 
 import SMU.BAMBOO.Hompage.domain.enums.Role;
-import SMU.BAMBOO.Hompage.domain.inventory.entity.Inventory;
-import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberRequestDTO;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -13,8 +11,6 @@ import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "member")
@@ -64,14 +60,6 @@ public class Member extends BaseEntity {
     @Column
     private LocalDateTime deletedAt;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<MemberStudy> memberStudies = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Inventory> inventories = new ArrayList<>();
-
     public static Member from(MemberRequestDTO.SignUp request, BCryptPasswordEncoder encoder) {
         return Member.builder()
                 .studentId(request.studentId())
@@ -108,13 +96,5 @@ public class Member extends BaseEntity {
     public void deactivate() {
         this.isDeleted = true;
         this.deletedAt = LocalDateTime.now();
-    }
-
-    /**
-     * 연관 관계 편의 메서드
-     */
-    public void addMemberStudy(MemberStudy memberStudy) {
-        this.memberStudies.add(memberStudy);
-        memberStudy.associateMember(this);
     }
 }

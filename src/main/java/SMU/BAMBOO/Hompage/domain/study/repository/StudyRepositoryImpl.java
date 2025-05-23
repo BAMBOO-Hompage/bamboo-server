@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import static SMU.BAMBOO.Hompage.domain.cohort.entity.QCohort.cohort;
 import static SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.QMemberStudy.memberStudy;
-import static SMU.BAMBOO.Hompage.domain.member.entity.QMember.member;
 import static SMU.BAMBOO.Hompage.domain.study.entity.QStudy.study;
 import static SMU.BAMBOO.Hompage.domain.subject.entity.QSubject.subject;
 
@@ -28,7 +27,6 @@ public class StudyRepositoryImpl implements StudyRepository {
                 .leftJoin(study.subject, subject).fetchJoin()
                 .leftJoin(study.cohort, cohort).fetchJoin()
                 .leftJoin(study.memberStudies, memberStudy).fetchJoin()
-                .leftJoin(memberStudy.member, member).fetchJoin()
                 .where(study.studyId.eq(id))
                 .fetchOne();
 
@@ -42,7 +40,6 @@ public class StudyRepositoryImpl implements StudyRepository {
                 .leftJoin(study.subject, subject).fetchJoin()
                 .leftJoin(study.cohort, cohort).fetchJoin()
                 .leftJoin(study.memberStudies, memberStudy).fetchJoin()
-                .leftJoin(memberStudy.member, member).fetchJoin()
                 .orderBy(study.section.asc())
                 .fetch();
     }
@@ -55,7 +52,6 @@ public class StudyRepositoryImpl implements StudyRepository {
                 .leftJoin(study.subject, subject).fetchJoin()
                 .leftJoin(study.cohort, cohort).fetchJoin()
                 .leftJoin(study.memberStudies, memberStudy).fetchJoin()
-                .leftJoin(memberStudy.member, member).fetchJoin()
                 .where(
                         study.cohort.cohortId.eq(cohortId),
                         study.subject.subjectId.eq(subjectId)

@@ -3,6 +3,7 @@ package SMU.BAMBOO.Hompage.domain.study.dto;
 import SMU.BAMBOO.Hompage.domain.attendance.dto.AttendanceResponseDTO;
 import SMU.BAMBOO.Hompage.domain.attendance.entity.Attendance;
 import SMU.BAMBOO.Hompage.domain.cohort.dto.CohortResponseDTO;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
 import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +24,7 @@ public class StudyResponseDTO {
             @Schema(description = "스터디장") MemberResponseDTO.MemberInStudy studyMaster,
             @Schema(description = "스터디원") List<MemberResponseDTO.MemberInStudy> studyMembers
     ) {
-        public static Create from(Study study) {
+        public static Create from(Study study, List<MemberStudy> memberStudies) {
             return new Create(
                     study.getStudyId(),
                     study.getTeamName(),
@@ -31,9 +32,19 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    MemberResponseDTO.MemberInStudy.from(study.getStudyMaster()),
-                    study.getMemberStudies().stream()
-                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMember()))
+
+                    MemberResponseDTO.MemberInStudy.from(
+                            study.getStudyMasterId(),
+                            study.getStudyMasterStudentId(),
+                            study.getStudyMasterName()
+                    ),
+
+                    memberStudies.stream()
+                            .map(ms -> MemberResponseDTO.MemberInStudy.from(
+                                    ms.getMemberId(),
+                                    ms.getMemberStudentId(),
+                                    ms.getMemberName()
+                            ))
                             .toList()
             );
         }
@@ -56,9 +67,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    MemberResponseDTO.MemberInStudy.from(study.getStudyMaster()),
+                    MemberResponseDTO.MemberInStudy.from(study.getStudyMasterId(), study.getStudyMasterStudentId(), study.getStudyMasterName()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMember()))
+                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMemberId(), memberStudy.getMemberStudentId(), memberStudy.getMemberName()))
                             .toList()
             );
         }
@@ -83,9 +94,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    MemberResponseDTO.MemberInStudy.from(study.getStudyMaster()),
+                    MemberResponseDTO.MemberInStudy.from(study.getStudyMasterId(), study.getStudyMasterStudentId(), study.getStudyMasterName()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMember()))
+                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMemberId(), memberStudy.getMemberStudentId(), memberStudy.getMemberName()))
                             .toList()
             );
         }
@@ -111,9 +122,9 @@ public class StudyResponseDTO {
                     CohortResponseDTO.GetOne.from(study.getCohort()),
                     study.getIsBook(),
                     study.getSection(),
-                    MemberResponseDTO.MemberInStudy.from(study.getStudyMaster()),
+                    MemberResponseDTO.MemberInStudy.from(study.getStudyMasterId(), study.getStudyMasterStudentId(), study.getStudyMasterName()),
                     study.getMemberStudies().stream()
-                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMember()))
+                            .map(memberStudy -> MemberResponseDTO.MemberInStudy.from(memberStudy.getMemberId(), memberStudy.getMemberStudentId(), memberStudy.getMemberName()))
                             .toList(),
                     attendances.stream()
                             .map(AttendanceResponseDTO.GetOne::from).toList()

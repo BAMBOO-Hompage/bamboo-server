@@ -2,7 +2,6 @@ package SMU.BAMBOO.Hompage.domain.inventory.entity;
 
 import SMU.BAMBOO.Hompage.domain.award.entity.Award;
 import SMU.BAMBOO.Hompage.domain.inventory.dto.InventoryRequestDTO;
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -21,9 +20,17 @@ public class Inventory extends BaseEntity {
     @Column(name = "inventory_id")
     private Long inventoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "WRITER_ID")
+    private Long writerId;
+
+    @Column(name = "WRITER_STUDENT_ID")
+    private String writerStudentId;
+
+    @Column(name = "WRITER_NAME")
+    private String writerName;
+
+    @Column(name = "WRITER_IMAGE_URL")
+    private String writerImageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")

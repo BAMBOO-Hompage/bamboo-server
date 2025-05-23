@@ -1,7 +1,6 @@
 package SMU.BAMBOO.Hompage.domain.award.dto;
 
 import SMU.BAMBOO.Hompage.domain.award.entity.Award;
-import SMU.BAMBOO.Hompage.domain.member.dto.MemberResponseDTO;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -41,7 +40,7 @@ public class AwardResponseDTO {
     @Schema(description = "명예의 전당 조회 응답 DTO")
     public record GetOne(
             @Schema(description = "Award Id") Long awardId,
-            @Schema(description = "작성자 정보") MemberResponseDTO.GetForAward member,
+            @Schema(description = "작성자 이름") String writerName,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
             @Schema(description = "기수") int batch,
             @Schema(description = "주차") int week
@@ -53,7 +52,7 @@ public class AwardResponseDTO {
 
             return new GetOne(
                     award.getAwardId(),
-                    MemberResponseDTO.GetForAward.from(award.getInventory().getMember()),
+                    award.getInventory().getWriterName(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
                     award.getBatch(),
                     award.getWeek()

@@ -5,6 +5,7 @@ import SMU.BAMBOO.Hompage.domain.attendance.repository.AttendanceRepository;
 import SMU.BAMBOO.Hompage.domain.cohort.entity.Cohort;
 import SMU.BAMBOO.Hompage.domain.cohort.repository.CohortRepository;
 import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity.MemberStudy;
+import SMU.BAMBOO.Hompage.domain.mapping.memberStudy.repository.MemberStudyRepository;
 import SMU.BAMBOO.Hompage.domain.member.entity.Member;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.study.dto.StudyRequestDTO;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +31,7 @@ public class StudyServiceImpl implements StudyService {
     private final StudyRepository studyRepository;
     private final SubjectRepository subjectRepository;
     private final MemberRepository memberRepository;
+    private final MemberStudyRepository memberStudyRepository;
     private final CohortRepository cohortRepository;
     private final AttendanceRepository attendanceRepository;
 
@@ -48,7 +51,7 @@ public class StudyServiceImpl implements StudyService {
         Subject subject = subjectRepository.findById(dto.subjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
 
-        Member studyMaster = memberRepository.findByStudentId(dto.studyMaster())
+        Member studyMaster = memberRepository.findByStudentId(dto.studyMasterStudentId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
         Cohort cohort = cohortRepository.findByBatch(dto.cohort())
@@ -61,27 +64,34 @@ public class StudyServiceImpl implements StudyService {
                 .cohort(cohort)
                 .isBook(dto.isBook())
                 .section(dto.section())
-                .studyMaster(studyMaster)
+                .studyMasterId(dto.studyMasterId())
+                .studyMasterStudentId(dto.studyMasterStudentId())
+                .studyMasterName(dto.studyMasterName())
                 .build();
 
+        Study savedStudy = studyRepository.save(study);
+
         // 스터디에 속한 회원들 조회/저장
-        List<Member> members = getMembersFromIds(dto.studyMembers());
+        List<Member> members = getMembersFromIds(dto.studyMembers()).stream()
+                .filter(member -> !member.getMemberId().equals(studyMaster.getMemberId()))
+                .toList();
+
+        members = new ArrayList<>(members);
         members.add(studyMaster);
 
         // 회원들 스터디에 추가
-        members.forEach(member -> {
-            MemberStudy memberStudy = MemberStudy.builder()
-                    .member(member)
-                    .study(study)
-                    .build();
+        List<MemberStudy> memberStudies = members.stream()
+                .map(member -> MemberStudy.builder()
+                        .memberId(member.getMemberId())
+                        .memberStudentId(member.getStudentId())
+                        .memberName(member.getName())
+                        .studyId(savedStudy.getStudyId())
+                        .build())
+                .toList();
 
-            study.addMemberStudy(memberStudy);
-            member.addMemberStudy(memberStudy);
-        });
+        memberStudyRepository.saveAll(memberStudies);
 
-        // 저장
-        Study savedStudy = studyRepository.save(study);
-        return StudyResponseDTO.Create.from(savedStudy);
+        return StudyResponseDTO.Create.from(savedStudy, memberStudies);
     }
 
     @Override
@@ -129,9 +139,6 @@ public class StudyServiceImpl implements StudyService {
         Cohort cohort = cohortRepository.findByBatch(dto.cohort())
                 .orElseThrow(() -> new CustomException(ErrorCode.COHORT_NOT_EXIST));
 
-        // 기존 MemberStudy 데이터 제거 (NPE 방지)
-        study.getMemberStudies().clear();
-
         // 새롭게 스터디에 속한 회원들 조회/저장
         List<Member> studyMembers = getMembersFromIds(dto.studyMembers());
         studyMembers.add(studyMaster);
@@ -139,8 +146,10 @@ public class StudyServiceImpl implements StudyService {
         // 새로운 MemberStudy 리스트 생성
         List<MemberStudy> updatedMemberStudies = studyMembers.stream()
                 .map(member -> MemberStudy.builder()
-                        .member(member)
-                        .study(study)
+                        .memberId(member.getMemberId())
+                        .memberName(member.getName())
+                        .memberStudentId(member.getStudentId())
+                        .studyId(study.getStudyId())
                         .build())
                 .toList();
 

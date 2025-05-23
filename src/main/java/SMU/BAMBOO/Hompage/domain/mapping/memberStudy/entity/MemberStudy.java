@@ -1,7 +1,5 @@
 package SMU.BAMBOO.Hompage.domain.mapping.memberStudy.entity;
 
-import SMU.BAMBOO.Hompage.domain.member.entity.Member;
-import SMU.BAMBOO.Hompage.domain.study.entity.Study;
 import SMU.BAMBOO.Hompage.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,34 +15,26 @@ public class MemberStudy extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_study_id")
-    private Long member_study_id;
+    private Long memberStudyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_id", nullable = false)
-    private Study study;
+    @Column(name = "member_student_id", nullable = false)
+    private String memberStudentId;
 
+    @Column(name = "member_name", nullable = false)
+    private String memberName;
 
-    /**
-     * Study 연관 관계 편의 메서드
-     */
-    public void associateStudy(Study study) {
-        this.study = study;
-        if (!study.getMemberStudies().contains(this)) {
-            study.getMemberStudies().add(this);
-        }
+    @Column(name = "study_id", nullable = false)
+    private Long studyId;
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
-    /**
-     * Member 연관 관계 편의 메서드
-     */
-    public void associateMember(Member member) {
-        this.member = member;
-        if (!member.getMemberStudies().contains(this)) {
-            member.getMemberStudies().add(this);
-        }
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
     }
 }
+

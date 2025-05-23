@@ -58,7 +58,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             AttendanceStatus status = AttendanceStatus.from(att.status());
 
             // 해당 회원이 스터디에 속해 있는지 검증
-            boolean isMemberInStudy = memberStudyRepository.existsByStudyAndMember(study, member);
+            boolean isMemberInStudy = memberStudyRepository.existsByStudyIdAndMemberId(study.getStudyId(), member.getMemberId());
             if (!isMemberInStudy) {
                 throw new CustomException(ErrorCode.USER_NOT_IN_STUDY);
             }

@@ -43,7 +43,6 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     @Transactional
     public InventoryResponseDTO.Create create(Long memberId, InventoryRequestDTO.Create request, MultipartFile file) {
-
         // 객체 조회 - 스터디, 회원
         Study study = studyRepository.findById(request.studyId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_EXIST));
@@ -52,7 +51,7 @@ public class InventoryServiceImpl implements InventoryService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
         // 동일한 사람이 같은 주차에 이미 작성했는지 확인
-        if (inventoryRepository.existsByMemberAndStudyAndWeek(member, study, request.week())) {
+        if (inventoryRepository.existsByWriterIdAndStudyAndWeek(memberId, study, request.week())) {
             throw new CustomException(ErrorCode.INVENTORY_ALREADY_EXIST);
         }
 
@@ -68,7 +67,10 @@ public class InventoryServiceImpl implements InventoryService {
         // 스터디 정리본 객체 생성
         Inventory inventory = Inventory.builder()
                 .study(study)
-                .member(member)
+                .writerId(member.getMemberId())
+                .writerStudentId(member.getStudentId())
+                .writerName(member.getName())
+                .writerImageUrl(member.getProfileImageUrl())
                 .title(request.title())
                 .content(request.content())
                 .week(request.week())

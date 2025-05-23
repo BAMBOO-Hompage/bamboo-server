@@ -64,9 +64,9 @@ public class StudyServiceImpl implements StudyService {
                 .cohort(cohort)
                 .isBook(dto.isBook())
                 .section(dto.section())
-                .studyMasterId(dto.studyMasterId())
-                .studyMasterStudentId(dto.studyMasterStudentId())
-                .studyMasterName(dto.studyMasterName())
+                .studyMasterId(studyMaster.getMemberId())
+                .studyMasterStudentId(studyMaster.getStudentId())
+                .studyMasterName(studyMaster.getName())
                 .build();
 
         Study savedStudy = studyRepository.save(study);
@@ -133,7 +133,7 @@ public class StudyServiceImpl implements StudyService {
         Subject subject = subjectRepository.findById(dto.subjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SUBJECT_NOT_EXIST));
 
-        Member studyMaster = memberRepository.findByStudentId(dto.studyMaster())
+        Member studyMaster = memberRepository.findByStudentId(dto.studyMasterStudentId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
 
         Cohort cohort = cohortRepository.findByBatch(dto.cohort())

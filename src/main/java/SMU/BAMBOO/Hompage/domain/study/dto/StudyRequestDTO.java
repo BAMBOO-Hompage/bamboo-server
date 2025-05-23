@@ -14,9 +14,7 @@ public class StudyRequestDTO {
             @Schema(description = "기수", example = "6") int cohort,
             @Schema(description = "커리큘럼 유무", example = "true") Boolean isBook,
             @Schema(description = "분반", example = "1") int section,
-            @Schema(description = "스터디장 ID", example = "1") Long studyMasterId,
             @Schema(description = "스터디장 학번", example = "202510777") String studyMasterStudentId,
-            @Schema(description = "스터디장 이름", example = "김재관") String studyMasterName,
             @Schema(description = "스터디원", example = "[\"202510770\", \"202510771\", \"202510772\"]") List<String> studyMembers
     ) {}
 
@@ -27,7 +25,7 @@ public class StudyRequestDTO {
             @Schema(description = "기수", example = "6") int cohort,
             @Schema(description = "커리큘럼 유무", example = "true") Boolean isBook,
             @Schema(description = "분반", example = "1") int section,
-            @Schema(description = "스터디장", example = "202510777") String studyMaster,
+            @Schema(description = "스터디장 학번", example = "202510777") String studyMasterStudentId,
             @Schema(description = "스터디원", example = "[\"202510770\", \"202510771\"]") List<String> studyMembers
     ) {}
 

@@ -41,6 +41,7 @@ public class AwardResponseDTO {
     public record GetOne(
             @Schema(description = "Award Id") Long awardId,
             @Schema(description = "작성자 이름") String writerName,
+            @Schema(description = "작성자 프로필 URL") String writerProfileUrl,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
             @Schema(description = "기수") int batch,
             @Schema(description = "주차") int week
@@ -53,6 +54,7 @@ public class AwardResponseDTO {
             return new GetOne(
                     award.getAwardId(),
                     award.getInventory().getWriterName(),
+                    award.getInventory().getWriterImageUrl(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
                     award.getBatch(),
                     award.getWeek()

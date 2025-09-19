@@ -10,14 +10,12 @@ import SMU.BAMBOO.Hompage.domain.inventory.repository.InventoryRepository;
 import SMU.BAMBOO.Hompage.domain.member.repository.MemberRepository;
 import SMU.BAMBOO.Hompage.domain.subject.entity.Subject;
 import SMU.BAMBOO.Hompage.domain.subject.repository.SubjectRepository;
-import SMU.BAMBOO.Hompage.domain.subject.repository.dto.SubjectWeek;
 import SMU.BAMBOO.Hompage.global.exception.CustomException;
 import SMU.BAMBOO.Hompage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +46,7 @@ public class AwardServiceImpl implements AwardService {
                 .inventory(inventory)
                 .subject(subject)
                 .batch(request.batch())
-                .week(request.week())
+                .isMidterm(request.isMidterm())
                 .build();
 
         Award savedAward = awardRepository.save(award);
@@ -112,25 +110,6 @@ public class AwardServiceImpl implements AwardService {
         awardRepository.save(award);
 
         awardRepository.delete(awardId);
-    }
-
-    /**
-     * 기수 기준 최신 주차의 Award 목록 조회
-     */
-    @Override
-    public List<AwardResponseDTO.GetOne> getLatestWeekAwardsByBatch(int batch) {
-        // 각 subject별 최신 week 찾기
-        List<SubjectWeek> subjectLatestWeeks = awardRepository.findLatestWeeksBySubjectInBatch(batch);
-
-        // 각 (subject, week)에 해당하는 award 조회
-        List<Award> awards = new ArrayList<>();
-        for (SubjectWeek sw : subjectLatestWeeks) {
-            awards.addAll(awardRepository.findAllByBatchAndSubjectAndWeek(batch, sw.getSubject(), sw.getWeek()));
-        }
-
-        return awards.stream()
-                .map(AwardResponseDTO.GetOne::from)
-                .toList();
     }
 
     /**

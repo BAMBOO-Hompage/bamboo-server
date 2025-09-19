@@ -11,13 +11,13 @@ public class AwardResponseDTO {
     public record Create(
             @Schema(description = "Award Id") Long awardId,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
-            @Schema(description = "주차") int week
+            @Schema(description = "중간/기말 여부") boolean isMidterm
     ) {
         public static Create from(Award award) {
             return new Create(
                     award.getAwardId(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
-                    award.getWeek()
+                    award.isMidterm()
             );
         }
     }
@@ -26,13 +26,13 @@ public class AwardResponseDTO {
     public record Update(
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
             @Schema(description = "기수") int batch,
-            @Schema(description = "주차") int week
+            @Schema(description = "중간/기말 여부") boolean isMidterm
     ) {
         public static Update from(Award award) {
             return new Update(
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
                     award.getBatch(),
-                    award.getWeek()
+                    award.isMidterm()
             );
         }
     }
@@ -44,7 +44,7 @@ public class AwardResponseDTO {
             @Schema(description = "작성자 프로필 URL") String writerProfileUrl,
             @Schema(description = "스터디 정보") StudyResponseDTO.GetForAward study,
             @Schema(description = "기수") int batch,
-            @Schema(description = "주차") int week
+            @Schema(description = "중간/기말 여부") boolean isMidterm
     ) {
         public static GetOne from(Award award) {
             if (award == null) {
@@ -57,7 +57,7 @@ public class AwardResponseDTO {
                     award.getInventory().getWriterImageUrl(),
                     StudyResponseDTO.GetForAward.from(award.getInventory().getStudy()),
                     award.getBatch(),
-                    award.getWeek()
+                    award.isMidterm()
             );
         }
     }

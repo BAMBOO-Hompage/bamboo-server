@@ -7,7 +7,7 @@ public class AwardRequestDTO {
 
     @Schema(description = "명예의 전당 생성 요청 DTO")
     public record Create(
-            @Schema(description = "주차", example = "1") int week,
+            @Schema(description = "중간/기말 여부 - true면 중간", example = "true") boolean isMidterm,
             @Schema(description = "기수", example = "6") int batch,
             @Schema(description = "스터디 정리본 ID", example = "1") Long inventoryId,
             @Schema(description = "과목 이름", example = "PY") String subjectName,
@@ -17,7 +17,7 @@ public class AwardRequestDTO {
 
     @Schema(description = "명예의 전당 수정 요청 DTO")
     public record Update(
-            @Schema(description = "주차", example = "2") int week,
+            @Schema(description = "중간/기말 여부 - true면 중간", example = "true") boolean isMidterm,
             @Schema(description = "기수", example = "6") int batch,
             @Schema(description = "스터디 정리본 ID", example = "1") Long inventoryId,
             @Schema(description = "과목 이름", example = "PY") String subjectName,

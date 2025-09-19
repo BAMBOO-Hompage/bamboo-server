@@ -12,5 +12,4 @@ public interface AwardService {
     List<AwardResponseDTO.GetOne> getAwardsByBatch(int batch);
     AwardResponseDTO.Update update(Long awardId, AwardRequestDTO.Update dto);
     void delete(Long awardId);
-    List<AwardResponseDTO.GetOne> getLatestWeekAwardsByBatch(int batch);
 }

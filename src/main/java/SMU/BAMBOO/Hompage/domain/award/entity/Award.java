@@ -31,13 +31,14 @@ public class Award extends BaseEntity {
     @Column(nullable = false)
     private int batch;
 
-    @Column(nullable = false)
-    private int week;
+    // true = MIDTERM, false = FINAL
+    @Column(name = "is_midterm", nullable = false)
+    private boolean isMidterm;
 
     public void updateAward(Inventory inventory, AwardRequestDTO.Update request) {
         this.inventory = inventory;
         this.batch = request.batch();
-        this.week = request.week();
+        this.isMidterm = request.isMidterm();
     }
 
     /** 연관 관계 삭제를 위한 메서드 */

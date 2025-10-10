@@ -130,7 +130,10 @@ public class LibraryPostServiceImpl implements LibraryPostService {
             libraryPosts = libraryPostRepository.findByPage(pageable);
         }
 
-        return libraryPosts.map(LibraryPostResponseDTO.GetOne::from);
+        return libraryPosts.map(post -> {
+            int commentCount = libraryPostCommentRepository.countByPostId(post.getLibraryPostId());
+            return LibraryPostResponseDTO.GetOne.from(post).withCommentCount(commentCount);
+        });
     }
 
     @Override

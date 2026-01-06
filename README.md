@@ -26,13 +26,104 @@
 
 ## 🛑 Version
 
-Java -  `17` 
+Java -  `21` 
 
 Spring Boot -  `3.4.1`
 
 Gradle - `8.12`
 
-MySQL - `8.0.39`
+MySQL - `8.0`
+
+Redis - `7`
+
+</br>
+
+## 💻 로컬 환경 세팅
+
+### 📋 사전 준비
+
+1. **Java 21** 설치 확인
+   ```bash
+   java -version
+   # java version "21.x.x" 확인
+   ```
+
+2. **Docker Desktop** 설치
+   - [Docker Desktop 다운로드](https://www.docker.com/products/docker-desktop/)
+   - 설치 후 Docker가 실행 중인지 확인
+   ```bash
+   docker --version
+   docker ps
+   ```
+
+### 🚀 실행 방법
+
+#### 1단계: 환경 변수 설정
+```bash
+# env.template 파일을 .env로 복사
+copy env.template .env
+
+# .env 파일을 열어 필요한 값 수정 (대부분 기본값으로 사용 가능)
+```
+
+#### 2단계: Docker 컨테이너 시작
+```bash
+# MySQL, Redis, Grafana, Prometheus 실행
+docker-compose up -d
+
+# 컨테이너 상태 확인 (healthy 확인)
+docker-compose ps
+```
+
+#### 3단계: 프로젝트 빌드 및 실행
+```bash
+# 빌드 (테스트 제외)
+gradlew.bat clean build -x test
+
+# 애플리케이션 실행
+gradlew.bat bootRun
+```
+
+#### 4단계: 확인
+- API 문서: http://localhost:8080/swagger-ui/index.html
+- Health Check: http://localhost:8080/health
+- Grafana: http://localhost:3000
+- Prometheus: http://localhost:9090
+
+### 🛠️ 유용한 명령어
+
+```bash
+# Docker 컨테이너 관리
+docker-compose start    # 시작
+docker-compose stop     # 중지
+docker-compose restart  # 재시작
+docker-compose down     # 중지 및 삭제
+docker-compose logs -f  # 로그 확인
+
+# MySQL 접속
+docker exec -it bamboo-mysql mysql -u bamboo_user -p
+# 비밀번호: bamboo_password
+
+# Redis 접속
+docker exec -it bamboo-redis redis-cli
+```
+
+### 🐛 문제 해결
+
+**포트 충돌 시:**
+```bash
+netstat -ano | findstr :8080
+netstat -ano | findstr :3306
+netstat -ano | findstr :6379
+```
+
+**빌드 오류 시:**
+```bash
+gradlew.bat clean
+rmdir /s /q .gradle
+rmdir /s /q build
+gradlew.bat clean build -x test
+```
 
 </br>
 

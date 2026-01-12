@@ -24,7 +24,6 @@ public class SwaggerConfig {
                 .addSecurityItem(securityRequirement())
                 .servers(List.of(
                         new Server().url("https://api.smu-bamboo.uk").description("Production Server"),
-                        new Server().url("https://api.smu-bamboo.com").description("Old Production Server"),
                         new Server().url("http://localhost:8080").description("Local Server")
                 ));
     }

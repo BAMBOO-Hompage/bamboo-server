@@ -65,19 +65,20 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          # EC2에서 Docker로 배포
+          # EC2에서 Docker로 배포 (성공 파일 기반 체크)
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST << 'ENDSSH'
-            set -e  # 에러 발생 시 중단
+            # 성공 플래그 파일 삭제
+            rm -f /tmp/deploy_success
             
             echo "🐳 Docker 이미지 Pull 중..."
-            docker pull jinseok19/bamboo-server:latest
+            docker pull jinseok19/bamboo-server:latest || exit 1
             
             echo "🔹 기존 Java 프로세스 종료..."
             pkill -f BambooServer || true
             
             echo "🔹 기존 컨테이너 종료 및 제거..."
-            docker stop bamboo-server || true
-            docker rm bamboo-server || true
+            docker stop bamboo-server 2>/dev/null || true
+            docker rm bamboo-server 2>/dev/null || true
             
             echo "🚀 새 컨테이너 시작..."
             docker run -d \
@@ -85,44 +86,40 @@ jobs:
               --env-file /home/ubuntu/.env \
               -p 8080:8080 \
               --restart unless-stopped \
-              jinseok19/bamboo-server:latest
+              jinseok19/bamboo-server:latest || exit 1
             
             echo "⏳ 컨테이너 시작 대기 (45초)..."
             sleep 45
             
             echo "🔍 Health check..."
-            SUCCESS=0
             for i in {1..15}; do
               if curl -f http://localhost:8080/health > /dev/null 2>&1; then
                 echo "✅ 배포 성공!"
                 docker ps --filter "name=bamboo-server"
-                docker logs bamboo-server --tail 50
-                SUCCESS=1
-                break
+                
+                # 성공 플래그 파일 생성
+                touch /tmp/deploy_success
+                exit 0
               fi
               echo "   재시도 ($i/15)..."
               sleep 5
             done
             
-            if [ $SUCCESS -eq 1 ]; then
-              echo "🎉 최종 성공!"
-              exit 0
-            else
-              echo "❌ Health check 실패!"
-              docker logs bamboo-server --tail 100
-              exit 1
-            fi
+            echo "❌ Health check 실패!"
+            docker logs bamboo-server --tail 100
+            exit 1
           ENDSSH
           
-          # SSH 종료 코드 확인
-          SSH_EXIT=$?
+          # 성공 파일 확인
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "test -f /tmp/deploy_success"
+          DEPLOY_RESULT=$?
+          
           rm -f private_key.pem
           
-          # SSH 내부에서 성공했으면 0, 실패했으면 1
-          if [ $SSH_EXIT -eq 0 ]; then
+          if [ $DEPLOY_RESULT -eq 0 ]; then
             echo "🎉 배포 완료!"
             exit 0
           else
-            echo "❌ 배포 실패! (Exit code: $SSH_EXIT)"
+            echo "❌ 배포 실패!"
             exit 1
           fi

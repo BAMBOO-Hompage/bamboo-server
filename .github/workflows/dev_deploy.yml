@@ -65,37 +65,31 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          # EC2에서 Docker로 배포 (성공 파일 기반 체크)
+          # Docker Compose로 배포
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST << 'ENDSSH'
             # 성공 플래그 파일 삭제
             rm -f /tmp/deploy_success
             
-            echo "🐳 Docker 이미지 Pull 중..."
+            cd /home/ubuntu
+            
+            echo "🐳 최신 이미지 Pull 중..."
             docker pull jinseok19/bamboo-server:latest || exit 1
             
             echo "🔹 기존 Java 프로세스 종료..."
             pkill -f BambooServer || true
             
-            echo "🔹 기존 컨테이너 종료 및 제거..."
-            docker stop bamboo-server 2>/dev/null || true
-            docker rm bamboo-server 2>/dev/null || true
+            echo "🚀 Docker Compose로 재시작..."
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d || exit 1
             
-            echo "🚀 새 컨테이너 시작..."
-            docker run -d \
-              --name bamboo-server \
-              --env-file /home/ubuntu/.env \
-              -p 8080:8080 \
-              --restart unless-stopped \
-              jinseok19/bamboo-server:latest || exit 1
-            
-            echo "⏳ 컨테이너 시작 대기 (45초)..."
+            echo "⏳ 서비스 시작 대기 (45초)..."
             sleep 45
             
             echo "🔍 Health check..."
             for i in {1..15}; do
               if curl -f http://localhost:8080/health > /dev/null 2>&1; then
                 echo "✅ 배포 성공!"
-                docker ps --filter "name=bamboo-server"
+                docker-compose -f docker-compose.prod.yml ps
                 
                 # 성공 플래그 파일 생성
                 touch /tmp/deploy_success
@@ -106,7 +100,7 @@ jobs:
             done
             
             echo "❌ Health check 실패!"
-            docker logs bamboo-server --tail 100
+            docker-compose -f docker-compose.prod.yml logs bamboo
             exit 1
           ENDSSH
           

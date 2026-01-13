@@ -66,13 +66,52 @@ jobs:
           chmod 600 private_key.pem
           
           # EC2에서 Docker로 배포
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
-            # Docker pull
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST << 'ENDSSH'
+            set -e  # 에러 발생 시 중단
+            
+            echo "🐳 Docker 이미지 Pull 중..."
             docker pull jinseok19/bamboo-server:latest
             
-            # 배포 스크립트 실행
-            chmod +x /home/$EC2_USERNAME/deploy-docker.sh
-            /home/$EC2_USERNAME/deploy-docker.sh
-          "
+            echo "🔹 기존 Java 프로세스 종료..."
+            pkill -f BambooServer || true
+            
+            echo "🔹 기존 컨테이너 종료 및 제거..."
+            docker stop bamboo-server || true
+            docker rm bamboo-server || true
+            
+            echo "🚀 새 컨테이너 시작..."
+            docker run -d \
+              --name bamboo-server \
+              --env-file /home/ubuntu/.env \
+              -p 8080:8080 \
+              --restart unless-stopped \
+              jinseok19/bamboo-server:latest
+            
+            echo "⏳ 컨테이너 시작 대기 (30초)..."
+            sleep 30
+            
+            echo "🔍 Health check..."
+            for i in {1..10}; do
+              if curl -f http://localhost:8080/health > /dev/null 2>&1; then
+                echo "✅ 배포 성공!"
+                docker ps --filter "name=bamboo-server"
+                exit 0
+              fi
+              echo "   재시도 ($i/10)..."
+              sleep 3
+            done
+            
+            echo "❌ Health check 실패!"
+            docker logs bamboo-server
+            exit 1
+          ENDSSH
           
+          DEPLOY_EXIT_CODE=$?
           rm -f private_key.pem
+          
+          if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+            echo "❌ 배포 실패!"
+            exit 1
+          fi
+          
+          echo "🎉 배포 완료!"

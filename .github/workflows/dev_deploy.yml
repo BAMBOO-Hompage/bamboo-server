@@ -87,18 +87,19 @@ jobs:
               --restart unless-stopped \
               jinseok19/bamboo-server:latest
             
-            echo "⏳ 컨테이너 시작 대기 (30초)..."
-            sleep 30
+            echo "⏳ 컨테이너 시작 대기 (45초)..."
+            sleep 45
             
             echo "🔍 Health check..."
-            for i in {1..10}; do
+            for i in {1..15}; do
               if curl -f http://localhost:8080/health > /dev/null 2>&1; then
                 echo "✅ 배포 성공!"
                 docker ps --filter "name=bamboo-server"
+                docker logs bamboo-server --tail 50
                 exit 0
               fi
-              echo "   재시도 ($i/10)..."
-              sleep 3
+              echo "   재시도 ($i/15)..."
+              sleep 5
             done
             
             echo "❌ Health check 실패!"

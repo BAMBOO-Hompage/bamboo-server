@@ -91,28 +91,38 @@ jobs:
             sleep 45
             
             echo "🔍 Health check..."
+            SUCCESS=0
             for i in {1..15}; do
               if curl -f http://localhost:8080/health > /dev/null 2>&1; then
                 echo "✅ 배포 성공!"
                 docker ps --filter "name=bamboo-server"
                 docker logs bamboo-server --tail 50
-                exit 0
+                SUCCESS=1
+                break
               fi
               echo "   재시도 ($i/15)..."
               sleep 5
             done
             
-            echo "❌ Health check 실패!"
-            docker logs bamboo-server
-            exit 1
+            if [ $SUCCESS -eq 1 ]; then
+              echo "🎉 최종 성공!"
+              exit 0
+            else
+              echo "❌ Health check 실패!"
+              docker logs bamboo-server --tail 100
+              exit 1
+            fi
           ENDSSH
           
-          DEPLOY_EXIT_CODE=$?
+          # SSH 종료 코드 확인
+          SSH_EXIT=$?
           rm -f private_key.pem
           
-          if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
-            echo "❌ 배포 실패!"
+          # SSH 내부에서 성공했으면 0, 실패했으면 1
+          if [ $SSH_EXIT -eq 0 ]; then
+            echo "🎉 배포 완료!"
+            exit 0
+          else
+            echo "❌ 배포 실패! (Exit code: $SSH_EXIT)"
             exit 1
           fi
-          
-          echo "🎉 배포 완료!"

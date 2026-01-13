@@ -20,7 +20,59 @@
 </br>
 
 ## 🏦 Architecture
-![BAMBOO-A](https://github.com/user-attachments/assets/183f4e58-46a7-4f95-b282-da2052a4398d)
+
+```mermaid
+graph TB
+    subgraph "Client"
+        Browser[🌐 Browser]
+    end
+    
+    subgraph "Cloudflare CDN"
+        CF[☁️ Cloudflare<br/>DNS + SSL + CDN]
+    end
+    
+    subgraph "Frontend - S3"
+        S3[📦 S3 Static Hosting<br/>smu-bamboo.uk]
+    end
+    
+    subgraph "Backend - EC2"
+        Nginx[🔒 Nginx<br/>Reverse Proxy<br/>SSL/TLS]
+        Docker[🐳 Docker Container<br/>Spring Boot:8080]
+    end
+    
+    subgraph "Database"
+        RDS[(🗄️ AWS RDS<br/>MySQL 8.0)]
+        Redis[(🔴 Redis<br/>Cache)]
+    end
+    
+    subgraph "Storage"
+        S3Storage[📁 S3<br/>File Storage]
+    end
+    
+    subgraph "CI/CD"
+        GH[⚙️ GitHub Actions]
+        DH[🐳 Docker Hub<br/>jinseok19/bamboo-server]
+    end
+    
+    Browser -->|HTTPS| CF
+    CF -->|HTTPS| S3
+    CF -->|HTTPS| Nginx
+    Nginx -->|HTTP| Docker
+    Docker --> RDS
+    Docker --> Redis
+    Docker --> S3Storage
+    
+    GH -->|Build & Push| DH
+    DH -->|Pull Image| Docker
+    
+    style CF fill:#f9a825
+    style Docker fill:#0db7ed
+    style S3 fill:#569A31
+    style RDS fill:#527FFF
+    style Redis fill:#DC382D
+```
+
+**도메인:** `https://smu-bamboo.uk` (Frontend) | `https://api.smu-bamboo.uk` (Backend)
 
 </br>
 
@@ -143,17 +195,69 @@ gradlew.bat clean build -x test
 #### 📌 Testing
 <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-social&logo=junit5&logoColor=white">
 
-#### 📌 Cloud 
-<img src ="https://img.shields.io/badge/EC2-FF9900?style=for-the-social&logo=amazonec2&logoColor=white"> <img src ="https://img.shields.io/badge/S3-69A31?style=for-the-social&logo=amazons3&logoColor=white"> <img src="https://img.shields.io/badge/RDS-527FFF?style=for-the-social&logo=amazonrds&logoColor=white"> <img src="https://img.shields.io/badge/Route53-8C4FFF?style=for-the-social&logo=amazonroute53&logoColor=white"> 
+#### 📌 Cloud & Infrastructure
+<img src ="https://img.shields.io/badge/EC2-FF9900?style=for-the-social&logo=amazonec2&logoColor=white"> <img src ="https://img.shields.io/badge/S3-69A31?style=for-the-social&logo=amazons3&logoColor=white"> <img src="https://img.shields.io/badge/RDS-527FFF?style=for-the-social&logo=amazonrds&logoColor=white"> <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-social&logo=cloudflare&logoColor=white">
+
+#### 📌 Containerization
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-social&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/Docker Hub-2496ED?style=for-the-social&logo=docker&logoColor=white"> 
 
 #### 📌 API Documentation
 <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-social&logo=swagger&logoColor=white">
 
 #### 📌 CI/CD
-<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-social&logo=githubactions&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-social&logo=githubactions&logoColor=white"> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-social&logo=docker&logoColor=white">
 
 #### 📌 Team Collaboration
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-social&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/Git-F05032?style=for-the-social&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-social&logo=notion&logoColor=white" /> <img src="https://img.shields.io/badge/Discord-%237289DA.svg?style=for-the-social&logo=discord&logoColor=white" /> <img src="https://img.shields.io/badge/Figma-%23F24E1E.svg?style=for-the-social&logo=figma&logoColor=white" />
+
+</br>
+
+## 🚀 배포 프로세스
+
+### Docker 기반 자동 배포
+
+```mermaid
+sequenceDiagram
+    participant Dev as 👨‍💻 Developer
+    participant GH as GitHub
+    participant GA as GitHub Actions
+    participant DH as Docker Hub
+    participant EC2 as EC2 Server
+    participant User as 🌐 Users
+    
+    Dev->>GH: git push origin develop
+    GH->>GA: Trigger Workflow
+    GA->>GA: Build Docker Image
+    GA->>DH: Push Image
+    GA->>EC2: SSH & Deploy
+    EC2->>DH: Pull Latest Image
+    EC2->>EC2: Stop Old Container
+    EC2->>EC2: Start New Container
+    EC2->>EC2: Health Check
+    EC2-->>User: Service Available
+```
+
+### 배포 단계
+
+1. **코드 푸시**: `develop` 브랜치에 push
+2. **자동 빌드**: GitHub Actions가 Docker 이미지 빌드
+3. **이미지 푸시**: Docker Hub에 업로드
+4. **EC2 배포**: 자동으로 최신 이미지 pull & 실행
+5. **무중단 배포**: Health check 후 이전 버전 교체
+6. **완료**: 약 5-8분 소요
+
+### Docker Hub
+- **Repository**: `jinseok19/bamboo-server`
+- **Tags**: `latest` (최신), `<commit-sha>` (버전별)
+
+### 도메인
+
+| 타입 | 도메인 | 용도 |
+|------|--------|------|
+| Frontend | https://smu-bamboo.uk | 프론트엔드 웹사이트 |
+| Frontend | https://www.smu-bamboo.uk | 프론트엔드 (www) |
+| Backend | https://api.smu-bamboo.uk | REST API 서버 |
+| Docs | https://api.smu-bamboo.uk/swagger-ui/ | API 문서 |
 
 </br>
 

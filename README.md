@@ -264,3 +264,6 @@ sequenceDiagram
 ## 🗂 **ERD**  - [자세히 보기](https://www.erdcloud.com/d/MYP2hedjYyGPKtGsL)
 
 ![Image](https://github.com/user-attachments/assets/af19ed66-ebe6-47fa-bacd-e47119c11007)
+
+
+#진석

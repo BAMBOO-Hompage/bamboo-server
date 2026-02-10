@@ -77,6 +77,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+  servers:
+    - url: https://api.smu-bamboo.uk
+      description: 운영 서버
+    - url: http://localhost:8080
+      description: 로컬 서버
   api-docs:
     path: /v3/api-docs
     enabled: true

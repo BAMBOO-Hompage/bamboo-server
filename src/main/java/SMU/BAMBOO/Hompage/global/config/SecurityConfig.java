@@ -42,12 +42,18 @@ public class SecurityConfig {
             "/actuator"
     };
 
+    // FAQ 조회만 로그인 없이 허용 (다른 규칙보다 위에서 매칭되도록 별도 정의)
+    private final String[] faqGetUrls = {
+            "/api/faqs",
+            "/api/faqs/**"
+    };
+
     // 임원진 이상의 권한 필요 (OPS)
     private final String[] opsUrls = {
             "/api/cohorts/**"
     };
 
-    // 운영진 이상의 권한 필요 (ADMIN, OPS)
+    // 운영진 이상의 권한 필요 (ADMIN, OPS) - FAQ는 GET만 공개, 쓰기는 아래 faqWriteUrls에서 처리
     private final String[] adminUrls = {
             "/api/awards/**",
             "/api/main-activities/**",
@@ -55,6 +61,12 @@ public class SecurityConfig {
             "/api/studies/**",
             "/api/subjects/**",
             "/api/tags/**",
+    };
+
+    // FAQ 생성/수정/삭제 (ADMIN, OPS만)
+    private final String[] faqWriteUrls = {
+            "/api/faqs",
+            "/api/faqs/**"
     };
 
     // 회원 이상의 권한 필요 (MEMBER, ADMIN, OPS)
@@ -94,9 +106,11 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // 경로별 인가 설정
+        // 경로별 인가 설정 (위에 있을수록 우선 매칭)
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(allowedUrls).permitAll()
+                // FAQ 조회: 로그인 없이 허용 (다른 /api/** 규칙보다 먼저 적용)
+                .requestMatchers(HttpMethod.GET, faqGetUrls).permitAll()
                 .requestMatchers(HttpMethod.GET, opsUrls).permitAll()
                 .requestMatchers(HttpMethod.POST, opsUrls).hasAnyAuthority("ROLE_OPS")
                 .requestMatchers(HttpMethod.DELETE, opsUrls).hasAnyAuthority("ROLE_OPS")
@@ -105,6 +119,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
                 .requestMatchers(HttpMethod.PATCH, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
                 .requestMatchers(HttpMethod.DELETE, adminUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                // FAQ 생성/수정/삭제: ADMIN, OPS만
+                .requestMatchers(HttpMethod.POST, faqWriteUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.PATCH, faqWriteUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
+                .requestMatchers(HttpMethod.DELETE, faqWriteUrls).hasAnyAuthority("ROLE_ADMIN", "ROLE_OPS")
                 .requestMatchers(HttpMethod.GET, memberUrls).permitAll()
                 .requestMatchers(HttpMethod.POST, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")
                 .requestMatchers(HttpMethod.PUT, memberUrls).hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "ROLE_OPS")

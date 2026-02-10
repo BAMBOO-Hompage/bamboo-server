@@ -143,6 +143,9 @@ public enum ErrorCode {
     LIBRARY_PARENT_COMMENT_NOT_EXIST("LIBRARY_PARENT_COMMENT404", "부모 댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     COMMENT_LIBRARY_MISMATCH("LIBRARY_COMMENT_MISMATCH400", "댓글이 해당 게시물에 속하지 않습니다.", HttpStatus.BAD_REQUEST),
 
+    // FAQ (자주 묻는 질문)
+    FAQ_NOT_EXIST("FAQ404", "존재하지 않는 FAQ입니다.", HttpStatus.NOT_FOUND),
+
     // TAG (태그)
     TAG_ALREADY_EXIST("TAG400", "이미 존재하는 태그입니다.", HttpStatus.BAD_REQUEST),
     TAG_NOT_EXIST("TAG404", "존재하지 않는 태그입니다.", HttpStatus.NOT_FOUND),
